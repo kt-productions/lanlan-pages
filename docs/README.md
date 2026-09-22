@@ -29,6 +29,7 @@
 
 ## 歷史紀錄 · records
 
+- [2026-09-23 GitHub Pages 首次發布](records/pages-deployment-2026-09-23.md)：公開倉庫、部署及桌機／手機驗證，並記錄 GAS 進度讀取的限制。
 - [2026-09-23 公開前整理](records/publication-cleanup-2026-09-23.md)：私人資訊、素材移出、忽略規則與實際驗證。
 - [2026-09-23 GAS 與多人通知設定](records/service-setup-2026-09-23.md)：既有 GAS 第 1 版部署、30 欄升級、多人通知重試、匿名 API 驗證與待填設定。
 - [2026-09-22 雲端資源設定](records/cloud-setup-2026-09-22.md)：新試算表、GAS、資料夾位置、上傳驗證與尚待完成的授權及 Telegram 設定。

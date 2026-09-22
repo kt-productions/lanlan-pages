@@ -6,6 +6,8 @@
 
 使用原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 建置。前端沒有第三方執行期套件；Apps Script 後端打包使用 node-forge 驗證登入簽章。
 
+首次發布驗證中，GAS 進度讀取遇到重新導向／CORS 錯誤，尚不能正常顯示工作清單。Pages 靜態網站已發布；此後端問題及驗證範圍見[發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
+
 ## 快速開始
 
 需要 Node.js 22 以上。在專案根目錄執行：
