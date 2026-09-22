@@ -1,10 +1,10 @@
 # 委託服務設定與維護
 
-2026-09-23 已依使用者要求恢復 GAS 設定：更新既有專案、升級 Orders 為 30 欄、部署 Web App 第 1 版，並保存 `WEB_APP_URL` 與前端 `apiUrl`。`ACCEPTING_ORDERS=false`，尚未開放收件；Telegram Token、通知與管理員名單、OIDC 憑證及工作階段密鑰尚待填入。使用者於同日後續授權推送 GitHub／發布 Pages；正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ADMIN_URL` 與 Telegram 設定仍待維護者完成，不能視為真實登入回程已驗收。實際結果與回復方式見[本次設定紀錄](../records/service-setup-2026-09-23.md)，初始資源見[2026-09-22 紀錄](../records/cloud-setup-2026-09-22.md)。
+2026-09-23 已完成 GAS 第 3 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ACCEPTING_ORDERS=false`。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。曾觀察到偶發 45 秒逾時，操作結果不明時先重新讀取。現行結果見[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
-2026-09-23 本機已改成七階段的公開工作看板，另有急件／擱置旗標。啟用時先上傳最新 `npm run build:backend` 產物，再由擁有者執行 `setupOrders()`，在原欄位尾端追加 `isRush`、`isOnHold` 為第 28／29 欄；同日多人通知更新另追加第 30 欄。不刪除原 `progress`、`publicVisible`、訂單或歷史。相容映射與升級檢查見[服務契約](../reference/order-api.md)。前後端須使用相同版本；看板任務只執行本機驗證，雲端操作另依啟用任務的紀錄確認。
+進度頁是七欄卡片看板，附加急件／擱置旗標。`setupOrders()` 只追加已知舊表缺少的欄位：第 28／29 欄工作旗標、第 30 欄通知名單、第 31 欄 `sourceJson`。不刪除原欄位、訂單或歷史。相容映射見[服務契約](../reference/order-api.md)，歷史資料操作見[Trello 匯入維護](trello-import.md)。
 
 靜態網站提供首頁、委託表單、進度頁與管理頁。Google Apps Script Web App 負責驗證、重新計價、Sheets 讀寫、Telegram OIDC 登入及收件通知；Google Sheets 的 `Orders` 保存委託、通知狀態與修改歷史。試算表不要公開分享。
 
@@ -20,7 +20,7 @@ npm run build:backend
 npm test
 ```
 
-`build/apps-script/` 包含 `Auth.gs`、`Orders.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 6 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
+`build/apps-script/` 包含 `Auth.gs`、`Orders.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 7 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
 
 部署工具使用鎖定的 `@google/clasp@3.4.1`。各維護者使用自己的授權，將專案外憑證檔路徑及登入設定名稱分別提供給 `LANLAN_CLASP_AUTH`、`LANLAN_CLASP_USER` 環境變數；實際值不寫入文件，不複製其他人的憑證：
 
@@ -111,13 +111,13 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 - `revision` 保護編輯；舊內容留在 `historyJson`，與新內容同列一次寫入。文字欄位達 45,000 字元上限時拒絕寫入，應規劃可追溯封存，不可清空歷史。
 - 通知只提醒指定使用者收件，不自動通知委託者進度；不含暱稱、聯絡方式、素材或需求全文。管理頁網址空白時只送編號與委託類型，完成 Pages 後才附後台連結。
 - 管理 token 最多一小時，只放頁面記憶體；OAuth 綁定值暫放 sessionStorage，兌換時刪除。Cache 可能提早失效，須重新登入。
-- 每頁 30 筆，公開看板的階段／旗標篩選涵蓋所有工作，包含已交稿；管理頁的編號／暱稱搜尋只涵蓋已載入項目。直接掃描 Orders 適合小型工作室，不適合大量訂單。
+- 管理清單每頁 30 筆；公開看板每次最多 200 筆，回傳各階段總數，類型／階段／旗標篩選涵蓋所有工作，包含已交稿；管理頁的編號／暱稱搜尋只涵蓋已載入項目。直接掃描 Orders 適合小型工作室，不適合大量訂單。
 - 收件上限與誘捕欄位僅提供基本濫用限制，沒有驗證碼或邊緣流量防護，仍受 Apps Script、UrlFetch 與 Sheets 配額限制。
 - 尚無上傳、付款、正式報價確認、委託者登入或刪單功能；既有費率與角色動畫幣別維持原設定。
 
 ## 管理頁目錄網址相容性
 
-目前來源 `Auth.gs` 同時接受 `admin/` 與舊 `admin.html`；設定新的 `ADMIN_URL` 前，須先將此版本後端重新打包並更新 GAS 部署。現有雲端第 1 版仍使用舊網址驗證，本次靜態網址調整沒有更新雲端部署或啟用收件。舊 `admin.html#ticket=…` 會由前端轉址並保留登入票證，既有回程連結仍可使用；真實 Telegram 登入仍待完成設定後驗收。
+目前 `Auth.gs` 同時接受 `admin/` 與舊 `admin.html`；第 2 版已更新雲端並完成真實登入回程驗證，第 3 版沿用。舊 `admin.html#ticket=…` 會由前端轉址並保留登入票證；管理頁網址或 BotFather 回呼改動仍須重新驗證。
 
 ## 官方依據
 

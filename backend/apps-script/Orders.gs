@@ -29,6 +29,7 @@ const ORDER_HEADERS_ = [
   "isRush",
   "isOnHold",
   "notificationRecipientsJson",
+  "sourceJson",
 ];
 
 function orderSheet_() {
@@ -65,7 +66,7 @@ function setupOrders() {
   setupOrders_();
 }
 
-/** 保留既有訂單；27／29 欄舊表只在新增欄位完全空白時追加表頭。 */
+/** 保留既有訂單；27／29／30 欄舊表只在新增欄位完全空白時追加表頭。 */
 function setupOrders_() {
   lock_(function () {
     const book = SpreadsheetApp.openById(setting_("SPREADSHEET_ID"));
@@ -81,7 +82,7 @@ function setupOrders_() {
       const width = Math.min(sheet.getMaxColumns(), ORDER_HEADERS_.length);
       const header = sheet.getRange(1, 1, 1, width).getValues()[0];
       if (JSON.stringify(header) !== JSON.stringify(ORDER_HEADERS_)) {
-        const oldWidth = [29, 27].find(function (count) {
+        const oldWidth = [30, 29, 27].find(function (count) {
           return JSON.stringify(header.slice(0, count)) ===
             JSON.stringify(ORDER_HEADERS_.slice(0, count));
         });
@@ -132,8 +133,8 @@ function readOrders_(sheet) {
     });
 }
 
-function writeOrder_(sheet, order) {
-  const values = ORDER_HEADERS_.map(function (key) {
+function orderValues_(order) {
+  return ORDER_HEADERS_.map(function (key) {
     const value = order[key] === undefined ? "" : order[key];
     Core_.requireValue(
       typeof value !== "string" || value.length <= 45000,
@@ -145,6 +146,10 @@ function writeOrder_(sheet, order) {
       ? "'" + value
       : value;
   });
+}
+
+function writeOrder_(sheet, order) {
+  const values = orderValues_(order);
   sheet
     .getRange(order.row || sheet.getLastRow() + 1, 1, 1, ORDER_HEADERS_.length)
     .setValues([values]);
@@ -163,13 +168,13 @@ function detailColumns_(details) {
   return {
     service: details.service,
     nickname: details.nickname,
-    contactChannel: details.contact.channel,
-    contactValue: details.contact.value,
-    referenceUrl: details.referenceUrl,
+    contactChannel: details.contact ? details.contact.channel : "",
+    contactValue: details.contact ? details.contact.value : "",
+    referenceUrl: details.referenceUrl || "",
     notes: details.notes || "",
-    estimateMin: details.estimatedPrice.min,
-    estimateMax: details.estimatedPrice.max,
-    currency: details.estimatedPrice.currency || "",
+    estimateMin: details.estimatedPrice ? details.estimatedPrice.min : "",
+    estimateMax: details.estimatedPrice ? details.estimatedPrice.max : "",
+    currency: details.estimatedPrice ? details.estimatedPrice.currency || "" : "",
     detailsJson: JSON.stringify(details),
   };
 }
@@ -215,7 +220,7 @@ function submitOrder_(payload) {
     );
     const now = new Date().toISOString();
     const recent = orders.filter(function (order) {
-      return Date.parse(order.createdAt) > Date.now() - 86400000;
+      return !Core_.orderSource(order) && Date.parse(order.createdAt) > Date.now() - 86400000;
     });
     const dailyLimit = Number(setting_("DAILY_ORDER_LIMIT", true) || 50);
     Core_.requireValue(
@@ -279,16 +284,23 @@ function submitOrder_(payload) {
 
 function pageOrders_(payload, admin) {
   const offset = payload.offset === undefined ? 0 : payload.offset;
+  const limit = admin || payload.limit === undefined ? 30 : payload.limit;
+  Core_.requireValue(Number.isInteger(limit) && limit >= 1 && limit <= 200,
+    "每頁筆數不正確。");
   Core_.requireValue(
     Number.isInteger(offset) && offset >= 0 && offset <= 100000,
     "分頁位置不正確。",
   );
   let orders = readOrders_(orderSheet_());
+  let stageCounts;
   if (admin) {
     orders.reverse();
   } else {
     const stage = payload.status === undefined ? "" : payload.status;
     const flag = payload.flag === undefined ? "" : payload.flag;
+    const service = payload.service === undefined ? "" : payload.service;
+    Core_.requireValue(["", "animation", "chibi", "stickers"].includes(service),
+      "委託類型篩選不正確。");
     Core_.requireValue(
       typeof stage === "string" &&
         (!stage || Object.hasOwn(Core_.ORDER_STATUSES, stage)),
@@ -302,18 +314,29 @@ function pageOrders_(payload, admin) {
     orders = orders.filter(function (order) {
       const flow = Core_.orderWorkflow(order);
       return (!stage || flow.status === stage) &&
+        (!service || order.service === service) &&
         (!flag || (flag === "rush" ? flow.isRush : flow.isOnHold));
     });
+    stageCounts = {};
+    Object.keys(Core_.ORDER_STATUSES).forEach(function (key) { stageCounts[key] = 0; });
+    orders.forEach(function (order) { stageCounts[Core_.orderWorkflow(order).status] += 1; });
     orders.sort(function (a, b) {
+      const sa = Core_.orderSource(a);
+      const sb = Core_.orderSource(b);
+      if (sa && sb) return sa.boardOrder - sb.boardOrder ||
+        sa.listPosition - sb.listPosition || sa.cardPosition - sb.cardPosition ||
+        String(a.orderId).localeCompare(String(b.orderId));
+      if (sa || sb) return sa ? -1 : 1;
       return String(a.createdAt).localeCompare(String(b.createdAt)) ||
         String(a.orderId).localeCompare(String(b.orderId));
     });
   }
-  const page = orders.slice(offset, offset + 30);
+  const page = orders.slice(offset, offset + limit);
   return {
     orders: page.map(admin ? adminOrder_ : Core_.publicOrder),
-    nextOffset: offset + 30 < orders.length ? offset + 30 : null,
+    nextOffset: offset + limit < orders.length ? offset + limit : null,
     total: orders.length,
+    ...(admin ? {} : { stageCounts: stageCounts }),
   };
 }
 
@@ -328,6 +351,7 @@ function adminOrder_(order) {
     notificationAttempts: Number(order.notificationAttempts),
     notificationError: order.notificationError,
     history: JSON.parse(order.historyJson),
+    source: Core_.orderSource(order),
   });
 }
 
@@ -416,6 +440,7 @@ function notifyOrder_(id, retry) {
   const claim = lock_(function () {
     const sheet = orderSheet_();
     const order = findOrder_(sheet, id);
+    if (Core_.orderSource(order)) return { done: true, status: "not_required" };
     if (order.notificationStatus === "sent") return { done: true, status: "sent" };
     if (
       order.notificationStatus === "sending" &&

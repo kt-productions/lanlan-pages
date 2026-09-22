@@ -27,6 +27,10 @@
   cursor: pointer;
   overflow-wrap: anywhere;
 }
+#admin-list {
+  max-height: 70vh;
+  overflow-y: auto;
+}
 .admin-order strong,
 .admin-order span {
   display: block;
@@ -57,6 +61,20 @@
   font-size: 19px;
   font-weight: 800;
   padding-right: 12px;
+}
+.import-source {
+  padding: 20px;
+  margin: 24px 0;
+  border-radius: 10px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.import-source h3 {
+  margin-top: 0;
+}
+.import-source p {
+  font-size: 14px;
 }
 .admin-columns label {
   margin-bottom: 18px;

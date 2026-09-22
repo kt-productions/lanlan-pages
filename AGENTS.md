@@ -133,6 +133,8 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-09-23 Trello 移轉**：依使用者確認，匯入全部 174 張來源卡片（含封存），沿用歷史卡片公開名稱；新表單仍匿名。公開頁採橫向七欄，API 提供完整件數及最多 200 筆分頁。第 31 欄 `sourceJson` 保存來源，匯入由擁有者私下執行、按卡片 ID 去重、不覆蓋歷史、不發 TG；真實來源與備份不得進入公開倉庫。實作與界線見 `backend/apps-script/Import.gs`、`scripts/lib/trello-import.mjs` 及 `docs/development/trello-import.md`。
+
 以下為 2026-09-22 依現有程式碼、內容設定與使用者決策紀錄整理的交接背景；價格以 `content/commission.json`、款式以 `content/forms/sticker-options.json`、計算以 `src/features/commission/pricing.js` 為準。
 
 - **網站與素材**：作品資料含 37 支角色動畫、57 支小動圖；建置另加入 1 張貼圖總覽。2026-09-23 依使用者要求，公開專案只保留 01–48 款；未開放款式與未使用素材移除，原始副本保存於專案外。視覺依 `animation-02.mp4` 使用奶油白、麥黃、蜂蜜金與可可棕，詳細規格見 `docs/design/interface.md`。

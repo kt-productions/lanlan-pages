@@ -123,7 +123,7 @@ async function work(task) {
     });
     if (token) {
       renderList();
-      retry.disabled = selected?.notificationStatus === "sent";
+      retry.disabled = ["sent", "not_required"].includes(selected?.notificationStatus);
     }
   }
 }

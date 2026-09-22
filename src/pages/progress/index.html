@@ -7,7 +7,7 @@
     {{ICONS}}
     <a class="skip-link" href="#main">跳到主要內容</a>
     {{HEADER}}
-    <main id="main" class="wrap order-page">
+    <main id="main" class="wrap order-page progress-page">
       <div class="order-heading">
         <div>
           <h1>委託進度</h1>
@@ -18,14 +18,17 @@
         >
       </div>
       <p class="order-intro">
-        這裡公開所有工作的進度，不需要登入或輸入委託編號。從排隊到交稿，一起看看目前忙到哪裡；交期以繪師個別確認為準。
+        從排隊到交稿，一起看看目前忙到哪裡。Trello 歷史委託沿用原卡片名稱，新表單以編號顯示；交期以繪師個別確認為準。
       </p>
-      <section class="workflow-guide" aria-labelledby="workflow-heading">
-        <h2 id="workflow-heading">工作流程</h2>
-        <ol id="workflow-stages"></ol>
-        <p>「急件」與「擱置」是額外標記，可同時顯示；擱置時仍保留原本的工作階段。</p>
-      </section>
       <div class="order-toolbar">
+        <label for="progress-service">委託類型
+          <select id="progress-service">
+            <option value="">所有類型</option>
+            <option value="chibi">小動圖</option>
+            <option value="animation">角色動畫</option>
+            <option value="stickers">貼圖包</option>
+          </select>
+        </label>
         <label for="progress-stage">工作階段
           <select id="progress-stage"><option value="">所有階段</option></select>
         </label>
@@ -41,7 +44,8 @@
         </button>
       </div>
       <p id="progress-status" role="status">正在讀取委託進度……</p>
-      <div id="progress-list" aria-label="所有工作進度"></div>
+      <p class="board-hint" id="board-hint">左右捲動查看各階段，欄內可上下捲動。「急件」與「擱置」可同時標記；擱置仍保留原階段。</p>
+      <div id="progress-list" class="progress-board" role="region" tabindex="0" aria-label="委託進度看板" aria-describedby="board-hint"></div>
       <button type="button" class="button" id="progress-more" hidden>
         載入更多
       </button>

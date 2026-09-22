@@ -86,7 +86,8 @@
                   所有工作的階段與附加狀態都會出現在公開進度頁；儲存後，此說明也會公開，請勿填入暱稱、聯絡方式或參考素材連結。
                 </p>
               </fieldset>
-              <fieldset>
+              <section id="edit-source" class="import-source" aria-label="Trello 來源紀錄" hidden></section>
+              <fieldset id="edit-content">
                 <legend>委託內容</legend>
                 <div class="edit-grid">
                   <label
@@ -144,7 +145,7 @@
               <button id="admin-retry" type="button" class="button">
                 重試 Telegram 通知
               </button>
-              <p class="field-hint">
+              <p id="notification-hint" class="field-hint">
                 若上次通知結果不明，重試可能再傳送一次。訂單不會重複建立。
               </p>
               <details>

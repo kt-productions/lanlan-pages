@@ -58,36 +58,6 @@
   line-height: 1.8;
   overflow-wrap: anywhere;
 }
-.progress-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.4fr;
-  gap: 28px;
-  border-top: 1px solid var(--line);
-  padding-block: 28px;
-  align-items: start;
-}
-.progress-row h2 {
-  font-size: 17px;
-  overflow-wrap: anywhere;
-  margin: 0 0 8px;
-}
-.progress-row p {
-  margin: 0 0 8px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.progress-row small {
-  color: var(--muted);
-}
-.progress-state {
-  display: grid;
-  gap: 10px;
-}
-.stage-label {
-  color: var(--brand);
-  line-height: 1.6;
-}
 .order-flags {
   display: flex;
   gap: 8px;
@@ -132,10 +102,6 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
-  }
-  .progress-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
   }
   .order-toolbar {
     align-items: stretch;

@@ -263,7 +263,7 @@ test("29 欄舊表只追加通知欄，已有尾端資料或公式時停止", ()
   app.context.setupOrders();
   assert.deepEqual(app.rows.map(row => row.slice(0, 29)), before);
   assert.equal(app.rows[0][29], "notificationRecipientsJson");
-  assert.equal(app.faults.maxColumns, 30);
+  assert.equal(app.faults.maxColumns, 31);
   const calls = app.calls.length;
   app.invoke("admin.retryNotification", { orderId: app.rows[1][0] }, app.session());
   assert.equal(app.calls.length, calls);
@@ -502,8 +502,8 @@ test("舊表升級只追加旗標表頭，保留全部訂單；讀取不改寫�
   app.rows[1][columns.indexOf("publicNote")] = "舊版隱藏說明";
   const before = structuredClone(app.rows);
   app.context.setupOrders();
-  assert.equal(app.faults.maxColumns, 30);
-  assert.deepEqual(app.rows[0].slice(27), ["isRush", "isOnHold", "notificationRecipientsJson"]);
+  assert.equal(app.faults.maxColumns, 31);
+  assert.deepEqual(app.rows[0].slice(27), ["isRush", "isOnHold", "notificationRecipientsJson", "sourceJson"]);
   assert.deepEqual(app.rows.map((row) => row.slice(0, 27)), before);
   const writeCount = app.writes.length;
   const visible = app.invoke("progress.list").data;

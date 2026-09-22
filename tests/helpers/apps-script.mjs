@@ -11,7 +11,7 @@ import { readCommission } from "../../scripts/lib/content.mjs";
 
 export const config = await readCommission();
 const source = await Promise.all(
-  ["Forge.gs", "Core.gs", "Config.gs", "Auth.gs", "Orders.gs", "Web.gs"].map(
+  ["Forge.gs", "Core.gs", "Config.gs", "Auth.gs", "Orders.gs", "Import.gs", "Web.gs"].map(
     async (name) => [
       name,
       await readFile(
@@ -105,6 +105,8 @@ export function backend() {
   const faults = { telegram: false, lock: false, write: false, token: null, maxColumns: 26 };
   const sheet = {
     getLastRow: () => rows.length,
+    getMaxRows: () => 1000,
+    insertRowsAfter: () => {},
     getMaxColumns: () => faults.maxColumns,
     insertColumnsAfter: (_, count) => { faults.maxColumns += count; },
     setFrozenRows: () => {},

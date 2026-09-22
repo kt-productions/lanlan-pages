@@ -201,6 +201,7 @@ export function validateSubmission(input, config) {
 
 /** 進度只輸出這份投影，禁止直接序列化 Sheets 完整資料列。 */
 export function publicOrder(order) {
+  const source = orderSource(order);
   return {
     orderId: order.orderId,
     service: order.service,
@@ -208,7 +209,15 @@ export function publicOrder(order) {
     // 舊版隱藏列也列出匿名工作狀態，但不順帶公開當時隱藏的說明。
     publicNote: order.publicVisible === false ? "" : order.publicNote,
     updatedAt: order.updatedAt,
+    ...(source?.publishTitle === true
+      ? { displayTitle: source.cardName, sourceArchived: source.archived }
+      : {}),
   };
+}
+
+export function orderSource(order) {
+  const source = order.source || (order.sourceJson ? JSON.parse(order.sourceJson) : null);
+  return source?.kind === "trello" ? source : null;
 }
 
 export function validateUpdate(input, current, config) {
@@ -221,7 +230,10 @@ export function validateUpdate(input, current, config) {
   requireValue(typeof input.isRush === "boolean", "請選擇是否標記急件。");
   requireValue(typeof input.isOnHold === "boolean", "請選擇是否標記擱置。");
   return {
-    details: validateSubmission(input.details, config),
+    // 歷史訂單沒有完整表單資料；以伺服器保存的內容為準，不接受客戶端補造報價或授權。
+    details: orderSource(current)
+      ? current.details || JSON.parse(current.detailsJson)
+      : validateSubmission(input.details, config),
     status: input.status,
     isRush: input.isRush,
     isOnHold: input.isOnHold,

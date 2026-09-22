@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 已更新所有工作的公開看板及多人通知，雲端部署第 1 版、表頭升級為 30 欄；維持暫停收件，Telegram 真實通知與登入待設定及驗收。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 3 版、31 欄 Orders；新增 Trello 歷史訂單與看板分組，維持暫停收件。
 
 ## 請求與回應
 
@@ -15,15 +15,15 @@
 | action | 權限 | 輸入／用途 |
 | --- | --- | --- |
 | `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`；收件或取回同一回執。 |
-| `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`），空字串表示不篩選。列出所有工作的匿名進度，不需編號或登入。 |
+| `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
 | `auth.start` | 公開 | 64 字元 hex `browserKey`；取得 Telegram 授權網址。 |
 | `auth.exchange` | 公開 | 單次 `ticket` 與原分頁 `browserKey`；回傳管理 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`；取得完整訂單、通知狀態與歷史。 |
-| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、`publicNote`、`adminNote`。不再接受百分比或可見性作為更新欄位。 |
+| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
 
-分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多，每頁 30 筆。公開清單先對完整資料篩選，再依收件時間由早到晚、同時以編號排序，最後分頁；已交稿及擱置的工作仍在清單中。管理清單維持新收件優先，搜尋只涵蓋已載入項目。offset 分頁不是固定快照，同時新增或更新時可重新整理取得目前結果；前端以編號去重。
+分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理頁固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。已交稿、擱置與匯入封存卡片仍列出。管理清單維持最新加入優先，搜尋只涵蓋已載入項目。offset 不是固定快照，同時新增或更新時可重新整理；前端以編號去重。
 
 管理 token 每次重新核對工作階段、到期與最新白名單，不能把前端顯示條件當成權限控制。
 
@@ -52,10 +52,11 @@
 | 舊版相容欄 | `progress`、`publicVisible` 留在原位置，不刪除；不再以百分比或可見性篩選工作。 |
 | 私人委託資料 | `service`、`nickname`、`contactChannel`、`contactValue`、`referenceUrl`、`notes`、`adminNote` |
 | 計價與內容 | `estimateMin`、`estimateMax`、`currency`、`detailsJson` |
+| 匯入來源 | 第 31 欄 `sourceJson`；Trello 卡片與看板／欄位識別、順序、原名稱、標籤、封存、名稱公開選項、最後活動、匯入時間與附件連結。只在管理回應的 `source` 中完整提供。 |
 | 通知 | `notificationStatus`、`notificationAttempts`、`notificationError`、`notificationAt`；同日多人通知更新另於第 30 欄加入 `notificationRecipientsJson`。 |
 | 可追溯性 | `lastEditor`、`historyJson` |
 
-新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 為 false。公開回應固定只有 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`publicNote`、`updatedAt`，不含暱稱、聯絡、素材、金額、歷史或內部備註。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
+新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 為 false。新表單的公開回應只有 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`publicNote`、`updatedAt`，不含暱稱、聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
 
 | 工作階段 | 代碼 |
 | --- | --- |
@@ -71,7 +72,7 @@
 
 ### 2026-09-23 舊資料相容方式
 
-- `setupOrders()` 核對已知的 27／29 欄舊版表頭，只在待追加欄位的表頭與整欄均空白、無公式時才追加；欄數不足時擴充。第 28／29 欄為工作旗標，同日多人通知更新另加入第 30 欄。任何未知表頭或占用欄位均停止，不自動覆蓋。既有資料列、revision、歷史均保留，再次執行不重複寫入。一般 API 要求與 `ORDER_HEADERS_` 完整一致，未升級時拒絕操作。
+- `setupOrders()` 核對已知的 27／29／30 欄舊版表頭，只在待追加欄位的表頭與整欄均空白、無公式時才追加；欄數不足時擴充。第 28／29 欄為工作旗標，同日多人通知更新另加入第 30 欄，Trello 匯入再追加第 31 欄。任何未知表頭或占用欄位均停止，不自動覆蓋。既有資料列、revision、歷史均保留，再次執行不重複寫入。一般 API 要求與 `ORDER_HEADERS_` 完整一致，未升級時拒絕操作。
 - 舊狀態僅在讀取時對應：`received`／`discussing`／舊 `queued` → `queued`，`working` → `finalizing`，`reviewing` → `draft_review`，`completed` → `delivered`。`cancelled` → `queued` 並預設擱置；不因此清除取消歷史或認定重新承接。這是舊概略狀態的相容對應，管理員應依實際工作調整，未知代碼回傳 `CONFIG`。
 - 舊列旗標空白時，急件沿用 `detailsJson.rush`，擱置依上述取消對應；讀取不回寫。第一次管理儲存才寫入明確 boolean，之後不再隨報價需求變動。`historyJson.before` 保存舊狀態、百分比、可見性及修改前旗標。
 - 舊 `publicVisible: false` 的工作會顯示匿名階段與旗標，但其 `publicNote` 輸出空字串。後台仍可讀取原說明；管理員依「儲存後會公開」提示儲存後，`publicVisible` 設 true 並公開確認後的文字。新工作一律出現在看板。
@@ -79,7 +80,7 @@
 
 管理修改在 ScriptLock 內核對 `revision`，保存舊內容及操作者 Telegram ID，再一次寫入新內容、版本與歷史；不提供刪單 API。字串寫入 Sheet 前做公式跳脫，畫面以 `textContent` 呈現。
 
-通知狀態為 `pending`、`sending`、`sent`、`failed`、`unknown`。先存訂單再傳送，失敗不回滾。傳送中兩分鐘內不允許重試，逾時可人工重試；已通知不重傳。通知不更改業務版本，完成時重新讀取再寫狀態，避免覆蓋同期的管理修改。
+通知狀態為 `pending`、`sending`、`sent`、`failed`、`unknown`；歷史匯入為 `not_required`，前後端均禁止發送收件通知。先存訂單再傳送，失敗不回滾。傳送中兩分鐘內不允許重試，逾時可人工重試；已通知不重傳。通知不更改業務版本，完成時重新讀取再寫狀態，避免覆蓋同期的管理修改。
 
 `TELEGRAM_NOTIFY_USER_IDS` 支援 1–20 位正整數使用者 ID，去重後逐位傳送；未設定時相容舊 `TELEGRAM_CHAT_ID`。第 30 欄 `notificationRecipientsJson` 保存第一次通知的固定名單，每位含 `id`、`status`、`attempts`、`at`、`error`。逐位保存成功結果，重試不再傳給已送達者；後續名單設定只影響新單。舊版已標記 `sent` 的單不補發。每輪仍更新 `notificationAttempts`，以該輪識別防止過期回應覆寫較新的重試；每位開始與完成時更新 `notificationAt`。
 

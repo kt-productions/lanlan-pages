@@ -1,5 +1,3 @@
-import { ORDER_STATUSES } from "./contract.js";
-
 export const serviceNames = {
   animation: "角色動畫",
   stickers: "貼圖包",
@@ -11,6 +9,7 @@ export const notificationNames = {
   sent: "已通知",
   failed: "通知失敗",
   unknown: "無法確認通知結果",
+  not_required: "歷史訂單，不發送收件通知",
 };
 
 export function element(tag, text, className) {
@@ -35,24 +34,18 @@ export function dateLabel(value) {
 }
 
 export function renderProgress(order) {
-  const article = element("article", undefined, "progress-row");
+  const article = element("article", undefined, "progress-card");
   article.id = order.orderId;
-  const heading = element("div");
-  heading.append(
-    element("h2", serviceNames[order.service] || "委託"),
-    element("small", order.orderId),
-  );
-  const status = element("div", undefined, "progress-state");
-  status.append(
-    element("strong", ORDER_STATUSES[order.status] || "待確認", "stage-label"),
-  );
-  status.append(renderFlags(order));
-  const detail = element("div");
-  detail.append(
-    element("p", order.publicNote || "繪師更新後，會在這裡顯示進度。"),
-    element("small", `更新於 ${dateLabel(order.updatedAt)}`),
-  );
-  article.append(heading, status, detail);
+  article.append(element("span", serviceNames[order.service] || "委託", `card-service service-${order.service}`));
+  const flags = renderFlags(order);
+  if (order.sourceArchived) flags.append(element("span", "Trello 封存", "order-flag flag-hold"));
+  if (flags.childElementCount) article.append(flags);
+  article.append(element("h3", order.displayTitle || order.orderId));
+  if (order.publicNote) article.append(element("p", order.publicNote, "card-note"));
+  const detail = element("details", undefined, "card-details");
+  detail.append(element("summary", "訂單資訊"), element("small", order.orderId),
+    element("small", `更新於 ${dateLabel(order.updatedAt)}`));
+  article.append(detail);
   return article;
 }
 
