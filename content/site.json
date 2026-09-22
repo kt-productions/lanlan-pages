@@ -1,0 +1,56 @@
+{
+  "name": "爛爛",
+  "englishName": "LANLAN",
+  "title": "爛爛 LANLAN｜角色動畫・貼圖・小動圖",
+  "description": "我是爛爛，這裡放著我的貼圖、角色動畫與 Q 版小動圖。一起讓你的角色，多一點小表情。作品展示、委託價目與聯絡方式都在這裡。",
+  "sourceUrl": "https://asrielyangyang.wixsite.com/lanlan-cm-display",
+  "reviewedAt": "2026-09-22",
+  "featured": [
+    "animation-02",
+    "chibi-03",
+    "chibi-31",
+    "animation-03",
+    "chibi-02",
+    "chibi-35"
+  ],
+  "services": [
+    {
+      "id": "stickers",
+      "name": "貼圖包",
+      "description": "48 種貼圖可以選擇，把小表情帶進聊天裡。",
+      "price": "50–250",
+      "suffix": "",
+      "form": "https://forms.gle/TwkPZQmLTaff1xSQ7"
+    },
+    {
+      "id": "animation",
+      "name": "角色動畫",
+      "description": "完全客製化，也可製作直播轉場。",
+      "price": "4,500",
+      "suffix": "起",
+      "form": "https://forms.gle/ZTmeUY84JrfVygXQ9"
+    },
+    {
+      "id": "chibi",
+      "name": "小動圖",
+      "description": "可愛的 Q 版小動畫，也可以只委託插圖。",
+      "price": "1,200",
+      "suffix": "起",
+      "form": "https://forms.gle/gTDc4FxyWY1nMrMM9"
+    }
+  ],
+  "socials": [
+    {
+      "name": "Telegram",
+      "url": "https://t.me/lanlan_youwu"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/ying.wen.hao.lan.you.wu.jun"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discordapp.com/users/368404807771357185"
+    }
+  ]
+}

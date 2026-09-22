@@ -1,0 +1,145 @@
+.order-page {
+  padding-block: 64px 100px;
+  min-height: 65vh;
+}
+.order-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.order-heading h1 {
+  font-size: clamp(32px, 4.5vw, 56px);
+  line-height: 1.2;
+  margin: 0 0 16px;
+  font-weight: 900;
+}
+.order-heading p,
+.order-intro {
+  color: var(--muted);
+  line-height: 1.8;
+}
+.order-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 20px;
+  margin-block: 30px;
+}
+.order-toolbar label {
+  flex: 1;
+  max-width: 420px;
+}
+.order-page label {
+  display: block;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.order-page input,
+.order-page select,
+.order-page textarea {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.order-page button {
+  font-family: inherit;
+}
+.order-page [role="status"] {
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.progress-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 28px;
+  border-top: 1px solid var(--line);
+  padding-block: 28px;
+  align-items: start;
+}
+.progress-row h2 {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+  margin: 0 0 8px;
+}
+.progress-row p {
+  margin: 0 0 8px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.progress-row small {
+  color: var(--muted);
+}
+.progress-state {
+  display: grid;
+  gap: 10px;
+}
+.stage-label {
+  color: var(--brand);
+  line-height: 1.6;
+}
+.order-flags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.order-flags:empty {
+  display: none;
+}
+.order-flag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.flag-rush {
+  color: #79401e;
+  background: #f8dfac;
+}
+.flag-hold {
+  color: #514d45;
+  background: #e9e5dc;
+}
+.order-page .button {
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.order-page .button-primary {
+  background: var(--accent);
+}
+.order-page button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+@media (max-width: 760px) {
+  .order-page {
+    padding-block: 36px 64px;
+  }
+  .order-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .progress-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .order-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

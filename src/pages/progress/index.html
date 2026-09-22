@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    {{HEAD}}
+  </head>
+  <body>
+    {{ICONS}}
+    <a class="skip-link" href="#main">跳到主要內容</a>
+    {{HEADER}}
+    <main id="main" class="wrap order-page">
+      <div class="order-heading">
+        <div>
+          <h1>委託進度</h1>
+          <p>每一份工作，都在這裡慢慢完成。</p>
+        </div>
+        <a class="button button-primary" href="./commission.html"
+          >開始填寫委託</a
+        >
+      </div>
+      <p class="order-intro">
+        這裡公開所有工作的進度，不需要登入或輸入委託編號。從排隊到交稿，一起看看目前忙到哪裡；交期以繪師個別確認為準。
+      </p>
+      <section class="workflow-guide" aria-labelledby="workflow-heading">
+        <h2 id="workflow-heading">工作流程</h2>
+        <ol id="workflow-stages"></ol>
+        <p>「急件」與「擱置」是額外標記，可同時顯示；擱置時仍保留原本的工作階段。</p>
+      </section>
+      <div class="order-toolbar">
+        <label for="progress-stage">工作階段
+          <select id="progress-stage"><option value="">所有階段</option></select>
+        </label>
+        <label for="progress-flag">附加狀態
+          <select id="progress-flag">
+            <option value="">所有工作</option>
+            <option value="rush">急件</option>
+            <option value="on_hold">擱置</option>
+          </select>
+        </label>
+        <button type="button" class="button" id="progress-refresh">
+          重新整理
+        </button>
+      </div>
+      <p id="progress-status" role="status">正在讀取委託進度……</p>
+      <div id="progress-list" aria-label="所有工作進度"></div>
+      <button type="button" class="button" id="progress-more" hidden>
+        載入更多
+      </button>
+      <noscript
+        ><p>
+          請啟用 JavaScript 讀取最新進度，或透過頁尾的聯絡方式詢問。
+        </p></noscript
+      >
+    </main>
+    {{FOOTER}}
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "lanlan-pages",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "爛爛的個人作品集、委託表單與進度管理。",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node scripts/build-backend.mjs && node --test tests/*.test.mjs",
+    "dev": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs --dist",
+    "build:backend": "node scripts/build-backend.mjs"
+  },
+  "devDependencies": {
+    "node-forge": "1.4.0"
+  }
+}

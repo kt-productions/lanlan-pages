@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    {{HEAD}}
+  </head>
+  <body class="commission-document">
+    {{ICONS}}
+    <a class="skip-link" href="#main">跳到主要內容</a>
+    {{HEADER}}
+    <main id="main">
+      <section
+        class="commission commission-page wrap"
+        id="commission"
+        aria-labelledby="commission-title"
+      >
+        <a class="commission-back" href="./index.html#works"
+          ><svg class="icon" aria-hidden="true"><use href="#arrow-left" /></svg
+          >返回作品集</a
+        >
+        <div class="commission-heading">
+          <div>
+            <h1 id="commission-title" class="accent-heading">
+              想委託<em>什麼呢？</em>
+            </h1>
+            <p>把角色與想法告訴我，我們一起讓它動起來。</p>
+          </div>
+          <p class="local-notice" id="submission-mode">
+            服務尚未開放・可先整理需求
+          </p>
+        </div>
+        <noscript><p>請啟用 JavaScript 使用站內委託表單。</p></noscript>
+        <div id="commission-app" hidden>
+          <fieldset class="service-picker">
+            <legend class="sr-only">委託類型</legend>
+            <label
+              ><input
+                type="radio"
+                name="commission-service"
+                value="stickers"
+              />貼圖包</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="commission-service"
+                value="animation"
+                checked
+              />角色動畫</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="commission-service"
+                value="chibi"
+              />小動圖</label
+            >
+          </fieldset>
+          <ol class="form-steps" aria-label="填寫進度">
+            <li aria-current="step"><span>1</span>委託內容</li>
+            <li><span>2</span>聯絡與設定</li>
+            <li><span>3</span>確認內容</li>
+          </ol>
+          <div class="commission-layout">
+            <aside class="commission-aside" aria-label="目前委託類型說明">
+              <h3 class="accent-heading" id="commission-service-name">
+                角色動畫
+              </h3>
+              <div
+                id="commission-estimate"
+                class="estimate-summary"
+                tabindex="-1"
+              >
+                <p class="estimate-label">預估金額</p>
+                <p id="commission-price" class="commission-price">4,500 元</p>
+                <p class="aside-caption">依目前選項估算，並非正式報價。</p>
+                <dl id="estimate-breakdown" class="estimate-breakdown"></dl>
+                <ul id="estimate-notes" class="estimate-notes"></ul>
+              </div>
+              <p
+                id="estimate-announcement"
+                class="sr-only"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              ></p>
+              <div class="preparation">
+                <h4>請先準備以下內容</h4>
+                <ul>
+                  <li>角色參考圖</li>
+                  <li>想要的動作與氛圍</li>
+                  <li>預計的使用方式</li>
+                </ul>
+              </div>
+              <details class="form-rules">
+                <summary>委託說明與製作流程</summary>
+                <ul id="commission-rules"></ul>
+                <ol id="commission-workflow"></ol>
+              </details>
+            </aside>
+            <form id="commission-form" class="commission-form" novalidate>
+              <p
+                id="commission-error"
+                class="form-error"
+                role="alert"
+                tabindex="-1"
+                hidden
+              ></p>
+              <div data-form-step="0">
+                <h3 class="form-step-title" tabindex="-1">委託內容</h3>
+                <fieldset data-service-fields="stickers" hidden disabled>
+                  <legend>
+                    選擇想委託的貼圖 <span class="required">必填</span>
+                  </legend>
+                  <p class="field-hint">
+                    可選多款。每款價格以新台幣計；點選圖片下方的選項即可加入。
+                  </p>
+                  <figure class="service-illustration">
+                    <a
+                      href="./assets/forms/sticker-discounts.png"
+                      target="_blank"
+                      rel="noopener"
+                      aria-label="查看貼圖數量折扣說明原圖（另開分頁）"
+                    >
+                      <img
+                        src="./assets/forms/sticker-discounts.png"
+                        width="720"
+                        height="383"
+                        loading="lazy"
+                        decoding="async"
+                        alt="每張貼圖各有標價；滿 12、24、36、48 張分別折 100、250、400、600 元。"
+                      />
+                    </a>
+                    <figcaption>貼圖數量折扣說明・點圖查看原圖</figcaption>
+                  </figure>
+                  <ul
+                    id="sticker-discount-tiers"
+                    class="sticker-discount-tiers"
+                    aria-label="貼圖數量折扣"
+                  ></ul>
+                  <p class="field-hint">
+                    數量折扣只套用已達成的最高門檻，不累加。
+                  </p>
+                  <label class="sticker-select-all"
+                    ><input
+                      id="sticker-select-all"
+                      type="checkbox"
+                      aria-controls="sticker-options"
+                      aria-describedby="sticker-select-all-hint"
+                    />全選 48 款</label
+                  >
+                  <p id="sticker-select-all-hint" class="field-hint">
+                    包含三個分頁的全部款式；再次點選可全部取消。
+                  </p>
+                  <div
+                    class="sticker-pages"
+                    role="group"
+                    aria-label="貼圖款式分頁"
+                  >
+                    <button
+                      type="button"
+                      data-sticker-page="0"
+                      aria-pressed="true"
+                    >
+                      01–16</button
+                    ><button
+                      type="button"
+                      data-sticker-page="1"
+                      aria-pressed="false"
+                    >
+                      17–32</button
+                    ><button
+                      type="button"
+                      data-sticker-page="2"
+                      aria-pressed="false"
+                    >
+                      33–48
+                    </button>
+                  </div>
+                  <div id="sticker-options" class="sticker-options"></div>
+                  <p
+                    id="sticker-selection"
+                    class="selection-summary"
+                    role="status"
+                  ></p>
+                  <p id="sticker-discount-summary" class="field-hint"></p>
+                  <p class="field-hint">
+                    滿 12／24／36／48 張分別折 100／250／400／600 元，可再併用
+                    No.33–35 第二、三張半價。全選 48 款共折 800
+                    元（600＋200）。商用先套用兩種折扣，再將折扣後總價 ×2。
+                  </p>
+                </fieldset>
+                <fieldset data-service-fields="chibi" hidden disabled>
+                  <legend>委託方案 <span class="required">必填</span></legend>
+                  <figure class="service-illustration">
+                    <a
+                      href="./assets/forms/chibi-03.png"
+                      target="_blank"
+                      rel="noopener"
+                      aria-label="查看小動圖交付格式說明原圖（另開分頁）"
+                    >
+                      <img
+                        src="./assets/forms/chibi-03.png"
+                        width="740"
+                        height="457"
+                        loading="lazy"
+                        decoding="async"
+                        alt="插圖提供 2560×2560 的 PNG 與去背 PNG；插圖＋動畫另提供 2560×2560 的 MP4 及 1280×1280 的 GIF。"
+                      />
+                    </a>
+                    <figcaption>小動圖交付格式說明・點圖查看原圖</figcaption>
+                  </figure>
+                  <div class="choice-stack">
+                    <label
+                      ><input
+                        type="radio"
+                        name="chibiPlan"
+                        value="illustration"
+                        required
+                      />插圖・NT$600 起</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="chibiPlan"
+                        value="animated"
+                        required
+                      />插圖＋動畫・NT$1,200 起</label
+                    >
+                  </div>
+                  <p class="field-hint">
+                    商用不加價。雙人加收所選方案原價的
+                    50%；複雜費與加急費另外計算。
+                  </p>
+                </fieldset>
+                <fieldset data-service-fields="animation chibi">
+                  <legend>角色人數 <span class="required">必填</span></legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="characterCount"
+                        value="1"
+                        checked
+                        required
+                      />單人</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="characterCount"
+                        value="2"
+                        required
+                      /><span id="second-character-label"
+                        >雙人（+3,000）</span
+                      ></label
+                    >
+                  </div>
+                  <p class="field-hint" id="character-count-hint"></p>
+                </fieldset>
+                <div
+                  class="complexity-summary"
+                  data-service-fields="animation chibi"
+                >
+                  <h4>角色複雜費</h4>
+                  <ul id="complexity-fees"></ul>
+                  <p class="field-hint">
+                    每位角色分開計算，已列入預估範圍；由繪師依角色設定確認實際費用。
+                  </p>
+                </div>
+                <fieldset data-service-fields="animation">
+                  <legend>
+                    循環動畫加購轉場 <span class="required">必填</span>
+                  </legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="transition"
+                        value="no"
+                        required
+                      />不加購</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="transition"
+                        value="yes"
+                        required
+                      />加購（+500–1,000）</label
+                    >
+                  </div>
+                  <p class="field-hint">依轉場需求計價，選取後列入預估範圍。</p>
+                </fieldset>
+                <fieldset data-service-fields="stickers animation">
+                  <legend>
+                    是否作為商業用途？ <span class="required">必填</span>
+                  </legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="commercial"
+                        value="yes"
+                        required
+                      />是</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="commercial"
+                        value="no"
+                        required
+                      />否</label
+                    >
+                  </div>
+                  <p class="field-hint" id="commercial-hint"></p>
+                </fieldset>
+                <fieldset data-service-fields="animation">
+                  <legend>
+                    需要背景與特效嗎？ <span class="required">必填</span>
+                  </legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="background"
+                        value="yes"
+                        required
+                      />需要</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="background"
+                        value="no"
+                        required
+                      />單色／無背景（-1,500）</label
+                    >
+                  </div>
+                </fieldset>
+                <fieldset data-service-fields="animation chibi">
+                  <legend>
+                    是否為急件？ <span class="required">必填</span>
+                  </legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="rush"
+                        value="yes"
+                        required
+                      />是，請聯絡我討論</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="rush"
+                        value="no"
+                        required
+                      />否</label
+                    >
+                  </div>
+                  <p class="field-hint" id="rush-hint"></p>
+                </fieldset>
+                <fieldset>
+                  <legend>付款方式 <span class="required">必填</span></legend>
+                  <div class="choices">
+                    <label
+                      ><input
+                        type="radio"
+                        name="payment"
+                        value="bank"
+                        required
+                      />轉帳／匯款</label
+                    ><label
+                      ><input
+                        type="radio"
+                        name="payment"
+                        value="paypal"
+                        required
+                      />PayPal</label
+                    >
+                  </div>
+                  <p class="field-hint" id="payment-hint"></p>
+                </fieldset>
+                <div
+                  class="form-field"
+                  data-service-fields="stickers animation"
+                >
+                  <label for="commission-notes"
+                    >特殊需求或想說的話
+                    <span class="optional">選填</span></label
+                  ><textarea
+                    id="commission-notes"
+                    name="notes"
+                    rows="3"
+                    maxlength="4000"
+                    placeholder="貼圖請註明款式編號；動畫可說明動作、轉場、格式或用途。"
+                  ></textarea>
+                </div>
+                <label class="read-ack"
+                  ><input
+                    type="checkbox"
+                    id="commission-read"
+                    required
+                  />我已閱讀這個類型的委託說明與製作流程。</label
+                >
+              </div>
+              <div data-form-step="1" hidden>
+                <h3 class="form-step-title sr-only" tabindex="-1">
+                  聯絡與設定
+                </h3>
+                <div class="field-row">
+                  <div class="form-field">
+                    <label for="commission-nickname"
+                      >你的暱稱 <span class="required">必填</span></label
+                    ><input
+                      id="commission-nickname"
+                      name="nickname"
+                      type="text"
+                      maxlength="80"
+                      autocomplete="nickname"
+                      required
+                    />
+                  </div>
+                  <div class="form-field">
+                    <label for="commission-channel"
+                      >聯絡平台 <span class="required">必填</span></label
+                    ><select
+                      id="commission-channel"
+                      name="contactChannel"
+                      required
+                    >
+                      <option value="">請選擇</option>
+                      <option value="telegram">Telegram</option>
+                      <option value="facebook">Facebook</option>
+                      <option value="discord">Discord</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-field">
+                  <label for="commission-contact"
+                    >聯絡方式 <span class="required">必填</span></label
+                  ><input
+                    id="commission-contact"
+                    name="contact"
+                    type="text"
+                    maxlength="300"
+                    required
+                    aria-describedby="contact-hint"
+                  />
+                  <p id="contact-hint" class="field-hint">
+                    請填寫可聯絡到你的帳號或個人頁面連結。
+                  </p>
+                </div>
+                <div class="form-field">
+                  <label for="commission-reference"
+                    >本機參考檔預覽 <span class="field-hint">選填</span></label
+                  ><input
+                    id="commission-reference"
+                    name="reference"
+                    type="file"
+                    aria-describedby="reference-hint"
+                  />
+                  <p id="reference-hint" class="field-hint"></p>
+                  <p id="reference-info" class="field-hint" role="status"></p>
+                  <img
+                    id="reference-preview"
+                    class="reference-preview"
+                    alt="你選擇的角色設定圖預覽"
+                    hidden
+                  />
+                </div>
+                <div class="form-field">
+                  <label for="commission-reference-url"
+                    >參考素材連結 <span class="required">送件必填</span></label
+                  >
+                  <input
+                    id="commission-reference-url"
+                    name="referenceUrl"
+                    type="url"
+                    maxlength="2000"
+                    placeholder="https://drive.google.com/…"
+                    aria-describedby="reference-url-hint"
+                  />
+                  <p class="field-hint" id="reference-url-hint">
+                    請提供可供繪師查看的 HTTPS
+                    連結，並確認分享權限。本機選檔不會上傳，連結僅供繪師於後台查看。
+                  </p>
+                </div>
+                <div class="submission-trap" aria-hidden="true">
+                  <label for="commission-website">網站</label>
+                  <input
+                    id="commission-website"
+                    name="website"
+                    tabindex="-1"
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="field-row permissions-row">
+                  <fieldset data-service-fields="stickers animation">
+                    <legend>
+                      可在直播繪製嗎？ <span class="required">必填</span>
+                    </legend>
+                    <div class="choices">
+                      <label
+                        ><input
+                          type="radio"
+                          name="allowLivestream"
+                          value="yes"
+                          required
+                        />是</label
+                      ><label
+                        ><input
+                          type="radio"
+                          name="allowLivestream"
+                          value="no"
+                          required
+                        />否</label
+                      >
+                    </div>
+                  </fieldset>
+                  <fieldset>
+                    <legend>
+                      可用作作品範例嗎？ <span class="required">必填</span>
+                    </legend>
+                    <div class="choices">
+                      <label
+                        ><input
+                          type="radio"
+                          name="allowPortfolio"
+                          value="yes"
+                          required
+                        />是</label
+                      ><label
+                        ><input
+                          type="radio"
+                          name="allowPortfolio"
+                          value="no"
+                          required
+                        />否</label
+                      >
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+              <div data-form-step="2" hidden>
+                <h3 class="form-step-title" tabindex="-1">確認填寫內容</h3>
+                <p class="review-notice" id="review-notice">
+                  請確認填寫內容。收件不代表確認報價、付款或排定交期。
+                </p>
+                <dl id="commission-review" class="review-list"></dl>
+                <p class="field-hint">
+                  送出後將保存委託內容，並通知繪師。所有工作的編號、類型、工作階段、急件／擱置標記與公開說明皆可在進度頁瀏覽，不公開暱稱、聯絡方式或參考素材。送出前資料只保留於此頁；下載草稿不代表送件。
+                </p>
+                <p id="download-status" role="status"></p>
+                <p id="submit-status" role="status" tabindex="-1"></p>
+                <a id="progress-link" href="./progress.html" hidden
+                  >查看所有工作進度</a
+                >
+              </div>
+              <div class="form-actions">
+                <button
+                  type="button"
+                  id="commission-back"
+                  class="text-button"
+                  hidden
+                >
+                  <svg class="icon" aria-hidden="true">
+                    <use href="#arrow-left" /></svg
+                  >返回</button
+                ><button
+                  type="button"
+                  id="commission-next"
+                  class="button button-primary"
+                >
+                  下一步
+                  <svg class="icon" aria-hidden="true">
+                    <use href="#arrow-right" />
+                  </svg></button
+                ><button
+                  type="button"
+                  id="commission-download"
+                  class="button button-primary"
+                  hidden
+                >
+                  下載填寫內容
+                  <svg class="icon" aria-hidden="true">
+                    <use href="#arrow-down" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  id="commission-submit"
+                  class="button button-primary"
+                  hidden
+                >
+                  送出委託
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div id="mobile-estimate" class="mobile-estimate" hidden>
+          <div>
+            <span>預估金額</span><strong id="mobile-estimate-price"></strong>
+          </div>
+          <a href="#commission-estimate"
+            >查看明細
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-up-right" /></svg
+          ></a>
+        </div>
+      </section>
+    </main>
+    {{FOOTER}}
+    <script id="commission-data" type="application/json">
+      {{COMMISSION_DATA}}
+    </script>
+  </body>
+</html>

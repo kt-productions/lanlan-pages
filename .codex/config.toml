@@ -1,0 +1,6 @@
+# 沿用既有 personal 安裝來源；不重複安裝官方遠端副本。
+[plugins."build-web-apps@personal"]
+enabled = true
+
+[plugins."github@personal"]
+enabled = true

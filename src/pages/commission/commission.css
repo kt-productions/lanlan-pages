@@ -1,0 +1,803 @@
+/* 委託頁專用：三步驟表單、預估明細與手機固定金額列。 */
+.commission-page {
+  border-top: 1px solid var(--line);
+}
+.commission-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 24px;
+}
+.commission-back .icon {
+  width: 18px;
+  height: 18px;
+}
+.commission {
+  padding-block: 64px 72px;
+}
+.commission-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+.commission-heading h1 {
+  font-size: clamp(34px, 4.2vw, 62px);
+  letter-spacing: -0.035em;
+}
+.commission-heading > div > p {
+  margin: 12px 0 0 32px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.local-notice {
+  flex-shrink: 0;
+  background: #f5edc5;
+  color: #675538;
+  border-radius: 18px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.commission fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  margin: 0;
+}
+.service-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.service-picker label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.service-picker label:has(input:checked) {
+  border-color: var(--brand);
+  background: #faf0cc;
+  color: var(--brand);
+}
+.commission input[type="radio"],
+.commission input[type="checkbox"] {
+  accent-color: var(--brand);
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  margin: 0;
+  cursor: pointer;
+}
+.service-picker input[type="radio"] {
+  width: 27px;
+  height: 27px;
+  flex-basis: 27px;
+}
+.form-steps {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  gap: 22px;
+  scroll-margin-top: 20px;
+}
+.form-steps li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.form-steps li:not(:last-child)::after {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  flex: 1;
+  margin-left: 14px;
+}
+.form-steps span {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  color: #675538;
+}
+.form-steps [aria-current] {
+  color: var(--brand);
+}
+.form-steps [aria-current] span {
+  color: white;
+  background: var(--brand);
+}
+.form-steps .is-complete span {
+  background: #e8dba9;
+  color: #62472c;
+}
+.commission-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 2fr);
+  gap: 24px;
+  align-items: start;
+}
+.commission-aside {
+  padding: 28px;
+  background: var(--surface);
+  border-radius: 12px;
+  position: sticky;
+  top: 24px;
+}
+.commission-aside:has(.form-rules[open]) {
+  position: static;
+}
+.commission-aside h3 {
+  font-size: 34px;
+}
+.commission-price {
+  font-size: clamp(23px, 2.6vw, 36px);
+  font-weight: 900;
+  color: var(--brand);
+  line-height: 1.4;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.estimate-summary {
+  scroll-margin-top: 24px;
+}
+.estimate-label {
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 800;
+}
+.estimate-breakdown {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 14px;
+  border-block: 1px solid var(--line);
+  padding-block: 16px;
+  margin-block: 18px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.estimate-breakdown dt,
+.estimate-breakdown dd {
+  margin: 0;
+}
+.estimate-breakdown dd {
+  font-weight: 700;
+  text-align: right;
+}
+.estimate-notes {
+  padding-left: 17px;
+  margin: 0;
+  color: #675538;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.estimate-notes li + li {
+  margin-top: 8px;
+}
+.mobile-estimate {
+  display: none;
+}
+.aside-caption {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: #675538;
+}
+.preparation {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.preparation h4 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.preparation ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.preparation li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.preparation li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.form-rules {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.form-rules summary {
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.form-rules ul,
+.form-rules ol {
+  padding-left: 20px;
+  font-size: 13px;
+  color: #675538;
+}
+.form-rules li + li {
+  margin-top: 9px;
+}
+.commission-form {
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-width: 0;
+}
+.form-step-title {
+  font-size: 23px;
+  margin-bottom: 22px;
+}
+.commission-form fieldset,
+.form-field {
+  margin-bottom: 22px;
+}
+.commission-form legend,
+.form-field > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.7;
+}
+.required {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a04438;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.optional {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 5px;
+}
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.commission-form input:not([type="checkbox"]):not([type="radio"]),
+.commission-form select,
+.commission-form textarea {
+  width: 100%;
+  border: 1px solid #cbbb90;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: #fff;
+  min-height: 48px;
+}
+.commission-form input:focus,
+.commission-form select:focus,
+.commission-form textarea:focus {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.commission-form input:disabled {
+  cursor: default;
+}
+.commission-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+.commission-form input::placeholder,
+.commission-form textarea::placeholder {
+  color: #7f725c;
+  font-size: 13px;
+}
+.commission-form input[type="file"] {
+  font-size: 13px;
+  padding: 8px;
+  background: #fff9e6;
+}
+.commission-form input[type="file"]::file-selector-button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 9px 14px;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  margin-right: 12px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.field-hint {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.service-illustration {
+  margin: 16px 0;
+}
+.service-illustration a {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.service-illustration img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+.service-illustration figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.complexity-summary {
+  padding: 16px;
+  margin-bottom: 22px;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.complexity-summary h4 {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.complexity-summary ul {
+  padding-left: 20px;
+  margin: 0;
+  font-size: 14px;
+}
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+}
+.choices label,
+.choice-stack label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  min-height: 38px;
+}
+.choice-stack {
+  display: grid;
+  gap: 10px;
+}
+.choice-stack label {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 12px 14px;
+}
+.choice-stack label:has(input:checked) {
+  border-color: var(--brand);
+  background: #fff9e6;
+}
+.read-ack {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  font-size: 13px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.read-ack input {
+  margin-top: 2px !important;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 20px;
+  margin-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.form-actions .button {
+  margin-left: auto;
+  font-size: 15px;
+  border-radius: 15px;
+  min-height: 50px;
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand);
+  font-size: 15px;
+  font-weight: 700;
+  background: transparent;
+  padding: 12px 0;
+}
+.form-error {
+  padding: 12px 16px;
+  border: 1px solid #cd9e84;
+  background: #fff4ed;
+  color: #9f453b;
+  font-size: 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.reference-preview {
+  max-height: 160px;
+  max-width: 200px;
+  margin-top: 12px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.sticker-pages {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+.sticker-discount-tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 8px;
+}
+.sticker-discount-tiers li {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  background: var(--surface);
+}
+.sticker-discount-tiers [aria-current="true"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: white;
+  font-weight: 700;
+}
+.sticker-select-all {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 16px;
+  width: fit-content;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+}
+.sticker-pages button {
+  background: var(--surface);
+  color: var(--brand);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sticker-pages button[aria-pressed="true"] {
+  background: var(--brand);
+  color: #fff;
+}
+.sticker-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.sticker-choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 0;
+}
+.sticker-choice:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--surface);
+}
+.sticker-choice input {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.sticker-choice img {
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 6px;
+  background: white;
+  width: 100%;
+  height: auto;
+}
+.sticker-choice > span {
+  font-size: 11px;
+  text-align: center;
+  font-weight: 600;
+}
+.selection-summary {
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 14px;
+  color: var(--brand);
+}
+.review-notice {
+  padding: 14px;
+  background: var(--surface);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.review-list {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  margin: 20px 0;
+  font-size: 14px;
+}
+.review-list dt,
+.review-list dd {
+  margin: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid #eee6cd;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.review-list dt {
+  font-weight: 700;
+  color: var(--muted);
+  padding-right: 12px;
+}
+#download-status {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand);
+  margin-top: 14px;
+}
+@media (max-width: 1100px) {
+  .commission-aside {
+    padding: 22px;
+  }
+  .commission-aside h3 {
+    font-size: 28px;
+  }
+  .commission-form {
+    padding: 24px;
+  }
+  .commission-heading {
+    align-items: flex-start;
+  }
+  .local-notice {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+  .field-row {
+    gap: 16px;
+  }
+}
+@media (max-width: 760px) {
+  .commission-document {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+  .commission-aside {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .mobile-estimate {
+    position: fixed;
+    z-index: 25;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 80px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: 0 -4px 16px #46301f10;
+  }
+  .mobile-estimate > div {
+    min-width: 0;
+  }
+  .mobile-estimate span {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .mobile-estimate strong {
+    display: block;
+    font-size: clamp(16px, 4.5vw, 20px);
+    color: var(--brand);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .mobile-estimate a {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    min-height: 44px;
+  }
+  .mobile-estimate .icon {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+  .commission-form input,
+  .commission-form button,
+  .commission-form select,
+  .commission-form textarea {
+    scroll-margin-bottom: 100px;
+  }
+  .commission {
+    padding-block: 40px 48px;
+  }
+  .commission-heading {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .commission-heading h1 {
+    font-size: 32px;
+  }
+  .commission-heading > div > p {
+    margin-left: 24px;
+    font-size: 14px;
+  }
+  .local-notice {
+    margin-left: 24px;
+  }
+  .service-picker {
+    gap: 8px;
+  }
+  .service-picker label {
+    padding: 14px 6px;
+    font-size: 14px;
+    gap: 7px;
+    border-radius: 10px;
+  }
+  .service-picker input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+  .form-steps {
+    gap: 8px;
+    margin-block: 20px;
+  }
+  .form-steps li {
+    gap: 6px;
+    font-size: 11px;
+    white-space: normal;
+  }
+  .form-steps li:not(:last-child)::after {
+    margin-left: 0;
+  }
+  .form-steps span {
+    width: 25px;
+    height: 25px;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .commission-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .commission-aside {
+    padding: 20px;
+  }
+  .commission-aside h3 {
+    font-size: 26px;
+  }
+  .commission-price {
+    font-size: 27px;
+    margin-top: 10px;
+  }
+  .preparation {
+    display: none;
+  }
+  .form-rules {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+  .commission-form {
+    padding: 20px;
+  }
+  .form-step-title {
+    font-size: 21px;
+  }
+  .field-row {
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .form-actions {
+    gap: 12px;
+  }
+  .form-actions .button {
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+  .text-button {
+    font-size: 13px;
+  }
+  .sticker-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .sticker-choice {
+    padding: 4px;
+  }
+  .sticker-choice input {
+    top: 6px;
+    left: 6px;
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .sticker-choice > span {
+    font-size: 10px;
+  }
+  .review-list {
+    grid-template-columns: 90px minmax(0, 1fr);
+    font-size: 13px;
+  }
+  .commission-form legend,
+  .form-field > label {
+    font-size: 14px;
+  }
+  .choices {
+    gap: 10px 22px;
+  }
+  .choices label,
+  .choice-stack label {
+    font-size: 14px;
+  }
+}
+
+.submission-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+#submit-status {
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+.form-actions {
+  flex-wrap: wrap;
+}

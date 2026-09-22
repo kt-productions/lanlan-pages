@@ -1,0 +1,131 @@
+@import url("../../shared/orders.css");
+.admin-login {
+  border-block: 1px solid var(--line);
+  padding-block: 28px;
+  max-width: 700px;
+}
+.admin-login h2 {
+  font-size: 24px;
+}
+.admin-login p {
+  line-height: 1.8;
+}
+.admin-columns {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: 40px;
+}
+.admin-order {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  padding: 18px 12px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.admin-order strong,
+.admin-order span {
+  display: block;
+  margin-bottom: 8px;
+}
+.admin-order[aria-pressed="true"] {
+  background: var(--surface);
+  border-left: 4px solid var(--brand);
+}
+.admin-order strong {
+  font-size: 15px;
+}
+.admin-order span {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.admin-columns h2 {
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+.admin-columns fieldset {
+  margin: 24px 0;
+  padding: 20px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+.admin-columns legend {
+  font-size: 19px;
+  font-weight: 800;
+  padding-right: 12px;
+}
+.admin-columns label {
+  margin-bottom: 18px;
+}
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.edit-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.edit-flags label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  min-height: 44px;
+}
+.edit-flags input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+.admin-order .order-flag {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+.admin-order .order-flags:not(:empty) {
+  display: flex;
+}
+#edit-reference {
+  display: inline-block;
+  margin-bottom: 22px;
+  color: var(--brand);
+}
+#edit-history {
+  padding-left: 24px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.admin-columns details {
+  margin-top: 28px;
+}
+.admin-columns summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-columns .field-hint {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+@media (max-width: 900px) {
+  .admin-columns {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  #admin-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 500px) {
+  .edit-grid,
+  #admin-list {
+    grid-template-columns: 1fr;
+  }
+}

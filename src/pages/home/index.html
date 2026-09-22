@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    {{HEAD}}
+  </head>
+  <body>
+    {{ICONS}}
+    <a class="skip-link" href="#main">跳到主要內容</a>
+    {{HEADER}}
+    <main id="main">
+      <section class="hero" id="about" aria-labelledby="hero-title">
+        <div class="hero-intro wrap">
+          <h1 id="hero-title">有點爛爛的，<br /><em>僅止於能用（？）</em></h1>
+          <div class="hero-copy">
+            <p>
+              基本上，只要我能做出來的<br />插畫、小廢圖、梗圖、動畫<br />你想要委託什麼，都可以唷
+              óωò（價格另計)
+            </p>
+            <a class="button button-primary" href="#works"
+              >逛逛作品
+              <svg class="icon" aria-hidden="true">
+                <use href="#arrow-down" /></svg
+            ></a>
+          </div>
+        </div>
+        <div class="hero-stage">
+          <div class="hero-reel wrap" aria-label="精選動畫">
+            <figure class="reel-side reel-chibi">
+              <video
+                data-autoplay
+                data-src="./assets/videos/chibi-01.mp4"
+                poster="./assets/posters/chibi-01.webp"
+                width="1080"
+                height="1080"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label="小動圖 01"
+              ></video>
+              <figcaption class="sr-only">小動圖 01</figcaption>
+              <span class="video-notice" hidden></span>
+            </figure>
+            <figure class="reel-main">
+              <video
+                id="hero-video"
+                data-autoplay
+                data-src="./assets/videos/animation-02.mp4"
+                poster="./assets/posters/animation-02.webp"
+                width="1920"
+                height="1080"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label="角色動畫 02，金黃色獸人角色"
+              ></video>
+              <figcaption class="sr-only">角色動畫 02</figcaption>
+              <span class="video-notice" hidden></span>
+            </figure>
+            <figure class="reel-side reel-animation">
+              <video
+                data-autoplay
+                data-src="./assets/videos/animation-01.mp4"
+                poster="./assets/posters/animation-01.webp"
+                width="1280"
+                height="720"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-label="角色動畫 01"
+              ></video>
+              <figcaption class="sr-only">角色動畫 01</figcaption>
+              <span class="video-notice" hidden></span>
+            </figure>
+          </div>
+          <div class="reel-controls wrap">
+            <button
+              class="motion-toggle"
+              data-animation-toggle
+              aria-label="暫停所有動畫"
+              aria-pressed="false"
+              hidden
+            >
+              <svg class="icon" aria-hidden="true"><use href="#pause" /></svg
+              ><span>暫停動畫</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="portfolio wrap" id="works" aria-labelledby="works-title">
+        <div class="section-heading">
+          <h2 id="works-title" class="accent-heading">作品放映室。</h2>
+          <p>小表情，小動作，<br />委託展示 óωò</p>
+        </div>
+        <div class="gallery-toolbar">
+          <div class="filters" hidden role="group" aria-label="作品分類">
+            <button data-filter="all" aria-pressed="true">
+              全部作品 <span>{{COUNT_ALL}}</span>
+            </button>
+            <button data-filter="animation" aria-pressed="false">
+              角色動畫 <span>{{COUNT_ANIMATION}}</span>
+            </button>
+            <button data-filter="chibi" aria-pressed="false">
+              小動圖 <span>{{COUNT_CHIBI}}</span>
+            </button>
+            <button data-filter="stickers" aria-pressed="false">
+              貼圖 <span>{{COUNT_STICKERS}}</span>
+            </button>
+          </div>
+          <button
+            class="motion-toggle"
+            data-animation-toggle
+            aria-label="暫停所有動畫"
+            aria-pressed="false"
+            hidden
+          >
+            <svg class="icon" aria-hidden="true"><use href="#pause" /></svg
+            ><span>暫停動畫</span>
+          </button>
+        </div>
+        <p
+          id="playback-status"
+          class="playback-status"
+          role="status"
+          hidden
+        ></p>
+        <div class="art-grid" id="art-grid">{{WORKS}}</div>
+        <div class="gallery-footer">
+          <button class="button button-outline" id="load-more" hidden>
+            看更多作品
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-down" />
+            </svg>
+          </button>
+          <p id="gallery-count" role="status" aria-live="polite"></p>
+        </div>
+        <noscript
+          ><p class="fallback-note">
+            點選作品即可開啟原始影片或圖片。啟用 JavaScript
+            可使用自動播放、分類與放大檢視。
+          </p></noscript
+        >
+      </section>
+      <section class="pricing" id="pricing" aria-labelledby="pricing-title">
+        <div class="wrap">
+          <p class="section-label">委託價目</p>
+          <div class="pricing-heading">
+            <h2 id="pricing-title">
+              目前開放的<br /><em>一些委託 &gt;ωó✨</em>
+            </h2>
+            <p>想委託什麼，<br />都可以先聊聊 óωò</p>
+          </div>
+          <div class="price-list">{{SERVICES}}</div>
+          <div class="pricing-notes">
+            <p>插圖、小廢圖、梗圖、動畫……其他需求價格另計。</p>
+            <p>
+              實際報價、價格單位、交期與使用範圍，請以繪師回覆及委託說明為準。
+            </p>
+          </div>
+          <details class="commission-guide">
+            <summary>
+              <svg class="icon" aria-hidden="true"><use href="#plus" /></svg
+              >第一次委託，可以先準備什麼？
+            </summary>
+            <div>
+              <p>
+                可以先整理角色參考圖、想委託的類型、希望的表情或動作，以及預計的使用方式，方便向爛爛說明需求。
+              </p>
+              <p>
+                有預算、希望完成的時間，或商用、直播相關需求，也請一併說明，方便討論。
+              </p>
+            </div>
+          </details>
+          <a
+            class="button button-primary commission-entry"
+            href="./commission.html"
+            >開始填寫委託
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-right" /></svg
+          ></a>
+        </div>
+      </section>
+    </main>
+    {{FOOTER}}
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-title">
+      <div class="lightbox-shell">
+        <header class="lightbox-header">
+          <div>
+            <span id="lightbox-category"></span>
+            <h2 id="lightbox-title"></h2>
+          </div>
+          <button class="icon-button" id="close-lightbox" aria-label="關閉作品">
+            <svg class="icon" aria-hidden="true"><use href="#close" /></svg>
+          </button>
+        </header>
+        <div id="lightbox-media" class="lightbox-media"></div>
+        <p id="media-error" role="status" hidden>
+          作品暫時無法播放，請稍後重試。
+        </p>
+        <div class="lightbox-footer">
+          <button
+            class="icon-button"
+            id="previous-work"
+            aria-label="上一件作品"
+          >
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-left" />
+            </svg>
+          </button>
+          <span id="lightbox-count" aria-live="polite"></span>
+          <a id="lightbox-form" class="text-link" href="#contact"
+            >聊聊這個類型
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-up-right" /></svg
+          ></a>
+          <button class="icon-button" id="next-work" aria-label="下一件作品">
+            <svg class="icon" aria-hidden="true">
+              <use href="#arrow-right" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </dialog>
+    <script id="portfolio-data" type="application/json">
+      {{DATA}}
+    </script>
+  </body>
+</html>

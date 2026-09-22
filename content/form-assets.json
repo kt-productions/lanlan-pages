@@ -1,0 +1,402 @@
+[
+  {
+    "form": "chibi",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiFVAKVJDhJxQctz2lRfMVjVGzxJBc3HiuLhZKGAECmGVNQraRvXMbEi9FodOgdDd7sBt_fZC8h4UpPi5jbNsdUUIFjO4m1Cy3NpXVdg3vAkK7bFI7OSoTF5sj14OLtafLSMhdw5QsCuob6SXSa_xwW7_rlgwmFkBy9ngtppBjyN-iri1V25fFyzJ4DcTPfRL0E8bsxByn0323WUAYySqnrIKi6bQrQ-a-spvM=w740",
+    "path": "public/assets/forms/chibi-03.png",
+    "sha256": "003399ace54fc05dfd0c3fe662d84ed7d0dceb53775f3e4de949cc4418651da7",
+    "bytes": 121500,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiikPzSXy5qiShxGMWK75MIGMeXGuAvnPFJuImBY2z-YquMeJ3WbJVoIz44OTve26-bFMxUETD5JFKJpojywZjQF57Yk49R5llD_eesue1J2oCpCoudFH4akEiGX6yaljvPJnkEFQ414932ktWZ3rBERSreWmXXWZRdLTjhNyqiKGvhmyotZq2g5VGJjR2HFBhQrUqJtb0WpEq-zmhDDXgfNuy8uk-2_k6QN8nU=w720",
+    "path": "public/assets/forms/sticker-discounts.png",
+    "sha256": "635850d7d13c174e412368c4387a45eb4e20f2676d17cb4be5fea92805cadccb",
+    "bytes": 99052,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiW4aWCLzroJBrtEgLy1_NkCVp88zR4wZ-OqRBN8akn1nsQAaOiNZCm2CLBqKJUvgfIIZUNL1wmYA1-Luw82cFsFlfUqOpKrfLxn41vVX0v-cAPihAa2xte7wRIJe-yC0zDW7iebkaf4af-v0QoNiFIhGAIlaUU8j4ncKShNX0Y9rZX3z14N-C0jQU3ggQ4u5_-0pd5KNfsinkttPqQD1pT6fS7xbVCc0Ng=w260",
+    "path": "public/assets/forms/sticker-option-01.png",
+    "sha256": "c898f2ab27856234760c3f3b9a1df1141e2a2e9156f573f290f22d41224c3b68",
+    "bytes": 41506,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijRQHQCTDaeqmUbvBFQ6W6uzDth5gcLOvjx0LRIltfHns7HAyRpj2Sc0FEdb7F1_ic_28bcNJnFadrAxzZLP81wpP9JQhQfE6mq16R-2v2JV4LItyqFCqRh9zDMObcYZJndrLDFfDTWlLhsloFxxySdPzwzoAmPzkI5N5R85mGxukkguiXWGeDTzzBgJwGxAF5i0m7EO7RFwusszVfxLA4wkAd-VnNRVYuARRE=w260",
+    "path": "public/assets/forms/sticker-option-02.png",
+    "sha256": "1f1529cabbd54716a9ec805cb76210411146058aa35f809a3c285bc5dbab37c8",
+    "bytes": 44210,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkij97MpHPa3uaLHlZCXFCNH_CerCauP9vu_FS7pYGtV8b4_zHchqa94t0AFrtAV3FKI2ePLA7y6J2Cn2ab2CnEtXzPKM1bkWWFWFyx2E5ASeC15xigVIoSelzFhczYuLPrwp7s2JYSVBAJsjirRtx5XfpddihkN87vuO7eADLDnChR2Nck2slkPguvplAH_wmRVlp5FkoaI51FphNJVnaKo5c4EmfKKYLjfF2XQ=w260",
+    "path": "public/assets/forms/sticker-option-03.png",
+    "sha256": "0d6fb7cc8d2ec90818eeb04af59efa5e1be5c5963bf662425f0e9f717931d120",
+    "bytes": 36890,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijbWqRugiZM9gE21Ff8RMjyYQZQBKSHqaBbEB5goRq-XzPb_700nS-gdME9MJJqiu6KrTbAWfx79RnB3pVUymWpz4rloHEm_Fk_pI5lXXYtYBcagwjaTEsXZyuaS6uTHN3K3uJdXucePOnUeSWf_7ZwcXTh06Nq0kzDWYb4oGCe_FkoahjjgRf38Mz9JnimhwGZ0TTU8E389K3FFDzRExaYk9xDeoWXNLsSHq0=w260",
+    "path": "public/assets/forms/sticker-option-04.png",
+    "sha256": "0065636f8944b2f27baf0232739bdbfb18a23ffcc708f34f64913f97d814e882",
+    "bytes": 34087,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigOuSYzlkjiibsLg9yZPcmiygtKrfnKSQXgnOgtxCUobnTXOttZB9IP8JeKwqV2k3YgC_YY1Rf_BdFBNuIRhV7ouQ3UuWRAha0kN4m0nDVvPTlr5lTq3IecbJmt3bDd6DfdCOTZ1o7SYeFAEJ7lHafZWSJNQLAbdQOTZFct9JJYw7rdUkJW8Or9mPoLSEwFkktgHXinQJx3FOq1W2_5H6SeCiBYDvwhzYJwA28=w260",
+    "path": "public/assets/forms/sticker-option-05.png",
+    "sha256": "d8f6d7fc184c5ca48f69e03c36edc8cc0d43c517cd1c3eeb9a3e4097ea62b30e",
+    "bytes": 47282,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijDtYud5w9tZihELCIenH1mz9SOhRNH2h_SJy-9NC-P8uFiZci5hIgH-cUP_AY6FWV18VIQygLAn0H2Vg-dWjckZOElwmjbW30unzQfkDAzEqXNF2NGqaLLTJIyBvD9ze-Df-zx6FZXkEqa9Xm8SunGXCqHdt7b4KGnLVJHOEAXzkBQ16nljsNwIvWPvpFnpT042EvqQswGklsZB7410wGQUHqFpuff62dtmDA=w260",
+    "path": "public/assets/forms/sticker-option-06.png",
+    "sha256": "7ea7d9c4b4a4ca74b6f3522d09e49d5cf7f8925771be5cc712c1363f58ad0545",
+    "bytes": 36501,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkih7iActM0Q0XJaUoGTkHl2wvFglIBBIeVCvIfkZ4jhT2VYeXeQ9X5oB6y64-dd3H1xWMtKVtInwEXRZZqeGlVhKYl5i5oJQ6v_Dwj1v7qqeceREKeCiSVLzmGRHHBKZ_qnBf2_Nf6JThA0Ok9ntSM7Zi09TT-RI-CT_ihbW6ChAwsBAvKDSOIKtXWJj90DVInceHFrQfhnRzzYG95rfL6ePWL321HNmrBatFa4=w260",
+    "path": "public/assets/forms/sticker-option-07.png",
+    "sha256": "a4d8f485a785ed429d42466ed6ed4c62c16a4824434f1e36056344a190fae17e",
+    "bytes": 43316,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijbFzjrgY2hywER7ilzgnWA4hg3CwIhZxQx6iB3YQlRdCOR5Ik9vQD62iEHH0fXCoBesuiy2dxZ3UlxwJpShicxYWO68Cxj-SvEBeaH6JPdcUpGO3RqIh6mCbIjqRSIRBizYW15mn91KW3kDaWlu5GwBVchRFjUUbxiBixnnnyU5ss_0psw8jXKBznVJXNDiud8TuQmplZNdoHcn_aTvmYqWDM8yL6qzrdKy2I=w260",
+    "path": "public/assets/forms/sticker-option-08.png",
+    "sha256": "321e9cb08e7404eab80aa09fb76b303129650934eb06dfa253b7c2b990db65fc",
+    "bytes": 25196,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkih1eDVntb2FsKst5_K7WaenjI76A5w57HQxxRh3bsL6w-n3FHpeJv-Mp9dF2NvrdVkDIFacB8ckx27E2a9WJZxJPrwt_bGirrBePQzl0X4O4cixY9uag2zQ6JhcnHWVHuSp7B6-rU5T2Kmqa2MNTYSadVPjKhLf8DwOVc8-a-G9_YlUCDLVGYqTi6nj573D5vZe4H4OogCyMp7E_gPPihHi-CKQqT_5CgqIvC0=w260",
+    "path": "public/assets/forms/sticker-option-09.png",
+    "sha256": "059033b3138514ec2aae1bcd5d0095bd6b0a57bfa9403747180f7d5885403891",
+    "bytes": 39617,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihnm_OdF0RzDOlCm9-S0DzSUs41eYZ5vIFdrzjhVxmQ76LmqReZ3k9zEazyKQqAKsJxHNKaCfL4bz7SQ9Df20tx1OKY5WMJFNZwwQ-A7ZzWCOtkl4qPgUK4aRpFG58C1QrZ5XvUjK0RJ2jy3vZuh8cC-GYsQ4fb9zIA-hgE2w11GJzzrE5y6ez1_DPcqkN5MfwpmKBfG9N92yR4DMuIF2NkprvIZVkVjPD_RQM=w260",
+    "path": "public/assets/forms/sticker-option-10.png",
+    "sha256": "17e89f294ed5485490343ced32f7b1c359608ee93e20193a94b21ee027df124c",
+    "bytes": 44179,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiQwjC5AoH8h8sRgtizOxv2DdW8R8DN7sT37etcNQ9nXCyq8BFek2WEFW51hANHKsASS27B28Q2uqfNOsFkVbBCWBdHX36X641hFoC1H_COEISdOO1HQzfqHxpafa8DYBZ0RK_V8QCWXfqcQ4m4MoJVPs8Md0XXtmswGoo8akUkPW21AYCcC5fgCbzcYlbgATG3r6QwYR6d930gMMHyR194t4l6qGCRN454=w260",
+    "path": "public/assets/forms/sticker-option-11.png",
+    "sha256": "2edc4ef2f5ce9b29e867fbd54703e4bb61dd1c086ff5f6373433b9a019c26296",
+    "bytes": 32588,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijkgLl_1avuCHIXUPPI3sdTXlP72VUycfaAqJqEdy-jE7On7EyN0B2KE3kQ5oYazoAGT8KuRerlbcJ5dJPrnVQuNWPKtOe4zwysD9M6cdqEFUQpp8fD-oHXzANFQU7GLLkzMPtT8oJjTJfzDJpC-novQQA_fcSthVxtZb_PRXidgHNZWLVX0A2S3H7gVQkQ2JrlmrEAi8_g_tWk4W2ZyeCUdEnmmYFbvLgWs7g=w260",
+    "path": "public/assets/forms/sticker-option-12.png",
+    "sha256": "cf38d6dcc93ff4cccafdc63b7781122893fa54080dabfcd5c07658640596d3ac",
+    "bytes": 43323,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkij7cbxHQgKPa0WdxZscIgBB2ZrhYTpgfL9YfSKXOKMbZWWv_mamv3NLQMEZKTUuCyQexf8NXYFmsu86R9WFAJbgeP2EgOPrfu4WIvbCV81rCkWlNY5mNR6R6KOihM3NoO-DJN8xUED9Ihx9xnOLvJh6AmGPQ-ZyQ7qqadOrkuh2bMO987I3iooJ7NpVWqYpqsa5IlzmCNgcUvFWPOPc9mmR86Eldxj5TtVgJRk=w260",
+    "path": "public/assets/forms/sticker-option-13.png",
+    "sha256": "a87e8318cd31becacd92582d133c09f82169d793292fdf62401906cc1d22b46e",
+    "bytes": 44291,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijAsJdPWSs9mVq3xwdAAZzXvxcLQIq77IfkN2ZMId7Okyu9sCEQOwGkP5NtnVPfvCOzhLmT1m4xlrqL_0c8nR1xBREqkuMuiE2MwNA7YebFr524QwFgMesWqETuxpuEqLdkdkO68tUUJWgYcYFfRrAKJj40ObHR34WY0TkLig7C6yH-s8gHyD8knJCFt0x-U4AdJY35m5JqgcDeRKYKmNOduvNfqpuqH71OZnI=w260",
+    "path": "public/assets/forms/sticker-option-14.png",
+    "sha256": "8d5027ff9a63282b5c6fb3672f974063e74c59222cec913781f591e15fcb7135",
+    "bytes": 49404,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiioLwOSBTtgHbtMqLHgoLyXnE5BvyzUsQUN_leUosKFIAdD1eGIXguMyFDaZAAL4fTAQMUMAx1yyR4RdcHERk2xCcTzj3d9Yr9ogOPcLA9h5jy7jdLvvjFL-xeZI4si-XrzjOVkGhSwCKzoKmfqlBjujjnPHWuKaXCl_JernEOdD8308A0L0j3EQB_9bTFrnIMuKJhCmJ3yOcd3YtBe0KF8B3R1FJMBZAIxbi0=w260",
+    "path": "public/assets/forms/sticker-option-15.png",
+    "sha256": "ef833d2f26d953ab01a325a4ca1c8c7b2a9d2daedd1090d3da32dab346a70b9c",
+    "bytes": 40283,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiipJvSpvsAIwCXXcEa9qP-H4S0olTGKewjypc-EhRQYkZS7sTia-PmQEcPggwQBZRldnk95oMyej1S3Lxd3rSXIofe3WBP6O0X5Csb__izzheJhZ3r8DPdXWrfMZAZZbF_gxGRQe5u026Yr5qUiuC_Ng4ZKy8V6HFwr3pnEgXb3828DuyBYpK5_eCHm-LLVnfl3Eve5t3e4gKM9g1c5gH6-snNBM-PGXjrwlvA=w260",
+    "path": "public/assets/forms/sticker-option-16.png",
+    "sha256": "d3213ac5176c869071f93dd58d1013fd8edc053c7fb40827ba5573d23e410317",
+    "bytes": 35551,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigp-zwbbi8Zo80f9qOocY9VbTaf8o--gxn2ZGZWUYUmdBxyVjJq2ct1S7Pk74SraJ9PGmjrJXoCyCiDYUChpOajZU1xXtxLktLMAO4Tg8Nw4eQqbZlzaj9iTIFkYx0sAasr_AOB3qjlfAzJ4RhMlk9_5EodIbitKx_agztsc9ZXW0wty12XH-74cac4L_EWD2oNCaoFvbPsG9TvXHdMKhEqAu68ZuRmph50Kic=w260",
+    "path": "public/assets/forms/sticker-option-17.png",
+    "sha256": "837c1659bfad7aeba04b589b4aaaa29df20db0e7306545f689ca9cc858d4088d",
+    "bytes": 55745,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigOtd9I5SM5zf-xss_4rj6k66iZXIg1IKCHOZZyUUkRZanwwyRUGSrfejbYbguDZsr44jDJHm3L22mGx0TfTFU6gC1eMkmTW5OmJhlpfU9RBuMbgS9pVy8Qdpuj8UBr39DLK9oaL_YDOX-PJJQxPh4nnGIpS_y5Z95QEqY8OuN8kRMkccobBItplVSLhEciWkCoXvd3hDse-gDe6sgR8Oex5IArkpgIukmKv90=w260",
+    "path": "public/assets/forms/sticker-option-18.png",
+    "sha256": "3bfe9bc759b2300654bc0d0b856e49c2239f1084f146ecc511403a1f889b0655",
+    "bytes": 55946,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiMQtRhQA_axqJKkiL89bHtvEUcPewec9mza_AmdGXGIxiUQDEyZi-rNkIVRQitsP3_WdtV0kp4ApYe4AorOsvsND-zfjLhBmJldslkc7ibdtDgTogrNctVEIvAQbrqs9yeuhFVIsxXz6V-hY2avF7lZuVQdxOCYwFNgyvH_U6ET79etnm8_FGpxSfL2lGpxJ1xTrw2cIQFNbjvpSac8VSRD-ndx0YgV8Av=w260",
+    "path": "public/assets/forms/sticker-option-19.png",
+    "sha256": "3dd58ce8d1c3b6343c37c5acb2b618e3daaed8240e2f03c886081bf844608e87",
+    "bytes": 31420,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkij1dx8hLwkAV4uUkmQV-nU5qbJsctet9yE1YEfxzrgspUPXpBgQjrNMfuDxdKj8tE_Suk69jFhk5iooXOfUnPfAFjY5pwbfRINcmlsl1-WfLm44RlkPYXLMcX9FSnz-DsUlRo0qMi0I_EN94Zw4uGIIGgssIo2RrLaGzYFYvhTxtLiImgy6bjUwyqxmtK_LiGvps1cN7dDV8CId3yl77EGn6iE71fAUYkq8css=w260",
+    "path": "public/assets/forms/sticker-option-20.png",
+    "sha256": "25cac018034fe91564e2381fbd7722c566fbb7dcf51717a1216e113a74d88058",
+    "bytes": 47859,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigzt_Ua09-lIhmXvjCWm5TQrck_F6E20tBw68MKeb-z5YUKU-TuyYK9JZOL7GAqo598nEdP5F_XyWcA44uNZD8LcbSRang2Ees-jQNONrBGbBYBzAy5LELUYHgnkws7TjGwBNev_FvbornxmW-tcMbJNJAOrkQUhLjdjFLiYcwKrNwyJ_CZeU9Jgq6G6BiZlvqSezoLU09AKDSUaOHSQZ1An-RPNq-JURZC8M4=w260",
+    "path": "public/assets/forms/sticker-option-21.png",
+    "sha256": "f94adcc9f9a8a5ce8a616a6955f723b0fb250d44fb084f1fa59842535079862c",
+    "bytes": 35451,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihvaxKsx7RsgblbBPncPPHLXJcCeNspa7erNvGEUIjlnxpZy7K5L9vm7z9Fo1BOre9Rrb43qCdLSoQkH15KX9BL0YF-51YWKm3FRcT9925ZW05q6mEKoLrSl8ATwNtMutgIemMgOV18LKHs8Xk5naBAiD3vZMYozS6RIMJQjyDarO36M_tF_BgNN1rz09MAZnOoxzI_hU8pJczZ4SpPcY6R-ixUR-znOjHsdjQ=w260",
+    "path": "public/assets/forms/sticker-option-22.png",
+    "sha256": "024761685de970cee3b9c5bde6ba771e81cffcabe10faaa27d7b8028d6595854",
+    "bytes": 40967,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkig0_1P0NyVMU6osG8oWMAxMSl21DI64fNtlJNqUl2zd6vOQS9djfCWsahO0FugWXzJhuwxZCxHJD7SPXLNOXvVPr1NxmLXwiHGD2bLf-xlJqy84vY0oOnD-Jw4CmDUqV9oDSV0ej7D210mZfUrmHRxIoKvvM6II2mqVaGTZbRgqIlSVM0g_6d3AIDx90A-SbPJXQxe83fdk_iqzIcz_oFNUhowlOPjIUH-A=w260",
+    "path": "public/assets/forms/sticker-option-23.png",
+    "sha256": "d6c7d443a54b5a79820129e63abcda4ef4293c2ded7505ccf1868dc04f7c2c56",
+    "bytes": 39645,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiD6LjvSt25evLeGIKzj-lD3FfQ8M2K3NqSBDyHJdvVDxCFoXnmxBLxYicQtUEEY-fDvAbwC9qBSuCVXLkFUFaQej22Q5G7Spv7wT8gEnLp3oVfrz2BjhXPtaXbWe_riazyN58o-S3kIGt5_NdFMEJpaaKTyX0aqaMTL8OrZV6ppoPQNwWGTIfQ7IBSsLFoB1DfqLQnQS5DNKsgXQXxSdVXvjuYyCym3SGi9qE=w260",
+    "path": "public/assets/forms/sticker-option-24.png",
+    "sha256": "8855d64bc07f498479c36f2836c0e8db4968d134fc558ef8fd63e2eeb341cf1e",
+    "bytes": 37769,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihaOIkOvwzDrdd1GTiWw9MZUrMbVnWtTN0Qg7mQZt9Slv7pUhHHyw5GmS2vdfkLZnjH1I6sfXUMXDP5AyWG_HKntpnwM6Js3307HQaNqdgr_KbyrLcA5_4bXK3ZexGRTlVc-gW4oD-7mRXiVojyPJsrBy8SABtxe9kZbZUTgY1eNM7T5xNzzK1w03UpqaSX1NhyAl4x_w1QOKx0reawpFeSExV9jDauEhijLzk=w260",
+    "path": "public/assets/forms/sticker-option-25.png",
+    "sha256": "fcfc63c7e7da6674a575990f0316af505a30040ce580419a9b9cddd21a1d9a6d",
+    "bytes": 38218,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiijBLDI-1EuEandm51gUn_cD_Bijyx_3Jfxv5EgpCezX69HUHkEyOe_m3RTQCPXZKFnTv9YGxhhxYtZitWLe8sceKbPaqFT4m21d5e4El5FKOYOWSkvoT3LHHS-c5nA13crKb8XJFK4Jq1YOSz67YCvSgc8HxOw33WyR2_m5KUOqTWRqvSIhsRc7zhbcZTMjWL-RMEkkeUs8CDVCM8LmrEuv2efUDk4DKPntO4=w260",
+    "path": "public/assets/forms/sticker-option-26.png",
+    "sha256": "ccaee5d68fb315e6c2a57e878824da713c23ce1d48fd38d4f57d7d669bc0ce75",
+    "bytes": 41189,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijEJ-Em6G-yW77A8wxtMFMxAUSWqjGw-4fBYXb9NqzNjGgHwyD7LJT_d-bEz4mAv2IiXLg6MUO8lD3Vmufym-X8hxOPDvLMZ0NMeG3aDtzHxOTHooivCoBw4-kPdkfBbJNMZyMpMeuRa_Od5LdaIj1IZfOf829TVyYZzOid6bqAXKKVIVjQziW8cFL_1gx8ZslnowrpYRcYP8RwrPvodv57pM5GQu9nHFhNt5c=w260",
+    "path": "public/assets/forms/sticker-option-27.png",
+    "sha256": "fb5876b9a878ad13d1522108340725e67e510faeb99961f72466945310885442",
+    "bytes": 37716,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihtkpRwG4S2ZkVY9X87HpY3dyUXSWtCh7g50zgBLTE8Y8kAAroFtr_ocfjxZj8m2cdFDhRJEqwb8QYhzg_jvFLLU8DbNex_t00_nqOB27XaCMO8C2rKZRXDdaZ6_Y5v8wj2EQ3IG_QY35jjjE5IDEIM28OVp6ti6hNJko2OpduGgQGqvprxKomSezxk06uVKRMxlW1VkTNqvo4lxs65rI-iN8SvcyEwMJ8lWo4=w260",
+    "path": "public/assets/forms/sticker-option-28.png",
+    "sha256": "e9a621fdaaaa1f7c46bb013c0cb96b0f814ac909015e91d2d82f2b275dc1ea18",
+    "bytes": 21473,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiry2d80FSJMluNd91gE5pioYB5nRv5m7iMzA56N8eSjqsZ1k2OqvfBueLxM1wSSJy0a2yNvH9sSY49bbYLFOcHSbXx9AwqFUgqGKB_6OUJQDJZOjU156h754XvoGr1FGjMgnfECsPssamzASzENe5t-qWUH648kynhnNUjEhdKZtGmTih5D6t2UxRwoJo89e1Gr0lEc4xHnFF7IL56cZ1oLJJx9AAipJnJ78Q=w260",
+    "path": "public/assets/forms/sticker-option-29.png",
+    "sha256": "9845389d9bb574925abec25811da8a6c4800bd47d148e3211762bce8609854fe",
+    "bytes": 31780,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihUNtOD5iaOwCXzJkQe9CDtFgt7vzs1Nro2F3tuZgyoSTPvoUcFohdOu05741TCBrLHgsMZmwmq1sFhXzCBRtibdgAjwR9hRg1WHV7T7QEY-5teaFRb3az8XT4IQoSawfMBWqHfzWL4OuPjH_6tZYd5PNFeuht62HwTOnU4iLcGev_RnwtCOiGFf4k2xclkLvenPiClbcuSODloltAvmmuEPT7giTs_v6LoyPM=w260",
+    "path": "public/assets/forms/sticker-option-30.png",
+    "sha256": "e3c584da8ea605ecbf31211236f5f3c1961bd6ea11671aff26bace2a9ad12782",
+    "bytes": 34155,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihehemLs8QW2DZLBBGHXIjhq7QnUW3Kv6kF0BWNpRmjI6mMttVPi7wVzPJMkccEjxwJezvCuCIoobMX0Cuu6jBzgDO2LW5siicfTPVOejlTgMStPw35TdQQVgxMCqhEWspzEtC2Pn3bSF65Q0tpo_KLGJfZQ_QRvTHHYdKcBFifq4LChGqLAB5yPUqoMIiZXghCjNdWR5u0pA2hniygG_-jTt3JRrRUM10ey40=w260",
+    "path": "public/assets/forms/sticker-option-31.png",
+    "sha256": "a6f63d271c8b0d4b17dc4c486a7951b98017342658da661ba74b78bdc6864a20",
+    "bytes": 36636,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigleX9Hz_sHu57pnCmOexSZTvDJH65qjb0vQZzW94Wjvzc5BNPFNCHZkj6hWrCsTGSG_VfYBCTOpqoBozTL0QjeceHYI8YVJwbmDTtrX4u5Rno5um3f3I2pKWarQPWBtyhTIF8E26jGpBrrf3aoe-UPA1L4YIj_JRTl1fWX_4J-cj7_Xefvb320eY07Nf8Nr4Gnfz_UouThO2ZlGcRGy5Ot-PZimdzTts1GAVI=w260",
+    "path": "public/assets/forms/sticker-option-32.png",
+    "sha256": "7af74f95e583a573710d44ef0c340b9c003a84c905c40258c1014da4ccfdc77f",
+    "bytes": 31571,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijhnminJ-2ta6zRETuzPfDVub-YrcAQi0Ig4UfkFuYxA5hPgZAF2EOAiOdcgtWXnzrgHIWb2Dz97yyWdQHgGm7paWGL_01X8EHvhPqgaobnk_BNOAIM3ZkIOMWPNgPjmsgc06NVIHwP2o7FynNk4EFtB-isUglEUXsV4Rn6_uve5f1T0t9mO5jQp_U8uJPOqQvoJUnzh-WD4bdEdN9xIRvaDssmCOqOd-0g=w260",
+    "path": "public/assets/forms/sticker-option-33.png",
+    "sha256": "2eb506963db0b2e628d8201b172a8465d6bc0a0624117541ded7627eb6c872fb",
+    "bytes": 43205,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihCx9N2D9OMlSweZDe0zUcrXXKtYJ5yjRKKsGAAOk0Du9_509vWdyi7Yzr95AmevI_49wwuHQhQOEhZkhCNsjQlc6u5Zo8dEm5p_fKiRBbMUBRInDwcBz4ckd8ow-5z1QnhOkfbqiVtfQW9DgzwGNv6NE1iwdGP6gVuXMSymmOmHde4mQLLtWHk4Q8IXkc6ISfrgVgMVe4-3aR7OcFSmWcE4PTQB5QBRwsvBxY=w260",
+    "path": "public/assets/forms/sticker-option-34.png",
+    "sha256": "bb4706fa7284334baa9a160dd672b162bc01630b81f56d58cddfa71a13373f1a",
+    "bytes": 46660,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihimy_xDMrxxGlM4tmThI2h2bYvfWqbYQ5ad9Z6rIhG1hZuwc2gUxM5I4SqpT_s5EMQ1aqWwkick82m2YoBDELoNmg9ALk2xrOHMs0_rUs_MI9zE6rzGm7InYnDbfYEXIi3vUlb9igHI2Jd_87PVZ7lciN_VRru27PbNwIejtOUWeljMxYBsAp1Yc6YKbgz1sfrMHLzUjVNcr6Avy5lOAumqBVJ11FIaOH_lEc=w260",
+    "path": "public/assets/forms/sticker-option-35.png",
+    "sha256": "e5c439b883df4e5cf971754f52a184b0381c6eafc27779fa58c5ce23486d9c41",
+    "bytes": 43357,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiM0P1_qrDVw_HgDEiAtPC6NxzjDfFG3VYQwjrCFTVWZBoNwaiR1jPe8oDEEhG3Iy9mzTeHSm87HDo1EJIMSPZt9JNAJWE7UtK5TBS9bNFK9TbgElVgun5FLIW1S3ArdBaAZxzL25QXmcPZ3XazbM4smH7O0lBYspPe1t7bhENS31JTtVCRM647Ni5nmnNnJBgoxQJh37dWR2NbiwiS4Ev7h-u1Cea6SK-2=w260",
+    "path": "public/assets/forms/sticker-option-36.png",
+    "sha256": "4e0fa136b38087f86c70c912b3aa0ff3f0f8b23affa8b87713a8d61bb2d07d6b",
+    "bytes": 38581,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijwBM9G7IzQ5qfB9lGYwsAJPKoTwAZtvpfD1LGM_MwyrTPrsV73kNV0c2UEyk8kmbpHKbdPTaobqDOlRucBwh0UmKHgdIzn_QTeFv2Sqsam4CCbFNPL6fu1_UPPfoz4gP3eueSzjbdpqu3iGzvO07kycCgpdYupuYr9PCWhyyt4eO4RsIQha5W_AMYZ218iWeVzc02foW7eyW8yguRJ9g1FlbgGIgFndY_U=w260",
+    "path": "public/assets/forms/sticker-option-37.png",
+    "sha256": "68f9fc377eabb5c02752ec7f97c408f4f2d90b46800fc60d0ed1ec6982ec532d",
+    "bytes": 36797,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihcH2NKDgKNs0HKPmW2S36k0ZtwejED5L68aUzFJ2_4fwnVnfbDRddqImDUepDmrVQYaai5mktyelZUhSkyYZvFEFCn9L4IjWaGA1whky0lc9c0wMSi7H92uSBvi5RfDuUbrEgySuZFGDwSUS0pi6kPeBdhWVJrkusulu4LdiKYQvtdlmKf8SL656KvbqrWHHXXfeZXU0KHloUHAmfoWOL9T2TbwrzzswikBxc=w260",
+    "path": "public/assets/forms/sticker-option-38.png",
+    "sha256": "2c9858c6c7685939a468c7690dd076caeb3aa4d3a8c5d8bcc690458745ffa4a9",
+    "bytes": 32210,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijatqlnmJDln-0PRhnl4HFydjhpBDnaPTivSlP3omene-ws0QedlENNaxTdv1F-65HcFx_nQi6KtU_5hLJaELvGTwqFeynkxPX6xDunvUrjA8YQa2ILuZxvNXZUMZ1eN9fb_Y23jC1jdkjhBrCQGo3E3tHTVmW3OqOfGIO3f1CMk0D4nrgV389iqDlP4iUqsb_x7QC_YrN7tvEo19N7FzvKqve9EH1VDOgnfnY=w260",
+    "path": "public/assets/forms/sticker-option-39.png",
+    "sha256": "e364af4869d7114506d58c987950dd5c30c85fbc4e6bf6786dd9ced25e8028e9",
+    "bytes": 40440,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkignbsDng5TkRJCV3vPDRX1b3GrLZQsP_G-QNZdLAnsCjAmcRu7Bh6VmowoPVBGmt-EvrS83oH1wwcUkP7-CJJMsEvNwltb6RWKamyLmPAyI2UF86JctM12zRGf7nAeIFNiX4IgQfqZokW6P_-d_5XqXcV3Ec-JBismr4s0ZVa-lXgMVh0XX9KqpxXgLomcBvED8Ah05xz8QeDmXB56XCNBMS1F63lkGy9hk=w260",
+    "path": "public/assets/forms/sticker-option-40.png",
+    "sha256": "34fc78a0f518dad6fb41d6f65609df7f70a04ffc77624ade229f64f3d60580a5",
+    "bytes": 109736,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkij6khAWH4A6eRjkD4Vjco7brD80kZ1gUpLqzigMyoHj0Xa4BT7BfCwvJbdbJx5W6xLuP44qYxOLb1CAxMsxAyrU_QTW8qKUCjrwOl4JepsAqx-eZPQZzeljudwxKyb1z1u5Zmu3o4JFGmOqCtefPkyxAO3qWEhwVGAUzzbLavuugt7MJfntB4bVMGgd7O1NBktCGS_R1enCuxggPE_BNLxccrU-CsOGG0vT=w260",
+    "path": "public/assets/forms/sticker-option-41.png",
+    "sha256": "8b91d95ce1329bd52d03838edb304867c823ccec843c9d93dc6efc984755c3b4",
+    "bytes": 40938,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiibVlCmlcVuo1fqjVsjO-6taP0tFAQzJL3ywY-p8CbjZx0VZODlCnOJ7BN-rEZM7A3G1gIdizEEfwgZefjR8_FvnPmRWTYYIsqazX5mMOtuDfb0uMCWin_x4g0n_ABVsqsVIxDleQX_0HISPPVIUxoq5DMrbKI7kKbqAAuFZbLpKo9JBqEA6df7JtuVPqGUJ32474xLpstgCswfTmyN-qUSn8hOvyXRxqU5w9Y=w260",
+    "path": "public/assets/forms/sticker-option-42.png",
+    "sha256": "5f9e576f3f6504f60eb8abbf6c14aae9448e1bb54dc3b93e3e6583ac78c3480d",
+    "bytes": 44698,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigElGWyOzW27XftRYDHw4j7ySleZ-KtDjC6hGWrq43Aq6oyqBur8ZfyQFlEShNpKWlLKFolcCa8VJkXGijH_nZUMyNBiaP7S6fC7NZ1S2J5ZYJNb6mPR9YNZOZyy4Y6LkeVy1c9JTCWXHfTNaKSAH0D8F7bwoU89kP9rylOWF1KXq2Jyo8Frd1NKBW-rCpiYxGFPENQ4xOCK75jyjpAmvVJ1uFjgrRQ00sYOBM=w260",
+    "path": "public/assets/forms/sticker-option-43.png",
+    "sha256": "7b988bf72b5b30839c34a42a0e098a4def42fbd35686f79e52384f1e772628e8",
+    "bytes": 49081,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkigeGXHtE9wInIob7mLWvJqQKx1vyi2bminiUuc5dwDx7DT-PQ1bsPTCwQPgqrZ13Ip6DlAgZx74fSuPwqBm4n8L9sbgpSKM_Isny4S3a5phgfxEL7dfRTHLhEgW_KBL2D1R62oOKb1iN4UnzkbxMY7a0gHvqZbqgm4Bdf51LfQKIk6m8WNagXwZ4XUuhLcXjSe1ng1B9ZId9kiEPISkAdqjlyY2hiZuYwtL0VQ=w260",
+    "path": "public/assets/forms/sticker-option-44.png",
+    "sha256": "1c2c1849dfe03fc1b161212aba9c24764069bd0f9f623abcbbb40f3428680705",
+    "bytes": 104302,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkiiYKKlMccCQJ4fxydqdMd_POeunwyPxJR1MifGPKLPQHVSCm-rJh9bLYd8PuVZdAybEC0m-H-ddS5OmWkUrrkpKZvSCASEhM34gLznoZdlfc50CExcfW1N6zCEU81lT6DZvxEbBnmTqOiTHI4ZLTpWQ968Iol4wJ1rcLRcXiI4CJF8raoIeABKkqTWWqlnfJN9UIm5m4LcNIlStL4rttFOwK5mm__5brXL_K9o=w260",
+    "path": "public/assets/forms/sticker-option-45.png",
+    "sha256": "96aef99b460472e63ad49c3048a27925d356a85aaecfb22c6c936254c3bb8002",
+    "bytes": 36920,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijjFyUwqMo_Xk_znVAB1VOQUkJx0nih71yZ1QgIrWNsGZsZc-mhW0B2LZnWOlYxJazO8dBIX5Db2lnO5Jiwdd__baYXSFNEv7jrp6HxWbpjq43S7u_GUOuqs6DLFmYZnGDBOBdw3jEtnH9BnX9yorWraF7BTcTu3CG9pW3uP4xczKxpoF_0q0hVeS27fec_D8rvE1IwyVpyiUD_2RoFOAHw_qNK7hpV_eXgFew=w260",
+    "path": "public/assets/forms/sticker-option-46.png",
+    "sha256": "0ee22328775d251a136d01c3a6b8d466974b5df3e69423e04169ea7c91ea6a4c",
+    "bytes": 25393,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkijGh3eP1AepCmoNS3OCctJM36lIUNm4IuC_Uev-iBhUgEPWHKd-8boJABsB4iIfLoz23qV36qTqhjgCfQ84UOBDkPJsFe2WvVZ3Cdg8mn5TixQn0xUjpsCF2FYC0teXJqQmkuLFFdvPhlalKHzDsJ2kITIbuu4Enbe1dV_AjBMj7aMEL4JmbmTDfTJZfEAorcB_8xmMGeyBAxGL9fRWh1x-V3Xbaezfkt3cHz0=w260",
+    "path": "public/assets/forms/sticker-option-47.png",
+    "sha256": "464b9badcb42ba7740d1c6f2d1b31f772493a5208c2bf2cc5b8aafb93b72c4d4",
+    "bytes": 32406,
+    "contentType": "image/png"
+  },
+  {
+    "form": "stickers",
+    "sourceUrl": "https://docs.google.com/u/0/forms-images-rt/ANbbkihEdI5WM00vYh27643LtBDQKPHN61E6z_P29g9vq14EtR7od4wY9IuZjyam9K97NTmqksu_b8akR6KFDsyJeSYA-4tBEh46vTRGMtlCPcp8OXMRfUkWIc-5AQP0THlwnIHkJc7_XMwFBcWEZpr1H6mcopCuI0RjmBNzV5ExHpxeCYQYk0F14Xh2gEdvCMa_rX0RpjOmRB1sDp9LEmSE--p0yvY7oFCaaIx_=w260",
+    "path": "public/assets/forms/sticker-option-48.png",
+    "sha256": "6f54e0c42bfd7ae3847d75f3868109b3d3ff8ebfb7d1da167e70fd4b03b6eb04",
+    "bytes": 66416,
+    "contentType": "image/png"
+  }
+]

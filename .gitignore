@@ -1,0 +1,39 @@
+# 可重建產物與系統暫存
+dist/
+build/
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# 環境設定、部署識別與 OAuth 憑證
+.env*
+!.env.example
+.clasp.json
+.clasp.*.json
+.clasprc*.json
+credentials.json
+credentials-*.json
+client_secret*.json
+service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# 私人維運資料原則上存放專案外；以下防止誤放後被加入 Git
+private/
+.private/
+backups/
+*.local.json
+setup-state.json
+private-resources*.json
+deployment.json
+version.json
+remote-before*.json
+remote-after*.json
+orders-before*.xlsx
+orders-*.xlsx
+orders-*.csv
+orders-*.json
+lanlan-commission-*.json
