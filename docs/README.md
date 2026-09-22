@@ -29,6 +29,8 @@
 
 ## 歷史紀錄 · records
 
+- [2026-09-23 後台驗收](records/admin-2026-09-23.md)：Telegram 確認後登入交換失敗，記錄實際證據、探測結果及尚未驗證的管理功能。
+- [2026-09-23 Trello 看板與移轉](records/trello-2026-09-23.md)：174 筆匯入、封存與附件保留，以及公開看板和時間欄位驗收。
 - [2026-09-23 GitHub Pages 首次發布](records/pages-deployment-2026-09-23.md)：公開倉庫、部署及桌機／手機驗證，並記錄 GAS 進度讀取的限制。
 - [2026-09-23 公開前整理](records/publication-cleanup-2026-09-23.md)：私人資訊、素材移出、忽略規則與實際驗證。
 - [2026-09-23 GAS 與多人通知設定](records/service-setup-2026-09-23.md)：既有 GAS 第 1 版部署、30 欄升級、多人通知重試、匿名 API 驗證與待填設定。

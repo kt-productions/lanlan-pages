@@ -6,7 +6,7 @@
 
 使用原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 建置。前端沒有第三方執行期套件；Apps Script 後端打包使用 node-forge 驗證登入簽章。
 
-初次發布曾遇到 GAS 重新導向／CORS 問題；後續已驗證真實讀取、登入、通知與更新。仍觀察到偶發 45 秒逾時，出現錯誤時請重新讀取確認結果，勿直接重複送件。歷史背景見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)，本次結果見[Trello 看板驗收](docs/records/trello-2026-09-23.md)。
+初次發布曾遇到 GAS 重新導向／CORS 問題；後續曾驗證真實讀取、登入、通知與更新。最新後台驗收在登入交換階段未通過：Telegram 已確認，但瀏覽器未取得有效 GAS 回應，不能認定目前後台可正常使用。出現結果不明時勿直接重複送件或修改。歷史背景見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)，目前結果見[Trello 看板驗收](docs/records/trello-2026-09-23.md)及[後台驗收](docs/records/admin-2026-09-23.md)。
 
 網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
 
