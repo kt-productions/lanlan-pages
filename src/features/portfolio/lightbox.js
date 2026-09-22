@@ -48,8 +48,8 @@ export function setupLightbox(getWorks, motion) {
       media.loop = true;
       media.muted = true;
       media.defaultMuted = true;
-      media.autoplay = motion.isEnabled();
-      media.preload = "metadata";
+      media.autoplay = motion.isEnabled() && !document.hidden;
+      media.preload = motion.isEnabled() ? "metadata" : "none";
       media.poster = "./" + work.poster;
       media.setAttribute("aria-label", work.title);
     } else {
@@ -59,7 +59,7 @@ export function setupLightbox(getWorks, motion) {
       mediaError.textContent = "作品暫時無法播放，請稍後重試。";
       mediaError.hidden = false;
     });
-    media.src = "./" + work.src;
+    media.src = "./" + (work.playbackSrc || work.src);
     mediaHost.append(media);
     if (work.type === "video" && motion.isEnabled() && !document.hidden)
       playDialog(media);

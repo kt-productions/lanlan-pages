@@ -23,6 +23,7 @@ npm run dev
 
 ## 文件
 
+- [影片壓縮與延遲載入](docs/development/video-optimization.md)：可見時載入小尺寸預覽，點開才載入大尺寸壓縮版，原始檔保留供後續操作。
 - [文件導覽](docs/README.md)：依設計、開發、規格與來源、未來規劃、歷史紀錄分類。
 - [委託服務設定](docs/development/order-service.md)：Sheets、Telegram、管理員白名單與啟用驗收。
 - [公開倉庫與私人資料](docs/development/publication.md)：雲端資源、憑證、文件與素材的保存界線。

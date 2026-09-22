@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { root, output, resolveWithin } from "./lib/paths.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
+import { readVideoAssets } from "./lib/video-assets.mjs";
 const assetRoot = path.join(output, "assets/site", await siteAssetVersion(path.join(root, "src")));
 const works = JSON.parse(
   await readFile(path.join(root, "content/works.json"), "utf8"),
@@ -11,6 +12,18 @@ const works = JSON.parse(
 const site = JSON.parse(
   await readFile(path.join(root, "content/site.json"), "utf8"),
 );
+const videoAssets = await readVideoAssets(works);
+for (const asset of videoAssets.values()) {
+  for (const kind of ["preview", "display"]) {
+    assert.equal(
+      createHash("sha256")
+        .update(await readFile(resolveWithin(output, asset[kind].src)))
+        .digest("hex"),
+      asset[kind].sha256,
+      `${asset.id} ${kind} 壓縮版未正確輸出`,
+    );
+  }
+}
 assert.equal(
   new Set(works.map((w) => w.id)).size,
   works.length,
@@ -120,13 +133,24 @@ assert.equal(
   "所有影片作品與首屏三件作品皆應使用影片元素",
 );
 for (const [video] of html.matchAll(/<video\b[^>]*>/g)) {
-  for (const attribute of ["autoplay", "muted", "loop", "playsinline"])
+  for (const attribute of ["data-autoplay", "muted", "loop", "playsinline"])
     assert.match(
       video,
       new RegExp(`\\b${attribute}(?:\\s|>)`),
       `影片缺少 ${attribute}`,
     );
+  assert.ok(!/\ssrc=|\sautoplay(?:\s|>)/.test(video), "背景影片必須由可見性控制載入與播放");
+  assert.ok(video.includes('preload="none"'), "背景影片不可預載");
+  assert.ok(video.includes("assets/videos/optimized/"), "背景影片必須使用壓縮版");
+  if (video.includes("data-poster="))
+    assert.ok(!/\sposter=/.test(video), "作品縮圖必須延遲載入");
 }
+const portfolio = JSON.parse(html.match(/<script id="portfolio-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+for (const work of portfolio.works.filter((item) => item.type === "video"))
+  assert.equal(work.playbackSrc, videoAssets.get(work.id).display.src, "檢視器必須使用壓縮版");
+const previewSources = new Set([...videoAssets.values()].map((item) => `./${item.preview.src}`));
+for (const [, source] of html.matchAll(/<video\b[^>]*data-src="([^"]+)"/g))
+  assert.ok(previewSources.has(source), "背景影片不可使用展示版或原始檔");
 const formAssets = JSON.parse(
   await readFile(path.join(root, "content/form-assets.json"), "utf8"),
 );

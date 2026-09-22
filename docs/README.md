@@ -8,6 +8,7 @@
 
 ## 開發與維護 · development
 
+- [影片壓縮與延遲載入](development/video-optimization.md)：預覽版、展示版、原始檔保存，以及新增作品後的壓縮與驗證指令。
 - [開發指南](development/setup.md)：環境需求、預覽方式、環境變數與發布狀態。
 - [架構與內容維護](development/architecture.md)：目錄職責、建置流程、頁面依賴，以及修改內容與新增作品的位置。
 - [驗證指南](development/validation.md)：檢查指令的涵蓋範圍、介面驗收項目與結果記錄方式。

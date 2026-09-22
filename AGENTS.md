@@ -154,3 +154,5 @@
 - **GAS 後續設定與多人通知（2026-09-23）**：使用者恢復後端設定，指定通知一位或多位 Telegram 數字 ID，管理後台未來放 GitHub Pages，並明確要求待專案確認後再推送。已部署既有 GAS 的 Web App 第 1 版、保存 `WEB_APP_URL`／前端 `apiUrl`，Orders 升為 30 欄；第 30 欄 `notificationRecipientsJson` 保存逐位結果，`TELEGRAM_NOTIFY_USER_IDS` 與 `ADMIN_TELEGRAM_IDS` 分開。保持暫停收件，Telegram 憑證及 ID 名單、HTTPS 管理網址仍待完成。沒有建立遠端、推送或發布 Pages，亦未傳送真實通知。此紀錄更新前述啟用進度，不修改第 1–12 節準則；設定與驗證見 `docs/development/order-service.md`、`docs/records/service-setup-2026-09-23.md`。
 
 - **目錄網址（2026-09-23）**：依使用者要求移除公開網址中的 `.html`；四頁以目錄首頁提供，保留舊入口轉址與 query／fragment，管理回程需相容舊 `admin.html` 與新 `admin/`。
+
+- **2026-09-23 影片分級壓縮**：依使用者要求保留原始 MP4，另以 `scripts/optimize-videos.mjs` 產生長邊最多 640px 的預覽版及 1280px 的展示版，來源與衍生雜湊記於 `content/video-assets.json`。首頁影片可見時載入預覽，檢視器開啟時才載入展示版；縮圖另延遲載入。`scripts/lib/video-assets.mjs` 由建置與檢查共用，現已核對全部影片原始及衍生雜湊；不代表核對首頁原始圖片。規格及維護見 `docs/development/video-optimization.md`。

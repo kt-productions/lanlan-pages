@@ -2,6 +2,7 @@
 <html lang="zh-Hant-TW">
   <head>
     {{HEAD}}
+    <noscript><style>.art-image video { display: none; }</style></noscript>
   </head>
   <body>
     {{ICONS}}
@@ -28,11 +29,10 @@
             <figure class="reel-side reel-chibi">
               <video
                 data-autoplay
-                data-src="./assets/videos/chibi-01.mp4"
+                data-src="./{{HERO_CHIBI_SRC}}"
                 poster="./assets/posters/chibi-01.webp"
                 width="1080"
                 height="1080"
-                autoplay
                 muted
                 loop
                 playsinline
@@ -46,11 +46,10 @@
               <video
                 id="hero-video"
                 data-autoplay
-                data-src="./assets/videos/animation-02.mp4"
+                data-src="./{{HERO_MAIN_SRC}}"
                 poster="./assets/posters/animation-02.webp"
                 width="1920"
                 height="1080"
-                autoplay
                 muted
                 loop
                 playsinline
@@ -63,11 +62,10 @@
             <figure class="reel-side reel-animation">
               <video
                 data-autoplay
-                data-src="./assets/videos/animation-01.mp4"
+                data-src="./{{HERO_SIDE_SRC}}"
                 poster="./assets/posters/animation-01.webp"
                 width="1280"
                 height="720"
-                autoplay
                 muted
                 loop
                 playsinline

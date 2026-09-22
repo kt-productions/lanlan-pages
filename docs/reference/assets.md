@@ -39,7 +39,8 @@
 
 | 資料／目錄 | 目前內容與用途 |
 | --- | --- |
-| `public/assets/videos/` | 94 支 MP4，頁面播放不依賴 Wix 外連。 |
+| `public/assets/videos/` | 94 支原始 MP4，保留來源供後續操作。 |
+| `public/assets/videos/optimized/`、`content/video-assets.json` | 2026-09-23 另存 94 支預覽版與 94 支展示版；記錄對應原始來源、編碼設定、大小、尺寸、片長與 SHA-256。原始影片及 `works.json` 保留不變。 |
 | `public/assets/posters/` | 94 張影片 WebP 縮圖及 1 張貼圖總覽縮圖；網站以完整比例呈現。 |
 | `content/source-assets.json`、`public/assets/originals/` | 1 筆首頁原始素材：`stickers.png`，原名 `R8R8.png`，作品牆的貼圖總覽原圖。 |
 | `content/form-assets.json` | 50 筆使用中素材來源紀錄，對應 50 個專案相對路徑。 |

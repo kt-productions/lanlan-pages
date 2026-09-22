@@ -8,11 +8,34 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
   ];
   const playbackStatus = document.querySelector("#playback-status");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = navigator.connection;
   const inView = new WeakSet();
   const pendingPlayback = new WeakSet();
   const blockedPlayback = new Set();
-  let animationsEnabled = !reducedMotion.matches;
+  let animationsEnabled = !reducedMotion.matches && !connection?.saveData;
   let motionWasChosen = false;
+
+  function isNearViewport(video, margin = 0) {
+    if (video.closest("[hidden]")) return false;
+    const rect = video.getBoundingClientRect();
+    return (
+      rect.width > 0 && rect.height > 0 &&
+      rect.bottom > -margin && rect.top < innerHeight + margin &&
+      rect.right > 0 && rect.left < innerWidth
+    );
+  }
+  function loadPoster(video) {
+    if (!video.hasAttribute("poster") && video.dataset.poster)
+      video.poster = video.dataset.poster;
+  }
+  function isFullyBuffered(video) {
+    // readyState=4 只代表預估可順播，不保證整支影片已下載完成。
+    return (
+      Number.isFinite(video.duration) && video.buffered.length === 1 &&
+      video.buffered.start(0) <= 0.05 &&
+      video.buffered.end(0) >= video.duration - 0.05
+    );
+  }
 
   function wantsBackgroundPlayback(video) {
     return (
@@ -20,7 +43,7 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
       !document.hidden &&
       !isModalOpen() &&
       inView.has(video) &&
-      !video.closest("[hidden]")
+      isNearViewport(video)
     );
   }
   function updateMotionControls() {
@@ -67,6 +90,7 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
       return;
     video.muted = true;
     video.defaultMuted = true;
+    loadPoster(video);
     if (!video.hasAttribute("src")) video.src = video.dataset.src;
     if (!video.paused) return;
     pendingPlayback.add(video);
@@ -96,9 +120,24 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
     }
   }
   function syncBackground() {
+    // 舊瀏覽器也依實際位置判斷，不能把整頁的作品都視為可見。
+    if (!("IntersectionObserver" in window)) {
+      for (const video of backgroundVideos) {
+        if (isNearViewport(video)) inView.add(video);
+        else inView.delete(video);
+        if (isNearViewport(video, 200)) loadPoster(video);
+      }
+    }
     for (const video of backgroundVideos) {
       if (wantsBackgroundPlayback(video)) void playBackground(video);
-      else video.pause();
+      else {
+        video.pause();
+        // pause 不會停止下載；中止尚未完成的離屏影片，完整緩衝則保留供返回時使用。
+        if (video.hasAttribute("src") && !isFullyBuffered(video)) {
+          video.removeAttribute("src");
+          video.load();
+        }
+      }
     }
     updateMotionControls();
   }
@@ -122,9 +161,31 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
           { threshold: 0.01 },
         )
       : null;
-  if (visibilityObserver)
+  if (visibilityObserver) {
     backgroundVideos.forEach((video) => visibilityObserver.observe(video));
-  else backgroundVideos.forEach((video) => inView.add(video));
+    // poster 不受 preload="none" 控制，另用觀察器延後載入作品縮圖。
+    const posterObserver = new IntersectionObserver((entries) => {
+      for (const { target, isIntersecting } of entries) {
+        if (!isIntersecting || target.closest("[hidden]")) continue;
+        loadPoster(target);
+        posterObserver.unobserve(target);
+      }
+    }, { rootMargin: "200px 0px" });
+    backgroundVideos.filter((video) => video.dataset.poster)
+      .forEach((video) => posterObserver.observe(video));
+  } else {
+    let scheduled = false;
+    const scheduleSync = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        syncBackground();
+      });
+    };
+    window.addEventListener("scroll", scheduleSync, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+  }
 
   for (const button of motionButtons) {
     button.addEventListener("click", () => {
@@ -136,13 +197,15 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
       onMotionChange();
     });
   }
-  reducedMotion.addEventListener("change", () => {
+  function syncMotionPreference() {
     if (!motionWasChosen) {
-      animationsEnabled = !reducedMotion.matches;
+      animationsEnabled = !reducedMotion.matches && !connection?.saveData;
       syncBackground();
       onMotionChange();
     }
-  });
+  }
+  reducedMotion.addEventListener("change", syncMotionPreference);
+  connection?.addEventListener("change", syncMotionPreference);
 
   return { sync: syncBackground, isEnabled: () => animationsEnabled };
 }

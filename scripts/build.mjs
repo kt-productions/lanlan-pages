@@ -3,6 +3,7 @@ import path from "node:path";
 import { root, output as out } from "./lib/paths.mjs";
 import { readContent, readCommission } from "./lib/content.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
+import { readVideoAssets } from "./lib/video-assets.mjs";
 import {
   escapeHtml as escape,
   inlineJson,
@@ -13,6 +14,7 @@ import {
 if (out !== path.join(root, "dist")) throw new Error("不安全的建置目錄");
 const site = await readContent("site.json");
 const rawWorks = await readContent("works.json");
+const videoAssets = await readVideoAssets(rawWorks);
 const commission = await readCommission();
 const integration = await readContent("integration.json");
 if (
@@ -36,7 +38,14 @@ const stickers = {
   height: 4320,
   alt: "爛爛的 48 款貼圖示例，包含開心、疑惑、愛心、哭泣與日常表情。",
 };
-const allWorks = [...rawWorks, stickers];
+const allWorks = [
+  ...rawWorks.map((work) => ({
+    ...work,
+    previewSrc: videoAssets.get(work.id).preview.src,
+    playbackSrc: videoAssets.get(work.id).display.src,
+  })),
+  stickers,
+];
 const featured = site.featured.map((id) => {
   const work = allWorks.find((item) => item.id === id);
   if (!work) throw new Error(`找不到精選作品 ${id}`);
@@ -55,7 +64,7 @@ const htmlWorks = works
   .map((work) => {
     const media =
       work.type === "video"
-        ? `<video data-autoplay data-src="./${escape(work.src)}" poster="./${escape(work.poster)}" width="${work.width}" height="${work.height}" autoplay muted loop playsinline preload="none" aria-label="${escape(work.title)}"></video><span class="video-notice" hidden></span>`
+        ? `<video data-autoplay data-src="./${escape(work.previewSrc)}" data-poster="./${escape(work.poster)}" width="${work.width}" height="${work.height}" muted loop playsinline preload="none" aria-label="${escape(work.title)}"></video><noscript><img src="./${escape(work.poster)}" alt="${escape(work.title)}" width="${work.width}" height="${work.height}" loading="lazy" decoding="async"></noscript><span class="video-notice" hidden></span>`
         : `<img src="./${escape(work.poster)}" alt="${escape(work.alt || work.title)}" width="${work.width}" height="${work.height}" loading="lazy" decoding="async">`;
     return `<article class="artwork" data-id="${escape(work.id)}" data-category="${escape(work.category)}"><a class="art-link" href="./${escape(work.src)}" data-work="${escape(work.id)}" aria-label="放大${escape(work.title)}"><div class="art-image">${media}</div><div class="art-caption"><span class="art-category">${categories[work.category]}</span><span class="art-title">${escape(work.title)}</span><svg class="icon art-open" aria-hidden="true"><use href="#arrow-up-right"/></svg></div></a></article>`;
   })
@@ -67,6 +76,9 @@ const replacements = {
   COMMISSION_DATA: inlineJson(commission),
   INTEGRATION_DATA: inlineJson({ apiUrl: integration.apiUrl || "" }),
   WORKS: htmlWorks,
+  HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
+  HERO_MAIN_SRC: escape(videoAssets.get("animation-02").preview.src),
+  HERO_SIDE_SRC: escape(videoAssets.get("animation-01").preview.src),
   COUNT_ALL: works.length,
   COUNT_ANIMATION: works.filter((work) => work.category === "animation").length,
   COUNT_CHIBI: works.filter((work) => work.category === "chibi").length,
@@ -84,12 +96,13 @@ const replacements = {
     )
     .join("\n"),
   DATA: inlineJson({
-    works: works.map(({ id, category, title, type, src, poster, alt }) => ({
+    works: works.map(({ id, category, title, type, src, playbackSrc, poster, alt }) => ({
       id,
       category,
       title,
       type,
       src,
+      playbackSrc,
       poster,
       alt,
     })),

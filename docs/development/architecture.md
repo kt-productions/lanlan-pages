@@ -9,12 +9,14 @@
 | `content/integration.json` | 公開的 Apps Script Web App URL，空值表示未啟用，禁止放憑證 |
 | `content/site.json` | 網站資訊、首頁展示價目、原表單來源 URL、社群連結、作品牆精選 ID |
 | `content/works.json` | 原站 94 支影片的資料、來源 URL、來源頁、尺寸、長度、位元組與 SHA-256 |
+| `content/video-assets.json` | 各作品的預覽版／展示版、編碼設定及原始來源對應 |
 | `content/source-assets.json` | 首頁貼圖總覽原圖的來源紀錄 |
 | `content/commission.json` | 站內表單規則、計價、草稿版本、來源、檔案限制、已確認更新與待確認差異 |
 | `content/forms/` | 三份原表單內容（貼圖為公開節錄）、小動圖英文版及 48 筆貼圖選項紀錄 |
 | `content/form-assets.json` | 50 張使用中表單圖片的來源、檔案大小與 SHA-256 |
 | `public/assets/forms/` | 貼圖款式、折扣表及交付規格圖 |
 | `public/assets/videos/` | 本機保存的 MP4，不依賴 Wix 外連 |
+| `public/assets/videos/optimized/` | 兩種壓縮版，檔名含內容雜湊；不覆蓋原始影片 |
 | `public/assets/posters/` | 網頁縮圖；保留角色完整比例 |
 | `public/assets/originals/` | 首頁貼圖總覽 PNG，保留下載原檔 |
 | `src/pages/home/` | 首頁 `index.html` 模板、`index.js` 入口與 `home.css` 專用樣式 |
@@ -38,6 +40,8 @@
 增加作品：放入 MP4 與 WebP 縮圖，在 `content/works.json` 新增一筆，沿用既有欄位；ID 必須唯一，category 使用 `animation` 或 `chibi`，尺寸、長度與雜湊必須反映實際檔案。精選順序由 `site.json` 的 `featured` 決定。貼圖總覽目前由建置腳本加入。
 
 作品名稱、精選清單與首屏素材的對應見[作品與素材盤點](../reference/assets.md)。修改原表單內容、費率或草稿時，分別參照[表單規格](../reference/commission.md)、[來源存檔](../reference/source-forms.md)及[草稿契約](../reference/draft-schema.md)，保留來源與目前規則的區別。
+
+新增影片或更換原始素材後，先執行 `npm run optimize:videos` 產生預覽／展示兩種衍生版，再建置及檢查。來源紀錄仍以原始檔為準；工具設定與載入規則見[影片壓縮](video-optimization.md)。
 
 ## 建置與頁面依賴
 

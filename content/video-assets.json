@@ -1,0 +1,2376 @@
+{
+  "version": 1,
+  "encoder": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+  "profiles": {
+    "preview": {
+      "codec": "libx264",
+      "preset": "slow",
+      "pixelFormat": "yuv420p",
+      "audio": "copy",
+      "fastStart": true,
+      "crf": 26,
+      "maxDimension": 640
+    },
+    "display": {
+      "codec": "libx264",
+      "preset": "slow",
+      "pixelFormat": "yuv420p",
+      "audio": "copy",
+      "fastStart": true,
+      "crf": 23,
+      "maxDimension": 1280
+    }
+  },
+  "videos": [
+    {
+      "id": "animation-01",
+      "source": "assets/videos/animation-01.mp4",
+      "sourceSha256": "d47057b1678287374f523c2e9a09e7765d53953f454606366ea30a819ba1f68e",
+      "preview": {
+        "src": "assets/videos/optimized/animation-01-1ccac341e5aa.mp4",
+        "bytes": 277318,
+        "sha256": "1ccac341e5aa16eea1fa8ead157d6c2fd2bc2461a0e640f4ebe5e6683dabdef9",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-01-ef2178ef5953.mp4",
+        "bytes": 923145,
+        "sha256": "ef2178ef5953498d19b4b08070f61234f1eb2f0d6fed2bac151eaba7e3981327",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-02",
+      "source": "assets/videos/animation-02.mp4",
+      "sourceSha256": "fa6505279259e44d7d9b0c7abddd69b896c136fe8b72236462899c87bceae016",
+      "preview": {
+        "src": "assets/videos/optimized/animation-02-48bce7235cee.mp4",
+        "bytes": 321635,
+        "sha256": "48bce7235cee7d9b2991fb9c5c4216c837c567ece8b055f69a442a0ed6a1f9ae",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-02-4e516e238c75.mp4",
+        "bytes": 969424,
+        "sha256": "4e516e238c75c6880549487a7d5eccf15277c49919a09a9d823073ca0fc733a4",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-03",
+      "source": "assets/videos/animation-03.mp4",
+      "sourceSha256": "a939862606155debbeddd6da6922d7e0ca7ee6a8d2ee7f3b9c3cab1414a9d922",
+      "preview": {
+        "src": "assets/videos/optimized/animation-03-5b837af4f4f1.mp4",
+        "bytes": 284635,
+        "sha256": "5b837af4f4f15f93b02c4e5ffe9f380ffc8e0eb52aa5c225659302e9fbbbee10",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-03-7152ca10665c.mp4",
+        "bytes": 934973,
+        "sha256": "7152ca10665cf6afedad1020d2373b07efe9c2af881fd1e05b0fa0c993ccff1c",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-04",
+      "source": "assets/videos/animation-04.mp4",
+      "sourceSha256": "e7bf5071f9077024ef8c98fe5591aa8b12d2739656b4ff5d02785365364dc809",
+      "preview": {
+        "src": "assets/videos/optimized/animation-04-b50c21ac765d.mp4",
+        "bytes": 287007,
+        "sha256": "b50c21ac765d1afc9e25a6134cf2a4607eeab540980a4e0a4029b456fea85a33",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-04-f289a42a9c32.mp4",
+        "bytes": 957932,
+        "sha256": "f289a42a9c32fb481b718cd52b8433261e5aced010428b1b4140c3358a2fcf57",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-05",
+      "source": "assets/videos/animation-05.mp4",
+      "sourceSha256": "280ea051693c8b0c0885e70d90afc194375dbbdd815186942f46ef770be3a82e",
+      "preview": {
+        "src": "assets/videos/optimized/animation-05-1d027b264cd6.mp4",
+        "bytes": 261782,
+        "sha256": "1d027b264cd652d64ae017310147904ca1117da97c7b719d3a7de98367c7f172",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-05-726a26b616ac.mp4",
+        "bytes": 854361,
+        "sha256": "726a26b616ac7a508ea7e2b13a350607dce4db8bd461f62310a531acf1db55e3",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-06",
+      "source": "assets/videos/animation-06.mp4",
+      "sourceSha256": "0468487dd0266cce80f6da272b95ebb30aa3dfe84557ecd315e0343d92df5a16",
+      "preview": {
+        "src": "assets/videos/optimized/animation-06-cd424c606fc4.mp4",
+        "bytes": 292929,
+        "sha256": "cd424c606fc4c517169f4548aad9fab72d072ab4eeb3d5387591e56bc7677d29",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-06-4432496d50e6.mp4",
+        "bytes": 953109,
+        "sha256": "4432496d50e66841331754a45791a57ee323058cb1e8a9c430e1e0b20f0273f5",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-07",
+      "source": "assets/videos/animation-07.mp4",
+      "sourceSha256": "87b2d8674e00d96ac1e7fa67ca46a823035c74b839bca58e24ecf0bfd7b68633",
+      "preview": {
+        "src": "assets/videos/optimized/animation-07-b5b6611eb10e.mp4",
+        "bytes": 320235,
+        "sha256": "b5b6611eb10e50a65f983cade8482a664c965ed6ac174d61926cd86cf57353d7",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-07-9e81686b38d8.mp4",
+        "bytes": 993379,
+        "sha256": "9e81686b38d89a4a73190d7faebd85b17674ed70618bdca333c979ae54046b8a",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-08",
+      "source": "assets/videos/animation-08.mp4",
+      "sourceSha256": "713821689d3d916c12cfba24761cb476d645314ef4687f03d4ab15ac9f4efbdd",
+      "preview": {
+        "src": "assets/videos/optimized/animation-08-c3c16f2232bf.mp4",
+        "bytes": 291048,
+        "sha256": "c3c16f2232bf2f8363381f26985b1bd1975873a5693a8372594c3ee2f332ad05",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-08-0f37bff2d689.mp4",
+        "bytes": 954186,
+        "sha256": "0f37bff2d6894f0fe4ee0c2cfcbee20487ed7a7c294499e779d6218a46dfd412",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-09",
+      "source": "assets/videos/animation-09.mp4",
+      "sourceSha256": "1982ac42d9ebd5a67028542f1ae63f602d65b99a3ae87cab76e0be0e8699e8d7",
+      "preview": {
+        "src": "assets/videos/optimized/animation-09-0abfb7f849eb.mp4",
+        "bytes": 272580,
+        "sha256": "0abfb7f849eb4278c0d96e5500cf1c72fc52601a40e62cc80c3ed476112416bb",
+        "width": 640,
+        "height": 360,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-09-77e769c65668.mp4",
+        "bytes": 863137,
+        "sha256": "77e769c656683edc08ed87fe02fb0c0ee7398a57a7e760e391470d1d44e933e2",
+        "width": 1280,
+        "height": 720,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "animation-10",
+      "source": "assets/videos/animation-10.mp4",
+      "sourceSha256": "4debdb132f5a8e492f4a41ff880bf310782d8a53bd8b3e8a0d4d1daf15ae1cc7",
+      "preview": {
+        "src": "assets/videos/optimized/animation-10-e0dd17613146.mp4",
+        "bytes": 279464,
+        "sha256": "e0dd17613146e57933c3665ef5196839ab8b4961918f40919d75bc033d494732",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-10-80944269f3eb.mp4",
+        "bytes": 946684,
+        "sha256": "80944269f3ebca9854b3bf8dab365b7c130d78ad3b49c29103c76092f66cdd9d",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-11",
+      "source": "assets/videos/animation-11.mp4",
+      "sourceSha256": "2ce8e4470cef9c0d7543eb6af32b69ee659d85d7a4de4865adea4b5e53459269",
+      "preview": {
+        "src": "assets/videos/optimized/animation-11-3129c706d198.mp4",
+        "bytes": 687727,
+        "sha256": "3129c706d198eb575d7bd495a67a93794f85e7037799fc650ee682e1e3d4507a",
+        "width": 640,
+        "height": 360,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-11-b5e4f1115785.mp4",
+        "bytes": 2269015,
+        "sha256": "b5e4f11157853ef067944ea96cb71b6bed21cac70be75a76fc6a34dc43176a5d",
+        "width": 1280,
+        "height": 720,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      }
+    },
+    {
+      "id": "animation-12",
+      "source": "assets/videos/animation-12.mp4",
+      "sourceSha256": "764e13595e3b983d7c0563263db160cbbf5111d04104a1c750962840320f46a7",
+      "preview": {
+        "src": "assets/videos/optimized/animation-12-6251754dad01.mp4",
+        "bytes": 270662,
+        "sha256": "6251754dad01b253c32c497bf28369eb2ca6fb1ca144618fc39f86f279ea6aee",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-12-3f3741429073.mp4",
+        "bytes": 905353,
+        "sha256": "3f3741429073f15e475eeafe76edebf18bcafe255ef2adb82b9bf67fde4938b0",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-13",
+      "source": "assets/videos/animation-13.mp4",
+      "sourceSha256": "f004fc4e4c7f84924b2c2e6ddaf59a57b9c8b095b5a8bbd5c1607b0cc4628d28",
+      "preview": {
+        "src": "assets/videos/optimized/animation-13-d3802e4ac160.mp4",
+        "bytes": 263737,
+        "sha256": "d3802e4ac1604d7d3524cdf305b3760ea8d60127e417335c0fbe0149e0099d0a",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-13-f18cd9bfa71f.mp4",
+        "bytes": 880435,
+        "sha256": "f18cd9bfa71fde6b6ba392a715a8cdaa26c50d8e2f519f3d9807bc6ccfa9cd20",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-14",
+      "source": "assets/videos/animation-14.mp4",
+      "sourceSha256": "154234f67e25e35892f87c668eaf9c5f403027634a4f3c6a4b289fd88d59922d",
+      "preview": {
+        "src": "assets/videos/optimized/animation-14-80d9cccfbbec.mp4",
+        "bytes": 269798,
+        "sha256": "80d9cccfbbec0affd8849caac22242e572aa9642cdf540e62fb46d17229cddb7",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-14-ef357159d317.mp4",
+        "bytes": 891406,
+        "sha256": "ef357159d317464ae9614775d49bbcbfdd2fb7d7dd9a029e6c90d0f71b637a3a",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-15",
+      "source": "assets/videos/animation-15.mp4",
+      "sourceSha256": "b51610898d2dd5764b74d241480032050e087650d023404a75752c099e5c984b",
+      "preview": {
+        "src": "assets/videos/optimized/animation-15-a91723b7882d.mp4",
+        "bytes": 305636,
+        "sha256": "a91723b7882d0cd0276b7d8fd2dd4a78517b8641cb201614e84d1612976601ef",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-15-8f5010ba5888.mp4",
+        "bytes": 993744,
+        "sha256": "8f5010ba5888db355ad3f049212532ebb2151f535cea1a43f36cae0cb3b9ac75",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-16",
+      "source": "assets/videos/animation-16.mp4",
+      "sourceSha256": "215413e02d50630df847fc09f58c0ffd701c68920b5c6060bcf436df191ecedc",
+      "preview": {
+        "src": "assets/videos/optimized/animation-16-2634cb3daff2.mp4",
+        "bytes": 290007,
+        "sha256": "2634cb3daff23e6b457177a72c909251f0e47ab0db790ddf5b6a4243c4b52e1a",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-16-0fd162c11791.mp4",
+        "bytes": 939975,
+        "sha256": "0fd162c11791bb3e38ad3f0c65296f77b0dde17df52cb356cd5bb19abbb95b3e",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-17",
+      "source": "assets/videos/animation-17.mp4",
+      "sourceSha256": "3acacc9041bf517baf742d3d0eaa4dd9b277d25b25b6e0995b97dbffbb0b645a",
+      "preview": {
+        "src": "assets/videos/optimized/animation-17-708e8f53013d.mp4",
+        "bytes": 295555,
+        "sha256": "708e8f53013de865aa10b79f41202d054b65a5ad8239a2e90e974e8aedbe860f",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-17-7d029e6ddb03.mp4",
+        "bytes": 950772,
+        "sha256": "7d029e6ddb03269c17555dcf1a9bcf8b9cbaafcf750abf8db29f562fe2a3a578",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-18",
+      "source": "assets/videos/animation-18.mp4",
+      "sourceSha256": "59cd0f714b0449e5f7fdce9ad83f48f484d56abb7c1a8b7e0257e5df5c0dfcc2",
+      "preview": {
+        "src": "assets/videos/optimized/animation-18-c4f1cd71b417.mp4",
+        "bytes": 271735,
+        "sha256": "c4f1cd71b41711033a519b37f8a77fee895beffcfda555f63784ea1e6eaf8b82",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-18-2a629c1db3a0.mp4",
+        "bytes": 890499,
+        "sha256": "2a629c1db3a08f43edb1dbdd967cce81d587b0c62b90b360ef339603c3bfa28d",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-19",
+      "source": "assets/videos/animation-19.mp4",
+      "sourceSha256": "ae5f0b0d0889c9c64a8193aa3eee4ba907052775792dfc7a4bac0623f011c299",
+      "preview": {
+        "src": "assets/videos/optimized/animation-19-10db0fe0b034.mp4",
+        "bytes": 278627,
+        "sha256": "10db0fe0b0341435076acc679995af7febe9ed0136bea7f57cb488a1e977ae9e",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-19-953609b674c9.mp4",
+        "bytes": 895976,
+        "sha256": "953609b674c9f8a4d3d6fcd5dbc39b9e95176e4ccc14009bdfa774fb30b939e0",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-20",
+      "source": "assets/videos/animation-20.mp4",
+      "sourceSha256": "d2ed85b12aca3c3de0ce551216f43302ac4b7c42f939a86d130347d36e155505",
+      "preview": {
+        "src": "assets/videos/optimized/animation-20-7b4afc4ffa3e.mp4",
+        "bytes": 223644,
+        "sha256": "7b4afc4ffa3e05cd2a11423c4165fbcb98011fc16b2ee4e96e880998739c13f8",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-20-57b3f1baddc1.mp4",
+        "bytes": 820533,
+        "sha256": "57b3f1baddc1eb15af2e289467bba08794143dfaa2d3f7fe7042a41040ec9e6d",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-21",
+      "source": "assets/videos/animation-21.mp4",
+      "sourceSha256": "bdea14e06a9e6978e192fcae7668fd77f00203f880bd45a83369f6c1bb5aa67c",
+      "preview": {
+        "src": "assets/videos/optimized/animation-21-fe82f45d872f.mp4",
+        "bytes": 306784,
+        "sha256": "fe82f45d872f0c1b6ae4d735521a3cdeb3bc1339833c4a5341784e741bfe1c8f",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-21-251a0f96c617.mp4",
+        "bytes": 1011661,
+        "sha256": "251a0f96c61797818fd5c51630cc084132b901ba6607ae2263546a9bb66bbbee",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-22",
+      "source": "assets/videos/animation-22.mp4",
+      "sourceSha256": "dd17395c9b6a1ed05f019b8d3d6242e9be9b7177cebd454128ee160a5ef4330c",
+      "preview": {
+        "src": "assets/videos/optimized/animation-22-27656d5b6a6e.mp4",
+        "bytes": 281695,
+        "sha256": "27656d5b6a6e637b0195283b5b9a733b18653518a1ad0d5ea2299f8716762ed2",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-22-2f213a058fb8.mp4",
+        "bytes": 952944,
+        "sha256": "2f213a058fb84a92097e786a5ebb1b84a3c77957628fc768711388378e50c991",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-23",
+      "source": "assets/videos/animation-23.mp4",
+      "sourceSha256": "8f7c9029bc5741a33c4f7d14fdb6f2aaf4a84336396c6ebba1c4592e10a46a02",
+      "preview": {
+        "src": "assets/videos/optimized/animation-23-5856a18b2bdb.mp4",
+        "bytes": 316189,
+        "sha256": "5856a18b2bdb390d3e73687fd262a47a940445acbe240ccca3069299f9278d24",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-23-f6b6d413f459.mp4",
+        "bytes": 1202430,
+        "sha256": "f6b6d413f459b6d7972a5c542283da09d650e198e83dc63e4d02b336a3921f85",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-24",
+      "source": "assets/videos/animation-24.mp4",
+      "sourceSha256": "dcffdaebabaecdcba9775a9f15aed641c6122e29fa190459493d0e40acb8a2be",
+      "preview": {
+        "src": "assets/videos/optimized/animation-24-feb74613f040.mp4",
+        "bytes": 597943,
+        "sha256": "feb74613f0403ac1f55088bcb95aa895ce2d090d7e24ec58c12768f35c4bf235",
+        "width": 640,
+        "height": 360,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-24-f0b53a416d04.mp4",
+        "bytes": 2028379,
+        "sha256": "f0b53a416d044348f8d70dfa7e38aec3870ccf9bce3ce0003013f2b715407027",
+        "width": 1280,
+        "height": 720,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      }
+    },
+    {
+      "id": "animation-25",
+      "source": "assets/videos/animation-25.mp4",
+      "sourceSha256": "bb0fc2fbe7945fdcad0dbc7122f6f948ba16b36b38d2f46cdb0051e294eb5a4e",
+      "preview": {
+        "src": "assets/videos/optimized/animation-25-ea5ad1ab1ded.mp4",
+        "bytes": 281731,
+        "sha256": "ea5ad1ab1ded4e4ed413f74619900374e4f688b5c065e7d07aaf7c06f671a804",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-25-d42f28f1448a.mp4",
+        "bytes": 1036747,
+        "sha256": "d42f28f1448a3e5915a36a312f6eb4ed411e193dbe4a42890e185cbc0405eed8",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-26",
+      "source": "assets/videos/animation-26.mp4",
+      "sourceSha256": "b86cede2a14b9f5a50b52e14781e4336231e2c3447b12a4e90ba3a0403b6bb9d",
+      "preview": {
+        "src": "assets/videos/optimized/animation-26-76b9b2bcce44.mp4",
+        "bytes": 376362,
+        "sha256": "76b9b2bcce44c3029962beb251bedbb0144db1afde317a4acefe580e0d9fece2",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-26-8e57df6761bb.mp4",
+        "bytes": 1238376,
+        "sha256": "8e57df6761bb81f778f20599d832639e9d39b799765efb2c8f5f1bcf35ac9c29",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-27",
+      "source": "assets/videos/animation-27.mp4",
+      "sourceSha256": "3fa90b10f4df1d944400764a6fb4231789c47f1d8a9ba25f01842eaf4da965af",
+      "preview": {
+        "src": "assets/videos/optimized/animation-27-a3306d53d05e.mp4",
+        "bytes": 342464,
+        "sha256": "a3306d53d05e60cf2cdb68b3d8e6b52f40874239290b6068619366dc70b06d9e",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-27-4a67da852294.mp4",
+        "bytes": 1095087,
+        "sha256": "4a67da8522947e4800051c62694153a0bf84fbc47b65c22e1eb71f3b4bcacdcb",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-28",
+      "source": "assets/videos/animation-28.mp4",
+      "sourceSha256": "1197cb958d2c80be4d08b25a265d394736f43afe99c7b8102370ba32480a6d58",
+      "preview": {
+        "src": "assets/videos/optimized/animation-28-3319403e921e.mp4",
+        "bytes": 289805,
+        "sha256": "3319403e921efeebd19ff986f9d318257f39668c681d4c898010ace90b5b52f0",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-28-6ed8e46a8d27.mp4",
+        "bytes": 1015338,
+        "sha256": "6ed8e46a8d2782938e8338b534169e730f61afd9adcbf0cfdf4f038719071935",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-29",
+      "source": "assets/videos/animation-29.mp4",
+      "sourceSha256": "46262f69f3e8f380e6ba6fc4ce60c5911233ae012db2c0b7c084a93d31247df6",
+      "preview": {
+        "src": "assets/videos/optimized/animation-29-8a5b69624414.mp4",
+        "bytes": 653657,
+        "sha256": "8a5b69624414a83271e47e56e7c83a716f476e4467dc7f7cd0de2de075080b0c",
+        "width": 640,
+        "height": 360,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-29-9a55f3f5dd5a.mp4",
+        "bytes": 2449780,
+        "sha256": "9a55f3f5dd5a1fb754fa75be4c9319398d6481a5df3751d5b07c597f553b118d",
+        "width": 1280,
+        "height": 720,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      }
+    },
+    {
+      "id": "animation-30",
+      "source": "assets/videos/animation-30.mp4",
+      "sourceSha256": "aecf4356970d106874b9fb59dd33661a5ffeb7e87b731b0cc3bd5f92726f453c",
+      "preview": {
+        "src": "assets/videos/optimized/animation-30-790c06f7046f.mp4",
+        "bytes": 599840,
+        "sha256": "790c06f7046f62845665ec97686d1219ee9837c8d129856d595017b71f1ab6d8",
+        "width": 640,
+        "height": 360,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-30-570e21f7d90c.mp4",
+        "bytes": 2033440,
+        "sha256": "570e21f7d90c8b130acccdff817f6d6f38a869c9bd4f79aa2b60c182d9c66992",
+        "width": 1280,
+        "height": 720,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      }
+    },
+    {
+      "id": "animation-31",
+      "source": "assets/videos/animation-31.mp4",
+      "sourceSha256": "c9be6a49fb042e1b9f8bdef9e31a0678c9666b1d0df090ea16918989df7918a5",
+      "preview": {
+        "src": "assets/videos/optimized/animation-31-2e72bb6c990a.mp4",
+        "bytes": 346605,
+        "sha256": "2e72bb6c990a8f7605cb6847ee3e792a3dbb6222eb16e7171a87168cc88d03bf",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-31-d4948f070c81.mp4",
+        "bytes": 1092160,
+        "sha256": "d4948f070c81dc10b9e8b75c82c819d7252d982c70eccb70a6af8784cbb4f337",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-32",
+      "source": "assets/videos/animation-32.mp4",
+      "sourceSha256": "cd90ce590df19eb78401a29f25399446f5724e19cab8441241daed8626043364",
+      "preview": {
+        "src": "assets/videos/optimized/animation-32-8dd3c3f15bbf.mp4",
+        "bytes": 541108,
+        "sha256": "8dd3c3f15bbfee623222e5977632e25540004011d8cd97be6f7f07ddf6989a04",
+        "width": 640,
+        "height": 360,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-32-1967aaee73c5.mp4",
+        "bytes": 1799191,
+        "sha256": "1967aaee73c5c9d7ae0a83fce3df7345c6940bd76c03595b34a72752e99679af",
+        "width": 1280,
+        "height": 720,
+        "duration": 6,
+        "frameRate": "60/1",
+        "frames": 360
+      }
+    },
+    {
+      "id": "animation-33",
+      "source": "assets/videos/animation-33.mp4",
+      "sourceSha256": "183c00e69017f8d0445b69edeb4129283f79bb1c2ea333eefc8b2a577061aaa4",
+      "preview": {
+        "src": "assets/videos/optimized/animation-33-4db1c8a37139.mp4",
+        "bytes": 254059,
+        "sha256": "4db1c8a37139d9c2fc7954bc96deb38ac323307dc1902beb43c2a4bc1b3c77a4",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-33-683bbceb8a68.mp4",
+        "bytes": 817666,
+        "sha256": "683bbceb8a686775011e569b6b052aefa9bc8314aafcd4a47c729d556111103c",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-34",
+      "source": "assets/videos/animation-34.mp4",
+      "sourceSha256": "2db55a89261c11fd8adbecefdd48087d61563d6fbfe6b4ba41fae55ce76b1d52",
+      "preview": {
+        "src": "assets/videos/optimized/animation-34-b871d03cd42a.mp4",
+        "bytes": 239579,
+        "sha256": "b871d03cd42a15225c6ee1dae505d623b0cff3dc54c90aa19421b8b95ea2f2fa",
+        "width": 360,
+        "height": 640,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-34-4df94d33685b.mp4",
+        "bytes": 777378,
+        "sha256": "4df94d33685b8e04e926ad16890862c85d2b56a34ffc5b9bc40e6ebf280192af",
+        "width": 720,
+        "height": 1280,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-35",
+      "source": "assets/videos/animation-35.mp4",
+      "sourceSha256": "6c66ba348f953b7d6e039141324aedea760be910c01f878edead4113189ba29e",
+      "preview": {
+        "src": "assets/videos/optimized/animation-35-f9fbf2f2ae6a.mp4",
+        "bytes": 295520,
+        "sha256": "f9fbf2f2ae6a3415530f5bcee202c42bf45991d943ac495d5ec7d4efbd839d0f",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-35-7fd92f058991.mp4",
+        "bytes": 957306,
+        "sha256": "7fd92f058991a69bcea1e379f8f6d4d565c93ce7640983f2346e0fccc55d2f14",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-36",
+      "source": "assets/videos/animation-36.mp4",
+      "sourceSha256": "7a91c3958217a9329db062a82318b5120e3d320bb2b7c866fbc5d32ae0244443",
+      "preview": {
+        "src": "assets/videos/optimized/animation-36-19bf21f40ff8.mp4",
+        "bytes": 243116,
+        "sha256": "19bf21f40ff837f356417fe04f0e11eae843578b92203c89f689ddbee289dde6",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-36-52b6127bc9da.mp4",
+        "bytes": 764491,
+        "sha256": "52b6127bc9dafeab7af2d0110e305c8bb2fbc64de064066b1f24882642fd50ad",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "animation-37",
+      "source": "assets/videos/animation-37.mp4",
+      "sourceSha256": "4416fb9a7dc4c543904be1779313b28fa26218b94a69ebea3aaea4602ddcf1f2",
+      "preview": {
+        "src": "assets/videos/optimized/animation-37-72cbe2ef9028.mp4",
+        "bytes": 197610,
+        "sha256": "72cbe2ef902835b863d582b1ae140fa82f27ef6df095e7f500b8c20e886b418e",
+        "width": 640,
+        "height": 360,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      },
+      "display": {
+        "src": "assets/videos/optimized/animation-37-90a29316f1fb.mp4",
+        "bytes": 623752,
+        "sha256": "90a29316f1fb1cc6dde648e25be4acea51abcf6e2eb5f3fbf5ac14bbbea7f1b1",
+        "width": 1280,
+        "height": 720,
+        "duration": 3,
+        "frameRate": "60/1",
+        "frames": 180
+      }
+    },
+    {
+      "id": "chibi-01",
+      "source": "assets/videos/chibi-01.mp4",
+      "sourceSha256": "b2358c52f85c2558e2f6b28b43481351a4359318d95405dc04c85336cbbce4d2",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-01-3e6c0365d93a.mp4",
+        "bytes": 112376,
+        "sha256": "3e6c0365d93a235a081d66a4f7327052e238a3cb83bbf84cb97baacbd5c93384",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-01-4bf7b6770e5b.mp4",
+        "bytes": 304696,
+        "sha256": "4bf7b6770e5b2a39b58ddda3e166d55a1fdc8bf606a5d184990e81b880a63169",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-02",
+      "source": "assets/videos/chibi-02.mp4",
+      "sourceSha256": "12b68bb7a99c6aff82cbf792164285d6f54c149523b54c7a53c1f84a47120874",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-02-fbf813d7855a.mp4",
+        "bytes": 119147,
+        "sha256": "fbf813d7855aec0e8f9212ee786e003464dc05f6e02502c834e29cfa3e802fa1",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-02-f6e5aa62eea2.mp4",
+        "bytes": 322763,
+        "sha256": "f6e5aa62eea204a8f4daff031ebd2c2afa8d4c4b7888d5aecb88f71e10e7589c",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-03",
+      "source": "assets/videos/chibi-03.mp4",
+      "sourceSha256": "1834eed8ac7d59b86b9f0dbb35813d314e2683c9394c1523e6c9ebd411042510",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-03-aeb4362512c5.mp4",
+        "bytes": 168242,
+        "sha256": "aeb4362512c543b9dbf544de71642d5ed0137bf4ad5d7cc4593d7edeaeef4a86",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-03-f6ce51cc6e93.mp4",
+        "bytes": 447672,
+        "sha256": "f6ce51cc6e932373fb7ee54d2e42997397ca9c88a858b8bcef6024d7f0954a5b",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-04",
+      "source": "assets/videos/chibi-04.mp4",
+      "sourceSha256": "0ccfeff14d36e78fffa8913c840dba91d3fff7cfd6bfd067956a257ab34adc13",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-04-e751c106a24c.mp4",
+        "bytes": 111432,
+        "sha256": "e751c106a24ce90cea398a329cc02bba1b8d6bf3f7369adef2c6fb9903ae1dad",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-04-a2633937e3f0.mp4",
+        "bytes": 303103,
+        "sha256": "a2633937e3f007d92c470507b57b1e74d2884ea46ef07fc4ce6fba583cd3d3c2",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-05",
+      "source": "assets/videos/chibi-05.mp4",
+      "sourceSha256": "5c3044516f4d84842df7497be464e87f1aea28652a2d2832288e33ab003144a5",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-05-e65369dce4f9.mp4",
+        "bytes": 111945,
+        "sha256": "e65369dce4f992a5b1bd4b1b7b27da63e9464af30f93a88cdc9b107f48a0f5c7",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-05-d7a973f49a17.mp4",
+        "bytes": 311543,
+        "sha256": "d7a973f49a171bd5a67c07fe4602a1c4e117d692f791924ef98841e0ac4939cc",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-06",
+      "source": "assets/videos/chibi-06.mp4",
+      "sourceSha256": "829c4b5afef788d53071caf44d9e3435d119c45a2e7e20102975cfde69bac002",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-06-8cab912480b4.mp4",
+        "bytes": 126778,
+        "sha256": "8cab912480b4b8fa3b037bef4f0913624483b9723e15880fd1459e90bedd5c77",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-06-21c4002400bd.mp4",
+        "bytes": 342692,
+        "sha256": "21c4002400bd12e26e3e248773f0bf068e6d4e31ac6cfedc0355773f4e1c1615",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-07",
+      "source": "assets/videos/chibi-07.mp4",
+      "sourceSha256": "e98b47f36575fd307d42b95669894a9aea7176c61e733ec9c82fd23d29748de2",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-07-fe049d706a88.mp4",
+        "bytes": 110677,
+        "sha256": "fe049d706a88de291c462314a371ca89e662660b1bea6719e8603b662ceb2389",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-07-9c15d99c1e68.mp4",
+        "bytes": 292681,
+        "sha256": "9c15d99c1e68b647ab28461789847d88766373907f646bc09d214cb7694bdce6",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-08",
+      "source": "assets/videos/chibi-08.mp4",
+      "sourceSha256": "59f7264228194f7d93ede5940f272314d2467702ddc88f502978be8df516f073",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-08-2c5179816880.mp4",
+        "bytes": 123278,
+        "sha256": "2c517981688033c96d2dc1ac0f79990d9092680907b7986dd113cc2d8227f34d",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-08-186535ebd51f.mp4",
+        "bytes": 335540,
+        "sha256": "186535ebd51f678d7351581b5fd9f27830513ebb8737c5e5eadb0a9e21ced935",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-09",
+      "source": "assets/videos/chibi-09.mp4",
+      "sourceSha256": "54c798b1b46ae6b0f23de028a6d814775530e90e40403fc6ae3c45ca699a88fa",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-09-ef5d5cd3697d.mp4",
+        "bytes": 113083,
+        "sha256": "ef5d5cd3697df6821b775476e68655ebbabfcb283ef28779facf65037c6b86f6",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-09-01f602f0cc89.mp4",
+        "bytes": 312579,
+        "sha256": "01f602f0cc891149390fd9747e9bdf262c74f4210196483de7741d88964f112a",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-10",
+      "source": "assets/videos/chibi-10.mp4",
+      "sourceSha256": "1bde7dd69731e97a99ec08639ef04c52e735d26986638efcb3dae2df4e7dc41c",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-10-46151cdf38dc.mp4",
+        "bytes": 138655,
+        "sha256": "46151cdf38dc91b254adb3bda232844df319f33b2baffce4aaab69486ce71a02",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-10-62f3b88d07a1.mp4",
+        "bytes": 379118,
+        "sha256": "62f3b88d07a10daabb351f2abb6f6b237addd0fa586a3d03671597098d1d0e2e",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-11",
+      "source": "assets/videos/chibi-11.mp4",
+      "sourceSha256": "ef6aca164b7adf0f8181214af8d594bf030ed3bfc6a452c7211b7d08a561b396",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-11-17d7ceca178a.mp4",
+        "bytes": 103760,
+        "sha256": "17d7ceca178a1093894a54a5c18b507d3764e9e13aee0a81bef38472b316f403",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-11-5415439f3999.mp4",
+        "bytes": 288893,
+        "sha256": "5415439f3999b0878fab6ae36a63fe4231483d44e221097fa073d57d031b2579",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-12",
+      "source": "assets/videos/chibi-12.mp4",
+      "sourceSha256": "6a63ff8e427f26bb1b9d62d6038f8e69e91177cebb4d58a0b6ef326af4b24ef7",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-12-9078f33e863f.mp4",
+        "bytes": 106659,
+        "sha256": "9078f33e863f88886c50196f846fc08b162460c534c5e46f2efbb8c6f4ce2b07",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-12-23ee28fa56a2.mp4",
+        "bytes": 293318,
+        "sha256": "23ee28fa56a2b77f54e8c2c47fb39152993669c320a85a07da2cf3c79cbedbed",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-13",
+      "source": "assets/videos/chibi-13.mp4",
+      "sourceSha256": "541b69b3ea2cbd3400e1238f52ad958814995ccacc9032aea35c7315ffcf4760",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-13-0bdfa2c7f8d0.mp4",
+        "bytes": 106767,
+        "sha256": "0bdfa2c7f8d048be9b603f03523a8556ee1054f10b8c9f0867de6489beeac2fe",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-13-e8bd1925738a.mp4",
+        "bytes": 289035,
+        "sha256": "e8bd1925738a5aec4f1844b18682a6fcc569b42838aa24904e06dc1a1b5a9357",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-14",
+      "source": "assets/videos/chibi-14.mp4",
+      "sourceSha256": "93a0de15a1d088ebf7e00394b90fab7f876508ae77b21220e28575e82f61d1ca",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-14-aee9d3943a4d.mp4",
+        "bytes": 87501,
+        "sha256": "aee9d3943a4d3afd9066fd86b6dddb46044cde0ee1c9609bf043d70c9d58000d",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-14-632090068e5a.mp4",
+        "bytes": 238999,
+        "sha256": "632090068e5a09160298c968fea9e3dba84a12db981b536ecddd635787bfa38c",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-15",
+      "source": "assets/videos/chibi-15.mp4",
+      "sourceSha256": "f745f27a354ac0b5f636af76c5f251d9bfc9791d721be13c02ee656d575b4f34",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-15-d071d151d3b1.mp4",
+        "bytes": 108006,
+        "sha256": "d071d151d3b1800442b7590b1dac0b254349767cde0dc888433bd6a2b1e61f40",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-15-3406f1999851.mp4",
+        "bytes": 278238,
+        "sha256": "3406f1999851107ef9d0513e87a7c8ae8e9ecf4aa57e9ec7abbb8b2aaee649ed",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-16",
+      "source": "assets/videos/chibi-16.mp4",
+      "sourceSha256": "3fcf19bf95c8080bb6606ae974010a3a4eba01571e772fab1c153edf57c9ffe8",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-16-2d7f1d1921c3.mp4",
+        "bytes": 117574,
+        "sha256": "2d7f1d1921c3e4d1aa9c8fdc45ff8661bd7c254c9f427496b8de99972095e88c",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-16-bb175c342f3b.mp4",
+        "bytes": 316622,
+        "sha256": "bb175c342f3bb6a3c24071f2e42df8170c8b3fa2bf9401d794bc77a47a846c59",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-17",
+      "source": "assets/videos/chibi-17.mp4",
+      "sourceSha256": "bf440c8fadd7d92732956249590b9de7e982cec7462320a03e0f3f0402437f33",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-17-2f8763dd7b6c.mp4",
+        "bytes": 95728,
+        "sha256": "2f8763dd7b6cdcddd989c451432b967103f559710749f4a037f2984497eb6024",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-17-4343d83b1052.mp4",
+        "bytes": 269850,
+        "sha256": "4343d83b105253f7b7f5348bec80e2f618007e07e8e24b81abebd7ea09631618",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-18",
+      "source": "assets/videos/chibi-18.mp4",
+      "sourceSha256": "31e959d96725a7e4372c0bc4b1d0a3a048045f3334aca0fb907bf807fb01af01",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-18-0ef2b4575fbf.mp4",
+        "bytes": 108435,
+        "sha256": "0ef2b4575fbf324508f4f0f8fa82f0285f4df766f40e182cf8400c9b5736a0c3",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-18-b16279ff53d1.mp4",
+        "bytes": 293801,
+        "sha256": "b16279ff53d1637a6562f67386339d3b1c2d273d2899af7bc24c4ec5769be3f0",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-19",
+      "source": "assets/videos/chibi-19.mp4",
+      "sourceSha256": "0ee117219051339eb58114090b839b4bc33d2701294384a5163168b0b7d0aa0b",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-19-8bc1d5854459.mp4",
+        "bytes": 102082,
+        "sha256": "8bc1d5854459d272d8a06c7b4e146e415600e59bb3864e334dea2d7e623cb6ac",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-19-e46885a0d45c.mp4",
+        "bytes": 270371,
+        "sha256": "e46885a0d45c9f5e75dd0f65a78351b6faa8ac91b2c6ffe470839b3c4af08389",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-20",
+      "source": "assets/videos/chibi-20.mp4",
+      "sourceSha256": "3e9b66446779a619118bd907480638de937ce06f6884e58a2d497aa1ce0de6fb",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-20-b36c95261b9c.mp4",
+        "bytes": 102282,
+        "sha256": "b36c95261b9cf438dfdf8daca6a040c523daa45d1e31e5011a86cc930a6ff0a3",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-20-09236504840c.mp4",
+        "bytes": 282677,
+        "sha256": "09236504840cb0cf44dafd21cc541ce781e27a2e9ed6041a4b5f0f8389920df8",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-21",
+      "source": "assets/videos/chibi-21.mp4",
+      "sourceSha256": "ec4ae853bc2495ccc217306f52acdd99e13f1489919f732cd5f9ae33df7edbe6",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-21-281e15b82ab2.mp4",
+        "bytes": 103105,
+        "sha256": "281e15b82ab22461c2ff2b4b685c5a4312f1b2ad9b7a6b65f9a2faf1c378267d",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-21-1bf504980f4c.mp4",
+        "bytes": 283506,
+        "sha256": "1bf504980f4cca53d898b132b137a3be35da4cb0b1d48309bac6c77359d36879",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-22",
+      "source": "assets/videos/chibi-22.mp4",
+      "sourceSha256": "95473a4c60829e62cd8da332f8f63722c4f6317ae7123512d0117d2088f5dfbe",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-22-d9046501ffe2.mp4",
+        "bytes": 94968,
+        "sha256": "d9046501ffe2e14873f5db1f1dabb29c3813cd943ed7090002d949012141be68",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-22-27e900517437.mp4",
+        "bytes": 261651,
+        "sha256": "27e900517437e4df998cfad06a4cb39e90593d1102434ef34699d53b5fd7b6dd",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-23",
+      "source": "assets/videos/chibi-23.mp4",
+      "sourceSha256": "229be33ca000c2815e683c936c470347450b99c1cebad2ab4f6e1699a0ea76e7",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-23-99fdf7ca60a4.mp4",
+        "bytes": 106491,
+        "sha256": "99fdf7ca60a42cf15bea32a5b1714cdf91a7ecff97d30c3eb6f9820767ce39d5",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-23-fa3e2e773813.mp4",
+        "bytes": 297100,
+        "sha256": "fa3e2e773813aa19213a5c4147991c34ba18ddb942a6005fe8ca46f1c539cc93",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-24",
+      "source": "assets/videos/chibi-24.mp4",
+      "sourceSha256": "1f69f69b64cbdd9eb4aaa883a44f0889d1305da06be7f292bf38d8c07626e246",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-24-994365777bb8.mp4",
+        "bytes": 107901,
+        "sha256": "994365777bb8649f2d5ab1707241b279199dfb1ad50956c22e03e5198e7d34c0",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-24-cb1c1909be9e.mp4",
+        "bytes": 298061,
+        "sha256": "cb1c1909be9e23d8e9a29cfec776485e882a2d481e308d345ee2584b062d7ad4",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-25",
+      "source": "assets/videos/chibi-25.mp4",
+      "sourceSha256": "1c03c139f7f2c158dc4382868ba1b27e952ea7256b8a3af6325f5494a8ba3c91",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-25-9c30c58f1915.mp4",
+        "bytes": 86833,
+        "sha256": "9c30c58f19158071350a02119e2f752549cf910ff7774683a7f41bb807500c9b",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-25-cecfe6580d1b.mp4",
+        "bytes": 238648,
+        "sha256": "cecfe6580d1b9d68a5829b594b6a298d2df94aaca4cb6e9841785b4f64febb53",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-26",
+      "source": "assets/videos/chibi-26.mp4",
+      "sourceSha256": "d393c44f0e233def7d63f101d1aede794a6fc4af96575579bc327686ad83de74",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-26-618a7701c105.mp4",
+        "bytes": 85772,
+        "sha256": "618a7701c105e1cad04c97dbaae0a5070420314a83efba6c21aa1f7a36f36d58",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-26-8bab25b7db1f.mp4",
+        "bytes": 236809,
+        "sha256": "8bab25b7db1f96d39ee64c02eb1dc7a163db0b634b0c8f2fd9d67739931b0620",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-27",
+      "source": "assets/videos/chibi-27.mp4",
+      "sourceSha256": "890864dd76bea818b3cb3f959839a15260fb297f5f79ab7ee3e320bd42868a12",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-27-2712ad760315.mp4",
+        "bytes": 74793,
+        "sha256": "2712ad760315228b7e065ec6f79c4483dca18b9921ba1858eb7574a0686de392",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-27-dba45cf8ddb7.mp4",
+        "bytes": 210376,
+        "sha256": "dba45cf8ddb72dfb529f22129426683711d6e8e2ec91feb0a554ddc4672297b0",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-28",
+      "source": "assets/videos/chibi-28.mp4",
+      "sourceSha256": "027304e6e0b3a8394cd9fa85c1c59bcb64617268acd662f345c88154461b159e",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-28-d122b4edd9c5.mp4",
+        "bytes": 101621,
+        "sha256": "d122b4edd9c5e0de3bed4c241fd56574a1069e0b83fb3d6cc2553f18e7f22c70",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-28-391d849ef7ec.mp4",
+        "bytes": 274604,
+        "sha256": "391d849ef7ec37a71e707ec41dcc70f9e27737bea6af522c91c11449d692a87e",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-29",
+      "source": "assets/videos/chibi-29.mp4",
+      "sourceSha256": "4afe5b22244011c2275d5e63aef6765b689c51314fcbcb9e03e727308f59b355",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-29-842a37c9cd64.mp4",
+        "bytes": 83136,
+        "sha256": "842a37c9cd640dd8696f5f8af46847e09c78a08645b9be6dd8624dc26b9dfa7f",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-29-c802118d2adf.mp4",
+        "bytes": 226772,
+        "sha256": "c802118d2adfe60128aceeadc10400030c8797ff3e6666a7b11b282857e56c98",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-30",
+      "source": "assets/videos/chibi-30.mp4",
+      "sourceSha256": "2233425c4aafae6f9da8e4e373cc2efa83d7b0a6940be5ec815791258e81cb8a",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-30-905145062f20.mp4",
+        "bytes": 104001,
+        "sha256": "905145062f203a98b5c7fbfc7c3ecf37652fa0d2d96fdfa035a9719b115cd7ad",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-30-d2531821fad4.mp4",
+        "bytes": 284465,
+        "sha256": "d2531821fad4b80fc9ded8dc050174390f528f2a42f959f6fcb821e929e55297",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-31",
+      "source": "assets/videos/chibi-31.mp4",
+      "sourceSha256": "59f455786e51fde2e2d9037ee384d58115f34aaaadb8647e3d71ab67df3594ac",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-31-0b102a7a8a93.mp4",
+        "bytes": 144468,
+        "sha256": "0b102a7a8a935750de4827d32f5f901663e4c02a16e7f3ea8ae4d37ce47c6671",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-31-431c92003f71.mp4",
+        "bytes": 387791,
+        "sha256": "431c92003f71536b12c314ed5951f87b588072c4063904f7ec11522a6821e4a1",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-32",
+      "source": "assets/videos/chibi-32.mp4",
+      "sourceSha256": "6ee3dfcd74a1f8b0e6e63fef78208ef1c486f7c0068f86721d1dd68969864b9e",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-32-a593b33676ab.mp4",
+        "bytes": 143083,
+        "sha256": "a593b33676ab0dfe157c20077baa745598cf5da963fcebbf2ed92fc6edce8e46",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-32-89472481c891.mp4",
+        "bytes": 390915,
+        "sha256": "89472481c891615ad6d27a97636d89c0136102c4a2c3eb88afd8c14040989715",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-33",
+      "source": "assets/videos/chibi-33.mp4",
+      "sourceSha256": "cacfefd2cc2f4a41bf78fe1800d3d807c4dfc962467025e62acf32bc63ce0292",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-33-5dcc30d941aa.mp4",
+        "bytes": 110694,
+        "sha256": "5dcc30d941aacd1ed0588b9504bd00c4d40fed8806bad8ba3c9f70c77a9629e1",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-33-ec8cfc4722e3.mp4",
+        "bytes": 305693,
+        "sha256": "ec8cfc4722e3ab6a9b554d841dceec8edd18eaacaf54d10d078b0f2d8a50ed63",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-34",
+      "source": "assets/videos/chibi-34.mp4",
+      "sourceSha256": "af958414ac9851c0926df4d43ec3e6f13940846f36cb3d7955ea33f7f8681e11",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-34-156305682d7b.mp4",
+        "bytes": 146144,
+        "sha256": "156305682d7b3d25f2ed17f12f49a35bf0545ca3ce3fbf075694ba3929b5ee20",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-34-c5c9a6c872f2.mp4",
+        "bytes": 402628,
+        "sha256": "c5c9a6c872f2fe5a9e9a50ff932acbfc4209de05d505e19bc93e2c28d276fda0",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-35",
+      "source": "assets/videos/chibi-35.mp4",
+      "sourceSha256": "0acb3eb9e543bdf982185547b41e53c5c3a506f62b71d54c0678dcdd16e2eddf",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-35-85c544f701b9.mp4",
+        "bytes": 127071,
+        "sha256": "85c544f701b925735cfcae64a9d507730618a3a8e3d5bb9a166164cfc3e7bcee",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-35-ef1288d4fde7.mp4",
+        "bytes": 341748,
+        "sha256": "ef1288d4fde77e80d013e2e51d04d6edfb8256086267e558dc98e59cc8d159c8",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-36",
+      "source": "assets/videos/chibi-36.mp4",
+      "sourceSha256": "2f24424a4fe1a328af42cbce5ddc2ead799fd1a9bff8a14e9df1228fe170ff38",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-36-2e3cba89141e.mp4",
+        "bytes": 113627,
+        "sha256": "2e3cba89141e4e23cb8d67b4c7c351224be65253480d2181e9723f1cd058fd04",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-36-deca41222a73.mp4",
+        "bytes": 309482,
+        "sha256": "deca41222a732ce9e8c4342856af254e038fb476eee5d12fe0da628eff32690f",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-37",
+      "source": "assets/videos/chibi-37.mp4",
+      "sourceSha256": "02e35638148bad5150cd7056e85c8455eff4ffe08df3f19a0ee80de8bda220e9",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-37-e6475bd85722.mp4",
+        "bytes": 126443,
+        "sha256": "e6475bd857226efffc1bd96d84359084cd3b0bfe9ea635464d05e48e6924f0bc",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-37-27282601d9f8.mp4",
+        "bytes": 340778,
+        "sha256": "27282601d9f882211964092d2cb98452d5e364f7e2193d95ad3127bd09b89dd2",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-38",
+      "source": "assets/videos/chibi-38.mp4",
+      "sourceSha256": "c1b374ea285ee1b91ece43fd8d605fa7b4a61b2d8ffafb19ab877f4130ce3c8a",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-38-5d53a320a18c.mp4",
+        "bytes": 201844,
+        "sha256": "5d53a320a18c4bec96854a246b1f9ee2d5b847dfa9763a69418afe236e1ccdb8",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-38-6bb83b94e705.mp4",
+        "bytes": 543931,
+        "sha256": "6bb83b94e7054a713df4fc80347c479c1294cfdcbb41b7661941c50c4adbb5ce",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-39",
+      "source": "assets/videos/chibi-39.mp4",
+      "sourceSha256": "912148f20e3ff4362805209abe57bbfe0c17aa91ef0f801bdf477527f8f86e6a",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-39-cfa0b966de7f.mp4",
+        "bytes": 171898,
+        "sha256": "cfa0b966de7f370529a6ba7db9d4dafc617ecba8e40052cfb0084510c416dac3",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-39-3cc9c1a53e5d.mp4",
+        "bytes": 470615,
+        "sha256": "3cc9c1a53e5d2b3870693871e38bb1626ce65904371ae7475c5e8e6ca9e52c17",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-40",
+      "source": "assets/videos/chibi-40.mp4",
+      "sourceSha256": "77453c58840c7553fb389a4fe2d9bee9b3ea2a22a6f22ffc8f0f44debe01a6d7",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-40-70656da39bd7.mp4",
+        "bytes": 99252,
+        "sha256": "70656da39bd75f32b3391dec96e03593a7e7a7d05729579e829e90aafa6cd71f",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-40-4e5b096e096e.mp4",
+        "bytes": 269024,
+        "sha256": "4e5b096e096eb4458a273b07aa8741c92bbadcc428a1907926bd944e4adb98e2",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-41",
+      "source": "assets/videos/chibi-41.mp4",
+      "sourceSha256": "d220d5d9f1d9e35d4897f48724ca148485cfd05f89c8ce11b61c3c08cc65db85",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-41-ef04547d51ce.mp4",
+        "bytes": 127600,
+        "sha256": "ef04547d51ce155d3493afca985a55d8626f434442a3cb3813c89a4ba1cdc433",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-41-c147735ae1fc.mp4",
+        "bytes": 353178,
+        "sha256": "c147735ae1fc6f28b47775e5ecd0481cd043776c62e0603b3f155fdc87c9b402",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-42",
+      "source": "assets/videos/chibi-42.mp4",
+      "sourceSha256": "fd9b0c858a35062a7469f570eac1f56e7cd27e62b3d51ca0afea90cbcb078cdf",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-42-65ebd42ef590.mp4",
+        "bytes": 106044,
+        "sha256": "65ebd42ef5909bbc6e060f9395ebe59148402d5ce24afe99d4a6f7e6521c5c1b",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-42-45a794f537fe.mp4",
+        "bytes": 293363,
+        "sha256": "45a794f537fee848c1fdb4fbed41ec88ba3d40ba27156fd053494db58bd26c0e",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-43",
+      "source": "assets/videos/chibi-43.mp4",
+      "sourceSha256": "778d026d4ac30f0288159088103d3994c4f2687dbb946b499a74c0c599e8365f",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-43-933cd769f1d1.mp4",
+        "bytes": 64318,
+        "sha256": "933cd769f1d13f5db2e7df80ab946dd5ad8ccab951cdc89373eefdec20b548d4",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-43-a6ee52e7cd22.mp4",
+        "bytes": 174379,
+        "sha256": "a6ee52e7cd22c370b7277d9d5ce1fd1b049b8a55a7b94f73a041e7f788ccc622",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-44",
+      "source": "assets/videos/chibi-44.mp4",
+      "sourceSha256": "ba3bafe2b8359d840db9c91fc5128a52bec065b8fb6c19dd8170b3e4a5a0c214",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-44-6c8239693cd0.mp4",
+        "bytes": 85373,
+        "sha256": "6c8239693cd0ef5f759c65d7ba6e20e3e84d81fad672b401b6977ec7455f204d",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-44-867ac9623071.mp4",
+        "bytes": 229940,
+        "sha256": "867ac9623071f2acb17f34e2e7ce8e3fcba45003f154b937d3c5c918aa5b7d78",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-45",
+      "source": "assets/videos/chibi-45.mp4",
+      "sourceSha256": "4cba9f552ecc316acf8390829d0eef252f1a897ac8ca38255b0c438df5b09ca7",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-45-24a9198ee00c.mp4",
+        "bytes": 108264,
+        "sha256": "24a9198ee00c7963e14563b25dc7f538a061cbd879c3e569e78959b332664bd9",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-45-cc1bc3189679.mp4",
+        "bytes": 307526,
+        "sha256": "cc1bc3189679d89851fa8c0262e6bb267922dfea86c03f15cd744354405210b0",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-46",
+      "source": "assets/videos/chibi-46.mp4",
+      "sourceSha256": "2fdc8b66e92e69eb32f7ff9ef65c6c8ba148a1e9f75bec67bb7ba7696e7221ff",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-46-994cb2f03316.mp4",
+        "bytes": 79327,
+        "sha256": "994cb2f03316292e69422c670d5e6ec7387fea5b6b22267545fbac414602d7ee",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-46-05b01d597bab.mp4",
+        "bytes": 222419,
+        "sha256": "05b01d597babcc65aed53b0fddfd445eeeb2aa11dedb555e233748dfd47c23b1",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-47",
+      "source": "assets/videos/chibi-47.mp4",
+      "sourceSha256": "6cbba149d58b63ead85dacb1dd2f8b657a3f7cbd9a7a29a62ddfd92d79228bbb",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-47-d65b7bcb969f.mp4",
+        "bytes": 81984,
+        "sha256": "d65b7bcb969f47b111216797c295465f7d296dd82faa59f68fd02bc94b59f5b2",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-47-1ec81a6d616d.mp4",
+        "bytes": 226856,
+        "sha256": "1ec81a6d616dff16f48e9027087624a8446312867d16bce572ebc7a6a05714fc",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-48",
+      "source": "assets/videos/chibi-48.mp4",
+      "sourceSha256": "de29264de83940a67d2014d031320abf13ff6daa89860ec4fe9eba43219527ef",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-48-7c074bb74cb4.mp4",
+        "bytes": 91554,
+        "sha256": "7c074bb74cb464f5ef0a5211f642f6817c6c614029a8b1bd7bd5e3de84d65fca",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-48-9b6495211efc.mp4",
+        "bytes": 258789,
+        "sha256": "9b6495211efc989dd35097d7c95305fa561680ef9505f62a40f1796a1954b179",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-49",
+      "source": "assets/videos/chibi-49.mp4",
+      "sourceSha256": "8637a0da3e764a2be269d8536231e4999af60100966a187ef561acdec9ed34bf",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-49-e374ac259239.mp4",
+        "bytes": 115974,
+        "sha256": "e374ac2592392eb9e042e64a5bfbb2cbae7d4710eef6605fc3730a9d590162e2",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-49-d5497358d24e.mp4",
+        "bytes": 319077,
+        "sha256": "d5497358d24ee81d3ad3296bf61e946ea4c81dbd9ef298b153e24bb8640290f8",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-50",
+      "source": "assets/videos/chibi-50.mp4",
+      "sourceSha256": "aff62d2108ad035779be4dfadb12af57f07ae477ae50976d18324c4206501657",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-50-aae21b1ef460.mp4",
+        "bytes": 106372,
+        "sha256": "aae21b1ef460c5c856ec407c56fade0029cfc4f2504044d705d14ee4f37646c8",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-50-db836d9abb72.mp4",
+        "bytes": 297360,
+        "sha256": "db836d9abb72be7d254d28ea14a94e1cab358d81483bb240c5fc3124425f7d0b",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-51",
+      "source": "assets/videos/chibi-51.mp4",
+      "sourceSha256": "3f0ca687d6d52900213d08fa98248ad8747096c4be8e1a52c692b821828ffc27",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-51-353fbb2421fd.mp4",
+        "bytes": 137462,
+        "sha256": "353fbb2421fda9c8ac808420f0573f9d3eb934a2068ce2c57816fc9481fb472e",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-51-398c009ae979.mp4",
+        "bytes": 378085,
+        "sha256": "398c009ae979f8d75c47a0acd5aeb974a0f0bea2242803ae3c84963c2b288e60",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-52",
+      "source": "assets/videos/chibi-52.mp4",
+      "sourceSha256": "f777a63201adf6cfc13000bba4887f31a142aca2d2ceb2f4972f40a3b1ea4aad",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-52-72bb54a99a91.mp4",
+        "bytes": 96279,
+        "sha256": "72bb54a99a919bfc6910266b99de694405642968b10360e44a47a0431569da03",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-52-8a08e717a50d.mp4",
+        "bytes": 265805,
+        "sha256": "8a08e717a50d596520a30e80eb61abb37baf48ac8b8e7febbbdfe9e91f9ba570",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-53",
+      "source": "assets/videos/chibi-53.mp4",
+      "sourceSha256": "ebec5d5c7d74a34879509d71ac8a319278772f8d3d78d050bccc5435687d65ee",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-53-18fd2f55e701.mp4",
+        "bytes": 128737,
+        "sha256": "18fd2f55e701523c1afc16682a1f97a6dc889b9530bdbdeb7e560587712601eb",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-53-da6df53253b3.mp4",
+        "bytes": 363173,
+        "sha256": "da6df53253b3c77e91427a683defaa617c34fa652f8bf51741b9d3115b105aab",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-54",
+      "source": "assets/videos/chibi-54.mp4",
+      "sourceSha256": "55d43ade30bcffb6e58ee2261b5bdc414778fd4880710d7cc0a9d17d3ae94dca",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-54-0d770d0bb792.mp4",
+        "bytes": 94385,
+        "sha256": "0d770d0bb792fa6ff518e43e84f8e92b4d177f40941ed5b817aec163e5081ac5",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-54-c7a55ab71705.mp4",
+        "bytes": 254925,
+        "sha256": "c7a55ab71705c017ae396f8e89b73e4677f99141ffe7a5c2b40523356b8c6860",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-55",
+      "source": "assets/videos/chibi-55.mp4",
+      "sourceSha256": "a659e6d3961c4305492c5b80edf2e5a965fe3731c2c57b28b46ba9b88f86282e",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-55-cc5a5f1bf8ff.mp4",
+        "bytes": 77439,
+        "sha256": "cc5a5f1bf8ff5de9f2f87ebf42a4fc2190f499ec5acc5a431160427c1430b81f",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-55-57c2dc5fee86.mp4",
+        "bytes": 215535,
+        "sha256": "57c2dc5fee8607865ae7ab035f259d9365d7b0022b976518df720e1ccaf1e917",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-56",
+      "source": "assets/videos/chibi-56.mp4",
+      "sourceSha256": "c623b336262873b6c60b602d2de49ee03223ffab8b4b586f8570092e28b386a2",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-56-c81097eec717.mp4",
+        "bytes": 78140,
+        "sha256": "c81097eec7174726bf27627c3ffe8ea61137343efc6b4c5ae559057daa4f80ff",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-56-24b84bc9de7a.mp4",
+        "bytes": 213116,
+        "sha256": "24b84bc9de7a9ce91f65c9c82d281642ecd27678c4a39816d546198dfe22bc24",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    },
+    {
+      "id": "chibi-57",
+      "source": "assets/videos/chibi-57.mp4",
+      "sourceSha256": "689e3538cf7e30c8f2db8cf92a518757d3d2cf1f43c5f8d05b11e772701fff7e",
+      "preview": {
+        "src": "assets/videos/optimized/chibi-57-8d51bb6e26ce.mp4",
+        "bytes": 75609,
+        "sha256": "8d51bb6e26ce67404463753e5fbf93063ae56d4cd8919878354fbbf7ca659ee5",
+        "width": 640,
+        "height": 640,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      },
+      "display": {
+        "src": "assets/videos/optimized/chibi-57-376e346fdbdd.mp4",
+        "bytes": 207993,
+        "sha256": "376e346fdbdd0992090869aa79911fe15a4da1bd472aa86a95f63c1b21152a2d",
+        "width": 1080,
+        "height": 1080,
+        "duration": 2,
+        "frameRate": "60/1",
+        "frames": 120
+      }
+    }
+  ]
+}
