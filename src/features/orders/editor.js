@@ -68,7 +68,10 @@ export function setupEditor(form, config) {
         element("h3", order.source.cardName),
         element("p", `${order.source.boardName} · 原欄位：${order.source.listName}`),
         element("p", `原標籤：${order.source.labels.join("、") || "無"}${order.source.archived ? " · 原卡片已封存" : ""}`),
-        element("p", `來源最後活動：${dateLabel(order.source.lastActivity)}；匯入：${dateLabel(order.source.importedAt)}`),
+        element("p", `Trello 建立：${dateLabel(order.source.createdAt)}`),
+        element("p", `Trello 最後活動：${dateLabel(order.source.lastActivity)}`),
+        element("p", `匯入本站：${dateLabel(order.source.importedAt)}`),
+        element("p", "以上為台灣時間。Trello 最後活動包含卡片移動、內容或標籤等異動，不一定代表製作進度更新。"),
         element("p", "可更新製作進度與備註；原標籤只作來源紀錄，不代表本站確認的付款或報價。"),
       );
       const link = element("a", "查看原 Trello 卡片");

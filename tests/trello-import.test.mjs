@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { backend, submission } from "./helpers/apps-script.mjs";
 import { prepareTrelloImport } from "../scripts/lib/trello-import.mjs";
 import { filterBoard } from "../src/features/orders/board.js";
+import { trelloCreatedAt } from "../src/features/orders/contract.js";
 
 function fixture(count = 2) {
   const board = {
@@ -20,6 +21,22 @@ function fixture(count = 2) {
   return { board, service: "chibi", stages: { ["c".repeat(24)]: "queued" } };
 }
 const batch = (count) => prepareTrelloImport([fixture(count)], { includeArchived: true, publishTitle: true });
+
+test("Trello Card ID 換算秒級建立時間；讀取舊匯入補時間但不改寫原資料", () => {
+  const id = Math.floor(Date.parse("2025-03-14T01:02:03Z") / 1000).toString(16) + "0".repeat(16);
+  assert.equal(trelloCreatedAt(id), "2025-03-14T01:02:03.000Z");
+  assert.equal(trelloCreatedAt("not-a-card"), null);
+  const app = backend();
+  const data = batch();
+  data.cards[0].source.cardId = id;
+  app.context.importTrelloOrders_(data);
+  const before = JSON.stringify(app.rows);
+  const publicOrder = app.invoke("progress.list", { limit: 200 }).data.orders[0];
+  assert.equal(publicOrder.trelloCreatedAt, "2025-03-14T01:02:03.000Z");
+  assert.equal(publicOrder.trelloUpdatedAt, data.cards[0].source.lastActivity);
+  assert.equal(publicOrder.importedAt, publicOrder.updatedAt);
+  assert.equal(JSON.stringify(app.rows), before);
+});
 
 test("完整看板快照可立即篩選；空結果與雙旗標的欄位件數一致", () => {
   const snapshot = [

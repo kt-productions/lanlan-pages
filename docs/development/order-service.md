@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 3 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ACCEPTING_ORDERS=false`。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。曾觀察到偶發 45 秒逾時，操作結果不明時先重新讀取。現行結果見[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 4 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ACCEPTING_ORDERS=false`。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。曾觀察到偶發 45 秒逾時，操作結果不明時先重新讀取。現行結果見[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
@@ -117,7 +117,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 ## 管理頁目錄網址相容性
 
-目前 `Auth.gs` 同時接受 `admin/` 與舊 `admin.html`；第 2 版已更新雲端並完成真實登入回程驗證，第 3 版沿用。舊 `admin.html#ticket=…` 會由前端轉址並保留登入票證；管理頁網址或 BotFather 回呼改動仍須重新驗證。
+目前 `Auth.gs` 同時接受 `admin/` 與舊 `admin.html`；第 2 版已更新雲端並完成真實登入回程驗證，第 4 版沿用。舊 `admin.html#ticket=…` 會由前端轉址並保留登入票證；管理頁網址或 BotFather 回呼改動仍須重新驗證。
 
 ## 官方依據
 

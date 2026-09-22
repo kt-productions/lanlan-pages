@@ -13,7 +13,7 @@
 - 「加急／急單／急件」映射急件，「擱置」映射擱置。其他原標籤只放後台來源紀錄；收款標籤不推定金額、付款方式或本站已確認付款。
 - PNG 附件只保存原 Trello 連結於後台，沒有複製檔案或公開展示授權；原附件的存取仍取決於 Trello。
 - `details.recordType: "trello-import"` 表示歷史資料，與第 3 版表單草稿分開。只保留類型、原名稱及未知的 `contact`／`referenceUrl`／`notes`／`estimatedPrice`（null）；不套用現行價格，不補造方案、授權或原始收件日期。
-- `createdAt`、`updatedAt` 初值是匯入時間，來源最後活動另存 `source.lastActivity`；不把 Trello 活動時間冒充收件日期。
+- `createdAt`、`updatedAt` 初值是匯入時間，來源最後活動另存 `source.lastActivity`，建立時間由 Card ID 換算為 `source.createdAt`；不把 Trello 活動時間冒充收件日期。
 
 ## 執行與核對
 
@@ -27,3 +27,9 @@
 後台可調整階段、急件／擱置、公開說明及內部備註，仍保存版本與修改前快照。歷史資料內容及來源唯讀，伺服器忽略客戶端對 `details` 的改寫。要補完整需求或處理來源修正，應另規劃可追溯的維護，不直接改表或重跑覆蓋。
 
 回復時先停止後續維護並保存目前資料；可回復前一部署，但不得刪除第 31 欄或已匯入的訂單／歷史。舊版管理介面不適用歷史訂單，應優先修正新版，避免用舊版編輯缺少完整表單資料的列。
+
+## Trello 來源時間
+
+依 [Trello 官方 API 文件](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)，Card ID 採 Mongo ID，前 8 個十六進位字元可換算為 Unix 秒級建立時間。讀取時由已保存的 Card ID 取得，不需改寫 174 筆訂單或歷史。這是卡片建立時間，不能當成委託正式收件時間。
+
+[`dateLastActivity`](https://developer.atlassian.com/cloud/trello/guides/rest-api/object-definitions/) 是最後活動時間；移動、內容、標籤等異動可能更新它，不限製作進度。本站保留匯入當時的值，沒有持續同步。公開卡片展開資訊與後台分別顯示 Trello 建立、Trello 最後活動、匯入本站；本站另有修改時顯示本站更新。UTC 原值保留於資料，介面以台灣時間呈現。

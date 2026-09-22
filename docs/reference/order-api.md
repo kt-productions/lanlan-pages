@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 3 版、31 欄 Orders；新增 Trello 歷史訂單與看板分組，維持暫停收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 4 版、31 欄 Orders；新增 Trello 歷史訂單與看板分組，維持暫停收件。
 
 ## 請求與回應
 
@@ -56,7 +56,7 @@
 | 通知 | `notificationStatus`、`notificationAttempts`、`notificationError`、`notificationAt`；同日多人通知更新另於第 30 欄加入 `notificationRecipientsJson`。 |
 | 可追溯性 | `lastEditor`、`historyJson` |
 
-新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 為 false。新表單的公開回應只有 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`publicNote`、`updatedAt`，不含暱稱、聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
+新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 為 false。新表單的公開回應只有 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`publicNote`、`updatedAt`，不含暱稱、聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
 
 | 工作階段 | 代碼 |
 | --- | --- |

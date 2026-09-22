@@ -210,14 +210,30 @@ export function publicOrder(order) {
     publicNote: order.publicVisible === false ? "" : order.publicNote,
     updatedAt: order.updatedAt,
     ...(source?.publishTitle === true
-      ? { displayTitle: source.cardName, sourceArchived: source.archived }
+      ? {
+          displayTitle: source.cardName,
+          sourceArchived: source.archived,
+          trelloCreatedAt: source.createdAt,
+          trelloUpdatedAt: source.lastActivity,
+          importedAt: source.importedAt,
+        }
       : {}),
   };
 }
 
 export function orderSource(order) {
   const source = order.source || (order.sourceJson ? JSON.parse(order.sourceJson) : null);
-  return source?.kind === "trello" ? source : null;
+  // 舊匯入已有不可變的 Card ID，讀取時即可補齊建立時間，不改寫訂單或歷史。
+  return source?.kind === "trello"
+    ? { ...source, createdAt: trelloCreatedAt(source.cardId) }
+    : null;
+}
+
+/** Trello 官方採 Mongo ID；前 8 個十六進位字元是建立時的 Unix 秒數。 */
+export function trelloCreatedAt(cardId) {
+  return typeof cardId === "string" && /^[a-f0-9]{24}$/.test(cardId)
+    ? new Date(parseInt(cardId.slice(0, 8), 16) * 1000).toISOString()
+    : null;
 }
 
 export function validateUpdate(input, current, config) {

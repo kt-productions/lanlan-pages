@@ -20,6 +20,7 @@ export function element(tag, text, className) {
 }
 
 export function dateLabel(value) {
+  if (typeof value !== "string" || !value) return "尚無時間";
   const date = new Date(value);
   return Number.isNaN(date.getTime())
     ? "尚無更新時間"
@@ -30,6 +31,7 @@ export function dateLabel(value) {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+        timeZone: "Asia/Taipei",
       }).format(date);
 }
 
@@ -43,8 +45,17 @@ export function renderProgress(order) {
   article.append(element("h3", order.displayTitle || order.orderId));
   if (order.publicNote) article.append(element("p", order.publicNote, "card-note"));
   const detail = element("details", undefined, "card-details");
-  detail.append(element("summary", "訂單資訊"), element("small", order.orderId),
-    element("small", `更新於 ${dateLabel(order.updatedAt)}`));
+  detail.append(element("summary", "訂單資訊"), element("small", order.orderId));
+  if (order.trelloCreatedAt) {
+    detail.append(
+      element("small", `Trello 建立：${dateLabel(order.trelloCreatedAt)}`),
+      element("small", `Trello 最後活動：${dateLabel(order.trelloUpdatedAt)}`),
+      element("small", `匯入本站：${dateLabel(order.importedAt)}`),
+    );
+  }
+  if (!order.importedAt || order.updatedAt !== order.importedAt) {
+    detail.append(element("small", `本站更新：${dateLabel(order.updatedAt)}`));
+  }
   article.append(detail);
   return article;
 }
