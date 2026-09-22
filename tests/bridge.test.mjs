@@ -9,6 +9,8 @@ test("通訊回應須同時來自指定 iframe、Google 網域與原連線識別
   const peer = { parent: frame };
   const event = { origin: "https://n-fixture-script.googleusercontent.com", source: peer, data: { channel: "fixture" } };
   assert.equal(isBridgePeer(event, frame, "fixture"), true);
+  assert.equal(isBridgePeer({ ...event, source: { parent: peer } }, frame, "fixture"), true);
+  assert.equal(isBridgePeer({ ...event, source: { parent: { parent: peer } } }, frame, "fixture"), false);
   assert.equal(isBridgePeer({ ...event, origin: "https://attacker.example" }, frame, "fixture"), false);
   assert.equal(isBridgePeer({ ...event, origin: "https://n-fixture-script.googleusercontent.com.attacker.example" }, frame, "fixture"), false);
   assert.equal(isBridgePeer({ ...event, source: { parent: {} } }, frame, "fixture"), false);

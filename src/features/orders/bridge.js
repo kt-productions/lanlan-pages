@@ -3,8 +3,10 @@ export function isBridgePeer(event, frameWindow, channel) {
   if (!/^https:\/\/[a-z0-9-]+-script\.googleusercontent\.com$/.test(event.origin) ||
       event.data?.channel !== channel) return false;
   try {
+    // GAS 在外層頁面下建立 sandboxFrame，再放入 userHtmlFrame。
     return Boolean(event.source &&
-      (event.source === frameWindow || event.source.parent === frameWindow));
+      (event.source === frameWindow || event.source.parent === frameWindow ||
+       event.source.parent.parent === frameWindow));
   } catch {
     return false;
   }
