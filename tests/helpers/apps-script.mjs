@@ -95,7 +95,7 @@ export function backend() {
       TELEGRAM_CLIENT_SECRET: "fixture-client-secret",
       SESSION_SECRET: "fixture-session-secret-not-for-production",
       WEB_APP_URL: "https://script.google.com/macros/s/fixture/exec",
-      ADMIN_URL: "https://example.com/lanlan-pages/admin.html",
+      ADMIN_URL: "https://example.com/lanlan-pages/admin/",
       TELEGRAM_BOT_TOKEN: "fixture-bot-token",
       TELEGRAM_CHAT_ID: "987654",
     }),

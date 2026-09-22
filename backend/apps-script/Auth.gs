@@ -89,7 +89,7 @@ function isAdmin_(id) {
 function adminUrl_() {
   const url = setting_("ADMIN_URL");
   Core_.requireValue(
-    /^https:\/\/[^\s?#]+\/admin\.html$/.test(url),
+    /^https:\/\/[^\s?#]+\/admin(?:\/|\.html)$/.test(url),
     "管理頁網址設定不正確。",
     "CONFIG",
   );

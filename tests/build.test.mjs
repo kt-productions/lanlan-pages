@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
+import { readFile } from "node:fs/promises";
+import vm from "node:vm";
 import { prepareStickerOptions, readContent } from "../scripts/lib/content.mjs";
 import {
   escapeHtml,
@@ -47,4 +49,59 @@ test("搬移後模組可回到共用資料夾，但不得跳出產物或進入�
   );
   assert.throws(() => resolveWithin(output, "../dist-other/private.json"));
   assert.throws(() => resolveWithin(output, "../../private.json"));
+});
+
+test("舊頁面轉址保留子路徑、查詢參數與登入票證，不能被 query 改成站外目標", async () => {
+  const template = await readFile(
+    new URL("../src/templates/redirect.html", import.meta.url),
+    "utf8",
+  );
+  for (const prefix of ["/", "/lanlan-pages/"]) {
+    for (const page of ["commission", "progress", "admin"]) {
+      const location = new URL(
+        `https://example.com${prefix}${page}.html?next=https%3A%2F%2Fother.example#ticket=fixture`,
+      );
+      let destination;
+      location.replace = (value) => {
+        destination = new URL(value, location);
+      };
+      const html = renderTemplate(template, {
+        PAGE: page,
+        TITLE: "測試頁面",
+        PAGE_URL: `https://example.com${prefix}${page}/`,
+      });
+      vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], {
+        URL,
+        location,
+      });
+      assert.equal(destination.origin, location.origin);
+      assert.equal(destination.pathname, `${prefix}${page}/`);
+      assert.equal(destination.search, location.search);
+      assert.equal(destination.hash, location.hash);
+    }
+  }
+});
+
+test("直接開啟 index.html 會回到目錄首頁，目錄網址本身不重複轉址", async () => {
+  const head = await readFile(
+    new URL("../src/templates/head.html", import.meta.url),
+    "utf8",
+  );
+  const script = head.match(/<script>([\s\S]*?)<\/script>/)[1];
+  for (const prefix of ["/", "/lanlan-pages/", "/lanlan-pages/commission/"]) {
+    let destination;
+    const location = new URL(
+      `https://example.com${prefix}index.html?source=bookmark#main`,
+    );
+    location.replace = (value) => {
+      destination = new URL(value, location);
+    };
+    vm.runInNewContext(script, { location });
+    assert.equal(destination.pathname, prefix);
+    assert.equal(destination.search, location.search);
+    assert.equal(destination.hash, location.hash);
+    vm.runInNewContext(script, {
+      location: { pathname: prefix, replace: () => assert.fail("不應重複轉址") },
+    });
+  }
 });

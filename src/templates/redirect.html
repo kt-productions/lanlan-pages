@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,follow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>正在前往{{TITLE}}</title>
+    <link rel="canonical" href="{{PAGE_URL}}" />
+    <script>
+      // 保留舊書籤的查詢參數及管理登入票證，且只能轉往同站固定頁面。
+      const target = new URL("./{{PAGE}}/", location.href);
+      target.search = location.search;
+      target.hash = location.hash;
+      location.replace(target.href);
+    </script>
+    <noscript><meta http-equiv="refresh" content="0;url=./{{PAGE}}/" /></noscript>
+  </head>
+  <body>
+    <p>頁面已搬移，<a href="./{{PAGE}}/">前往{{TITLE}}</a>。</p>
+  </body>
+</html>

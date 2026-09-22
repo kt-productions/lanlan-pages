@@ -597,6 +597,28 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
   }
 });
 
+test("管理回程支援目錄網址與舊連結，仍拒絕非 HTTPS、query 與 fragment", () => {
+  const app = backend();
+  for (const url of [
+    "https://example.com/lanlan-pages/admin/",
+    "https://example.com/lanlan-pages/admin.html",
+  ]) {
+    app.properties.set("ADMIN_URL", url);
+    assert.equal(app.context.adminUrl_(), url);
+  }
+  for (const url of [
+    "http://example.com/admin/",
+    "https://example.com/admin",
+    "https://example.com/admin/?next=other",
+    "https://example.com/admin/#ticket=fixture",
+    "https://example.com/admin/other",
+    "https://example.com/commission/",
+  ]) {
+    app.properties.set("ADMIN_URL", url);
+    assert.throws(() => app.context.adminUrl_());
+  }
+});
+
 test("OIDC 使用 PKCE 與單次 state；回程票證綁定原瀏覽器且只能兌換一次", () => {
   const app = backend();
   const browserKey = "a".repeat(64);
@@ -609,6 +631,7 @@ test("OIDC 使用 PKCE 與單次 state；回程票證綁定原瀏覽器且只能
     state,
     code: "fixture-code",
   });
+  assert.equal(new URL(destination).pathname, "/lanlan-pages/admin/");
   assert.throws(() =>
     app.context.completeLogin_({ state, code: "fixture-code" }),
   );

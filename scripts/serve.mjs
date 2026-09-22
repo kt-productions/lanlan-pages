@@ -30,22 +30,27 @@ const types = {
 http
   .createServer(async (req, res) => {
     try {
-      let pathname = decodeURIComponent(
-        new URL(req.url, "http://localhost").pathname,
-      );
+      const requestUrl = new URL(req.url, "http://localhost");
+      let pathname = decodeURIComponent(requestUrl.pathname);
       // 同時驗證 GitHub Pages 的專案子路徑，避免只在網域根目錄正常。
-      if (pathname.startsWith("/lanlan-pages/"))
+      if (pathname === "/lanlan-pages" || pathname.startsWith("/lanlan-pages/"))
         pathname = pathname.slice("/lanlan-pages".length);
-      const target = path.resolve(
-        base,
-        "." + pathname,
-        pathname.endsWith("/") ? "index.html" : "",
-      );
-      if (!target.startsWith(base + path.sep)) {
+      let target = path.resolve(base, "." + pathname);
+      if (target !== base && !target.startsWith(base + path.sep)) {
         res.writeHead(403).end();
         return;
       }
-      const info = await stat(target);
+      let info = await stat(target);
+      if (info.isDirectory()) {
+        if (!requestUrl.pathname.endsWith("/")) {
+          res.writeHead(301, {
+            Location: requestUrl.pathname + "/" + requestUrl.search,
+          }).end();
+          return;
+        }
+        target = path.join(target, "index.html");
+        info = await stat(target);
+      }
       if (!info.isFile()) throw new Error("not found");
       const data = await readFile(target);
       res.setHeader(

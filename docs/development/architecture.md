@@ -51,7 +51,7 @@
 
 建置先讀內容、解析有效款式，再組合共用模板及頁面。`templates.mjs` 統一處理 HTML 跳脫、script 內 JSON 跳脫及缺少佔位欄位的錯誤；來源格式無法解析時停止，不悄悄捨棄款式。
 
-網站建置輸出 `dist/`：頁面為 `index.html`、`commission.html`、`progress.html` 與 `admin.html`；來源 JS／CSS 依資料夾原貌複製至 `assets/site/`，不打包 HTML 模板。另產生各頁標題與 canonical、sitemap、robots、404 及 `.nojekyll`。不要手改產物；下一次建置會重新產生。
+網站建置輸出 `dist/`：頁面為 `index.html`、`commission/index.html`、`progress/index.html` 與 `admin/index.html`；來源 JS／CSS 依資料夾原貌複製至 `assets/site/`，不打包 HTML 模板。另產生各頁標題與 canonical、sitemap、robots、404 及 `.nojekyll`。不要手改產物；下一次建置會重新產生。
 
 例如首頁腳本網址為 `assets/site/pages/home/index.js`，其中的 `../../shared/navigation.js` 由模組檔案所在位置解析；作品 `./assets/videos/...` 則由 HTML 頁面位置解析。來源移入 `pages/` 不代表網站網址也多了一層。`npm run check` 會檢查模組匯入及 JS／CSS 產物與來源是否一致。
 
@@ -66,3 +66,5 @@
 送出前的委託資料留在頁面記憶體，重新整理清除；草稿不含檔案本體。設定後由 Apps Script 驗證並保存訂單，公開 API 只回傳匿名投影，管理 API 每次驗證工作階段與白名單。`submission.js` 管理冪等重試，`contract.js` 與 `pricing.js` 同時打包到後端，避免兩套規則。設定見[委託服務設定](order-service.md)，資料見[服務契約](../reference/order-api.md)。
 
 2026-09-22 依使用者要求完成此次分類，來源與產物路徑對照、實際驗證及回復副本見[重構紀錄](../records/refactor-2026-09-22.md)。
+
+2026-09-23 依使用者要求，公開網址使用 `/`、`commission/`、`progress/` 與 `admin/`；頁內錨點保持相對於當頁，子頁資源使用 `../` 回到網站根目錄。建置另保留舊 `.html` 入口，由 `src/templates/redirect.html` 轉址並保留 query／fragment；直接開啟任何 `index.html` 也會轉至所在目錄，包含首頁。GitHub Pages 會將缺少結尾 `/` 的目錄網址重新導向到含 `/` 的網址。

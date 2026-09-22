@@ -49,11 +49,11 @@ for (const id of site.featured)
   );
 const html = await readFile(path.join(root, "dist/index.html"), "utf8");
 const commissionHtml = await readFile(
-  path.join(root, "dist/commission.html"),
+  path.join(root, "dist/commission/index.html"),
   "utf8",
 );
-const pages = { "index.html": html, "commission.html": commissionHtml };
-for (const file of ["progress.html", "admin.html"]) {
+const pages = { "index.html": html, "commission/index.html": commissionHtml };
+for (const file of ["progress/index.html", "admin/index.html"]) {
   pages[file] = await readFile(path.join(output, file), "utf8");
 }
 for (const [file, page] of Object.entries(pages)) {
@@ -62,15 +62,41 @@ for (const [file, page] of Object.entries(pages)) {
   const ids = new Set(idList);
   assert.equal(ids.size, idList.length, `${file} 不可有重複的 DOM ID`);
   for (const [, resource, fragment] of page.matchAll(
-    /(?:src|href|poster)="\.\/([^"#?]+)(?:#([^"]+))?"/g,
+    /(?:src|href|poster)="(\.{1,2}\/[^"#?]*)(?:#([^"]+))?"/g,
   )) {
-    await stat(resolveWithin(output, resource));
+    const target = resolveWithin(
+      output,
+      path.join(path.dirname(file), resource),
+    );
+    const info = await stat(target);
+    const targetFile = info.isDirectory()
+      ? path.join(target, "index.html")
+      : target;
+    assert.ok(
+      (await stat(targetFile)).isFile(),
+      `${file} 資源不是檔案：${resource}`,
+    );
+    assert.ok(!/\.html(?:$|[?#])/.test(resource), `${file} 仍連往 HTML 檔名`);
     if (fragment) {
       assert.ok(
-        pages[resource]?.includes(`id="${fragment}"`),
+        (await readFile(targetFile, "utf8")).includes(`id="${fragment}"`),
         `${file} 找不到 ${resource}#${fragment}`,
       );
     }
+  }
+  const canonical = page.match(/<link rel="canonical" href="([^"]+)"/)[1];
+  assert.ok(
+    new URL(canonical).pathname.endsWith("/"),
+    `${file} canonical 必須是目錄網址`,
+  );
+  if (file !== "index.html") {
+    const legacy = await readFile(
+      path.join(output, path.dirname(file) + ".html"),
+      "utf8",
+    );
+    assert.ok(!/\{\{[A-Z_]+\}\}/.test(legacy), "舊頁面轉址模板替換不完整");
+    assert.ok(legacy.includes(`href="${canonical}"`), "新舊頁面 canonical 不一致");
+    assert.ok(legacy.includes(`href="./${path.dirname(file)}/"`), "缺少舊頁面轉址目標");
   }
   for (const match of page.matchAll(/href="#([^"]+)"/g))
     assert.ok(ids.has(match[1]), `${file} 找不到錨點 ${match[1]}`);
@@ -81,6 +107,10 @@ for (const [file, page] of Object.entries(pages)) {
     "新版不可再連往舊 Google 表單",
   );
 }
+assert.ok(
+  !(await readFile(path.join(output, "sitemap.xml"), "utf8")).includes(".html"),
+  "sitemap 不應列出舊 HTML 網址",
+);
 assert.equal([...html.matchAll(/class="artwork"/g)].length, works.length + 1);
 assert.equal(
   [...html.matchAll(/<video\b/g)].length,

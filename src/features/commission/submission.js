@@ -52,7 +52,7 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
       status.textContent = `已收到委託，編號 ${receipt.orderId}。請保存編號，等候繪師確認需求與報價。`;
       button.textContent = "已收件";
       link.hidden = false;
-      link.href = "./progress.html";
+      link.href = "../progress/";
       status.focus();
     } catch (error) {
       status.textContent = "";

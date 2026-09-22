@@ -4,7 +4,7 @@
 
 ## 目前流程
 
-首頁連至獨立 `commission.html`。表單支援三種類型與三步驟：委託內容 → 聯絡與設定 → 確認內容。下載 `lanlan-commission-preview.json` 本身不會送出訂單、上傳參考檔、加入排單或處理付款。
+首頁連至獨立 `commission/`。表單支援三種類型與三步驟：委託內容 → 聯絡與設定 → 確認內容。下載 `lanlan-commission-preview.json` 本身不會送出訂單、上傳參考檔、加入排單或處理付款。
 
 `src/pages/commission/index.js` 呼叫 `src/features/commission/draft.js` 的 `createDraft()` 建立確認快照；返回修改後再次進入確認頁時重新產生。切換類型會清除快照、閱讀確認及下載狀態，回到第一步；其他已填欄位可能保留，但不適用的控制會停用，草稿依所選類型輸出。
 

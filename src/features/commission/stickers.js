@@ -57,7 +57,7 @@ export function setupStickers(config, form, onChange) {
       "貼圖 No." + item.number + "，NT$" + item.price,
     );
     const img = document.createElement("img");
-    img.src = "./" + item.image;
+    img.src = "../" + item.image;
     img.alt = "貼圖 No." + item.number + " 原始示例";
     img.width = 260;
     img.height = 260;

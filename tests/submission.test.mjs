@@ -70,7 +70,7 @@ test("Sheets 已寫入但回應失敗時，前端重試保留識別碼且只建�
     assert.equal(button.textContent, "已收件");
     assert.equal(button.disabled, true);
     assert.equal(displayedError, "");
-    assert.equal(element("#progress-link").href, "./progress.html");
+    assert.equal(element("#progress-link").href, "../progress/");
   } finally {
     for (const [key, descriptor] of originals) {
       if (descriptor) Object.defineProperty(globalThis, key, descriptor);

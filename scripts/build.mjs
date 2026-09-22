@@ -104,25 +104,25 @@ const pages = [
     url: siteUrl.href,
   },
   {
-    file: "commission.html",
+    file: "commission/index.html",
     source: "commission",
     title: "委託表單｜爛爛 LANLAN",
     description: "選擇貼圖包、角色動畫或小動圖，整理你的委託需求與角色設定。",
-    url: new URL("commission.html", siteUrl).href,
+    url: new URL("commission/", siteUrl).href,
   },
   {
-    file: "progress.html",
+    file: "progress/index.html",
     source: "progress",
     title: "委託進度｜爛爛 LANLAN",
     description: "查看委託目前的製作狀態與進度。",
-    url: new URL("progress.html", siteUrl).href,
+    url: new URL("progress/", siteUrl).href,
   },
   {
-    file: "admin.html",
+    file: "admin/index.html",
     source: "admin",
     title: "委託管理｜爛爛 LANLAN",
     description: "委託管理後台，僅供已授權的管理員使用。",
-    url: new URL("admin.html", siteUrl).href,
+    url: new URL("admin/", siteUrl).href,
   },
 ];
 await rm(out, { recursive: true, force: true });
@@ -145,18 +145,25 @@ const partials = Object.fromEntries(
     ]),
   ),
 );
+const redirectTemplate = await readFile(
+  path.join(root, "src/templates/redirect.html"),
+  "utf8",
+);
 for (const page of pages) {
   const template = await readFile(
     path.join(root, "src/pages", page.source, "index.html"),
     "utf8",
   );
   const navigation = [
-    { file: "index.html", label: "首頁" },
-    { file: "commission.html", label: "委託表單" },
-    { file: "progress.html", label: "委託進度" },
+    { source: "home", route: "", label: "首頁" },
+    { source: "commission", route: "commission/", label: "委託表單" },
+    { source: "progress", route: "progress/", label: "委託進度" },
   ];
+  // 子頁使用目錄首頁；明確回到網站根目錄，不用 base 改變頁內錨點。
+  const rootPrefix = page.source === "home" ? "./" : "../";
   const data = {
     ...replacements,
+    ROOT: rootPrefix,
     PAGE: page.source,
     ROBOTS:
       page.source === "admin"
@@ -166,21 +173,28 @@ for (const page of pages) {
       page.source === "home"
         ? '<link rel="preload" href="./assets/posters/animation-02.webp" as="image" fetchpriority="high" />'
         : "",
-    FOOTER_HOME: page.source === "home" ? "#about" : "./index.html",
+    FOOTER_HOME: page.source === "home" ? "#about" : rootPrefix,
     TITLE: escape(page.title),
     DESCRIPTION: escape(page.description),
     PAGE_URL: escape(page.url),
     NAV_LINKS: navigation
       .map(
         (item) =>
-          `<a href="./${item.file}"${item.file === page.file ? ' aria-current="page"' : ""}>${item.label}</a>`,
+          `<a href="${rootPrefix}${item.route}"${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
       )
       .join(""),
   };
   for (const [key, partial] of Object.entries(partials))
     data[key] = renderTemplate(partial, data);
   const html = renderTemplate(template, data);
+  await mkdir(path.dirname(path.join(out, page.file)), { recursive: true });
   await writeFile(path.join(out, page.file), html);
+  if (page.source !== "home") {
+    await writeFile(
+      path.join(out, page.source + ".html"),
+      renderTemplate(redirectTemplate, data),
+    );
+  }
 }
 await writeFile(path.join(out, ".nojekyll"), "");
 await writeFile(

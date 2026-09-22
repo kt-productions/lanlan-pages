@@ -8,6 +8,8 @@
 
 首次發布驗證中，GAS 進度讀取遇到重新導向／CORS 錯誤，尚不能正常顯示工作清單。Pages 靜態網站已發布；此後端問題及驗證範圍見[發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
 
+網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
+
 ## 快速開始
 
 需要 Node.js 22 以上。在專案根目錄執行：

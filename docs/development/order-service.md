@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已依使用者要求恢復 GAS 設定：更新既有專案、升級 Orders 為 30 欄、部署 Web App 第 1 版，並保存 `WEB_APP_URL` 與前端 `apiUrl`。`ACCEPTING_ORDERS=false`，尚未開放收件；Telegram Token、通知與管理員名單、OIDC 憑證及工作階段密鑰尚待填入。使用者於同日後續授權推送 GitHub／發布 Pages；正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin.html`。`ADMIN_URL` 與 Telegram 設定仍待維護者完成，不能視為真實登入回程已驗收。實際結果與回復方式見[本次設定紀錄](../records/service-setup-2026-09-23.md)，初始資源見[2026-09-22 紀錄](../records/cloud-setup-2026-09-22.md)。
+2026-09-23 已依使用者要求恢復 GAS 設定：更新既有專案、升級 Orders 為 30 欄、部署 Web App 第 1 版，並保存 `WEB_APP_URL` 與前端 `apiUrl`。`ACCEPTING_ORDERS=false`，尚未開放收件；Telegram Token、通知與管理員名單、OIDC 憑證及工作階段密鑰尚待填入。使用者於同日後續授權推送 GitHub／發布 Pages；正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ADMIN_URL` 與 Telegram 設定仍待維護者完成，不能視為真實登入回程已驗收。實際結果與回復方式見[本次設定紀錄](../records/service-setup-2026-09-23.md)，初始資源見[2026-09-22 紀錄](../records/cloud-setup-2026-09-22.md)。
 
 ## 服務組成
 
@@ -51,7 +51,7 @@ npm exec --yes --package @google/clasp@3.4.1 -- clasp --auth "$env:LANLAN_CLASP_
 | `ADMIN_TELEGRAM_IDS` | Telegram 數字使用者 ID，以半形逗號分隔；不是 username 或 OIDC `sub`。 |
 | `SESSION_SECRET` | 密碼學亂數產生、至少 32 字元的獨立密鑰，用於登入隨機值衍生。 |
 | `WEB_APP_URL` | 正式 `https://script.google.com/macros/s/…/exec`，不使用 `/dev`。 |
-| `ADMIN_URL` | GitHub Pages 管理頁的完整 `https://…/admin.html`，保留專案子路徑，不帶 query 或 fragment。未發布時留空；通知略過後台連結，但登入仍要求此項。 |
+| `ADMIN_URL` | GitHub Pages 管理頁的完整 `https://…/admin/`，保留專案子路徑，不帶 query 或 fragment。未發布時留空；通知略過後台連結，但登入仍要求此項。 |
 | `ACCEPTING_ORDERS` | 僅字串 `true` 開放新收件，省略或其他值均停止新收件。 |
 | `DAILY_ORDER_LIMIT` | 選填；滾動 24 小時收件上限，預設 50。另限制同聯絡方式每小時 3 筆。 |
 
@@ -114,6 +114,10 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 - 每頁 30 筆，公開看板的階段／旗標篩選涵蓋所有工作，包含已交稿；管理頁的編號／暱稱搜尋只涵蓋已載入項目。直接掃描 Orders 適合小型工作室，不適合大量訂單。
 - 收件上限與誘捕欄位僅提供基本濫用限制，沒有驗證碼或邊緣流量防護，仍受 Apps Script、UrlFetch 與 Sheets 配額限制。
 - 尚無上傳、付款、正式報價確認、委託者登入或刪單功能；既有費率與角色動畫幣別維持原設定。
+
+## 管理頁目錄網址相容性
+
+目前來源 `Auth.gs` 同時接受 `admin/` 與舊 `admin.html`；設定新的 `ADMIN_URL` 前，須先將此版本後端重新打包並更新 GAS 部署。現有雲端第 1 版仍使用舊網址驗證，本次靜態網址調整沒有更新雲端部署或啟用收件。舊 `admin.html#ticket=…` 會由前端轉址並保留登入票證，既有回程連結仍可使用；真實 Telegram 登入仍待完成設定後驗收。
 
 ## 官方依據
 

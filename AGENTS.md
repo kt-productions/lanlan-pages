@@ -84,7 +84,7 @@
 
 - 主要導覽維持「首頁、委託表單、委託進度」，管理入口置於頁尾，由建置腳本統一產生；首頁與委託頁各自載入必要腳本與樣式。
 - 所有內部資源及跨頁連結須支援 `/lanlan-pages/` 子路徑；維持四頁可直接開啟的靜態結構，不引入 SPA 路由假設。
-- 建置頁面為 `dist/index.html`、`dist/commission.html`、`dist/progress.html` 與 `dist/admin.html`；JS／CSS 依來源結構輸出至 `dist/assets/site/`。模組 import 相對於模組檔案，HTML 與動態媒體 URL 相對於頁面，不可混用。
+- 建置頁面為 `dist/index.html`、`dist/commission/index.html`、`dist/progress/index.html` 與 `dist/admin/index.html`；JS／CSS 依來源結構輸出至 `dist/assets/site/`。模組 import 相對於模組檔案，HTML 與動態媒體 URL 相對於頁面，不可混用。
 - 維護送件功能時，依 `docs/reference/draft-schema.md` 與 `docs/reference/order-api.md` 確認資料與失敗處理契約；伺服器須重新驗證輸入及計價，前端預估不得成為可信訂單金額。
 
 ## 8. 語言規範與在地化
@@ -148,3 +148,5 @@
 - **後端資源啟用（2026-09-22）**：依使用者明確指示新增 Sheets 與獨立 GAS，存於指定的 LanLan Pages Drive 資料夾，使用既有 `@KTProductionsBot`，管理頁網址未定。資源及待辦見 `docs/records/cloud-setup-2026-09-22.md`；初始化入口為 `setupOrders()`，必須檢查 Google 執行身分。後端啟用不代表授權發布前端、開放收單或傳送未指定目的地的通知。
 - **公開工作看板（2026-09-23）**：依使用者更正，進度頁供所有人瀏覽所有工作，不使用委託編號查詢或百分比。階段為排隊中、草稿繪製中、草稿確認、等待付款、完稿中、待付尾款、已交稿；`isRush`／`isOnHold` 是可並存的獨立旗標，不變更計價。Sheets 在原 27 欄尾端追加兩欄，保留舊欄與歷史；規格及相容對應見 `docs/reference/order-api.md`。本次僅更新本機來源與產物，雲端升級及部署仍待執行。
 - **GAS 後續設定與多人通知（2026-09-23）**：使用者恢復後端設定，指定通知一位或多位 Telegram 數字 ID，管理後台未來放 GitHub Pages，並明確要求待專案確認後再推送。已部署既有 GAS 的 Web App 第 1 版、保存 `WEB_APP_URL`／前端 `apiUrl`，Orders 升為 30 欄；第 30 欄 `notificationRecipientsJson` 保存逐位結果，`TELEGRAM_NOTIFY_USER_IDS` 與 `ADMIN_TELEGRAM_IDS` 分開。保持暫停收件，Telegram 憑證及 ID 名單、HTTPS 管理網址仍待完成。沒有建立遠端、推送或發布 Pages，亦未傳送真實通知。此紀錄更新前述啟用進度，不修改第 1–12 節準則；設定與驗證見 `docs/development/order-service.md`、`docs/records/service-setup-2026-09-23.md`。
+
+- **目錄網址（2026-09-23）**：依使用者要求移除公開網址中的 `.html`；四頁以目錄首頁提供，保留舊入口轉址與 query／fragment，管理回程需相容舊 `admin.html` 與新 `admin/`。

@@ -84,4 +84,4 @@
 | 小動圖 | 1,200 起，可只委託插圖 | 插圖 NT$600，插圖＋動畫 NT$1,200；首頁的 1,200 是含動畫方案的展示起價。 |
 | 其他需求 | 插畫、小廢圖、梗圖、動畫等，價格另計 | 沒有第四種表單類型，透過既有社群聯絡討論。 |
 
-原表單 URL 保留於來源欄位，首頁目前只有通往 `commission.html` 的站內入口，不再提供舊 Google 表單按鈕。Telegram、Facebook、Discord 聯絡連結由 `content/site.json` 統一管理。
+原表單 URL 保留於來源欄位，首頁目前只有通往 `commission/` 的站內入口，不再提供舊 Google 表單按鈕。Telegram、Facebook、Discord 聯絡連結由 `content/site.json` 統一管理。

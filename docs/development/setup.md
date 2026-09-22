@@ -8,7 +8,7 @@
 npm run dev
 ```
 
-此指令先建置，再啟動 <http://127.0.0.1:4173/lanlan-pages/>。委託頁為 <http://127.0.0.1:4173/lanlan-pages/commission.html>。伺服器也支援根路徑，專案子路徑用來模擬 GitHub Pages。
+此指令先建置，再啟動 <http://127.0.0.1:4173/lanlan-pages/>。委託頁為 <http://127.0.0.1:4173/lanlan-pages/commission/>。伺服器也支援根路徑，專案子路徑用來模擬 GitHub Pages。
 
 預覽只監聽 `127.0.0.1`，沒有熱更新。修改 `src/`、`content/` 或網站素材後，另外執行 `npm run build` 並重新整理瀏覽器。代理啟動服務前須依 [AGENTS.md](../../AGENTS.md) 取得授權。
 
@@ -40,7 +40,7 @@ npm run preview
 
 - 倉庫：[kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，預設分支 `main`。
 - 網站：[LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。
-- 管理頁：[委託管理](https://kt-productions.github.io/lanlan-pages/admin.html)；仍需完成後端 `ADMIN_URL` 與 Telegram 設定。
+- 管理頁：[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)；仍需完成後端 `ADMIN_URL` 與 Telegram 設定。
 
 `.github/workflows/pages.yml` 在推送 `main` 或手動執行時，使用 Node.js 24 執行 `npm ci`、`npm test`、`npm run build`、`npm run check`。全部通過後，才上傳 `dist/` 並部署至 `github-pages` environment。後端打包產物、文件與私人設定不在 Pages artifact 內。
 
