@@ -327,6 +327,7 @@ function completeLogin_(params) {
     JSON.stringify({
       id: identity.id,
       browserHash: pending.browserHash,
+      expiresAt: Date.now() + 120000,
     }),
     120,
   );
@@ -340,13 +341,14 @@ function exchangeTicket_(payload) {
     "登入請求不正確。",
     "AUTH",
   );
-  // 先核對瀏覽器綁定才消耗票證，避免別的分頁誤用；整段以鎖確保只能兌換一次。
+  // 同一票證只建立一次工作階段；回應遺失時，原分頁可在原期限內重取同一結果。
   return lock_(function () {
     const cache = CacheService.getScriptCache();
     const key = "ticket:" + digest_(payload.ticket);
     const saved = cache.get(key);
     Core_.requireValue(saved, "登入已逾時，請重新登入。", "AUTH");
     const ticket = JSON.parse(saved);
+    Core_.requireValue(ticket.expiresAt > Date.now(), "登入票證已逾時，請重新登入。", "AUTH");
     Core_.requireValue(
       equal_(ticket.browserHash, digest_(payload.browserKey)),
       "請從原先登入的分頁完成驗證。",
@@ -357,7 +359,10 @@ function exchangeTicket_(payload) {
       "這個帳號沒有管理權限。",
       "FORBIDDEN",
     );
-    cache.remove(key);
+    if (ticket.session) {
+      requireAdmin_(ticket.session.token);
+      return ticket.session;
+    }
     const token = randomKey_();
     const expiresAt = Date.now() + 3600000;
     cache.put(
@@ -365,7 +370,9 @@ function exchangeTicket_(payload) {
       JSON.stringify({ id: ticket.id, expiresAt: expiresAt }),
       3600,
     );
-    return { token: token, id: ticket.id, expiresAt: expiresAt };
+    ticket.session = { token: token, id: ticket.id, expiresAt: expiresAt };
+    cache.put(key, JSON.stringify(ticket), Math.max(1, Math.ceil((ticket.expiresAt - Date.now()) / 1000)));
+    return ticket.session;
   });
 }
 

@@ -1,3 +1,5 @@
+import { createBridge } from "./bridge.js";
+
 export class ApiError extends Error {
   constructor(code, message) {
     super(message);
@@ -9,8 +11,12 @@ export function integrationConfig() {
   return JSON.parse(document.querySelector("#integration-data").textContent);
 }
 
-/** 使用簡單 POST，讓 Apps Script 的重新導向可被瀏覽器讀取；不使用 no-cors 假裝送件成功。 */
+/** 各通道都必須取得可解析的業務回應，不以請求已送出代替操作成功。 */
 export function createApi(apiUrl, fetcher = fetch) {
+  // 正式 HTTPS 網頁使用 Html Service；命令列與本機預覽仍相容原本的 JSON POST。
+  const bridge = typeof window !== "undefined" && window.location.protocol === "https:" &&
+    /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(apiUrl)
+    ? createBridge(apiUrl) : null;
   return async function request(action, payload = {}, token = "") {
     if (!apiUrl)
       throw new ApiError(
@@ -18,16 +24,21 @@ export function createApi(apiUrl, fetcher = fetch) {
         "服務尚未開放，請先透過頁尾的聯絡方式洽詢。",
       );
     try {
-      const response = await fetcher(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify({ action, payload, token }),
-        credentials: "omit",
-        redirect: "follow",
-        signal: AbortSignal.timeout(45000),
-      });
-      if (!response.ok) throw new Error("無法讀取回應");
-      const result = await response.json();
+      let result;
+      if (bridge) {
+        result = await bridge({ action, payload, token });
+      } else {
+        const response = await fetcher(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: JSON.stringify({ action, payload, token }),
+          credentials: "omit",
+          redirect: "follow",
+          signal: AbortSignal.timeout(45000),
+        });
+        if (!response.ok) throw new Error("無法讀取回應");
+        result = await response.json();
+      }
       if (typeof result?.ok !== "boolean") throw new Error("回應格式不正確");
       if (!result.ok)
         throw new ApiError(

@@ -14,14 +14,18 @@ function apiResult_(task) {
       },
     };
   }
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(
-    ContentService.MimeType.JSON,
-  );
+  return JSON.stringify(result);
 }
 
 function doPost(event) {
+  return ContentService.createTextOutput(
+    callApi(event && event.postData && event.postData.contents),
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Html Service 與舊 POST 共用同一個入口，不能繞過身分、長度或欄位驗證。 */
+function callApi(text) {
   return apiResult_(function () {
-    const text = event && event.postData && event.postData.contents;
     Core_.requireValue(
       typeof text === "string" && text.length <= 40000,
       "請求內容過大或格式不正確。",
@@ -82,6 +86,7 @@ function escapeHtml_(text) {
 
 function doGet(event) {
   const params = (event && event.parameter) || {};
+  if (params.bridge) return bridgePage_(params.bridge);
   let title = "委託服務";
   let body = "請從網站開啟委託表單或管理後台。";
   if (params.state) {

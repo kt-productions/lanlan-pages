@@ -4,7 +4,9 @@
 
 ## 請求與回應
 
-資料操作使用 POST，Content-Type 為 `text/plain;charset=UTF-8`，內容為 JSON：
+正式 HTTPS 網頁透過隱藏的 GAS Html Service 通訊頁，以 `google.script.run.callApi` 傳送 JSON 字串並接收同格式回應，避開 Content Service 一次性網址的傳遞失敗。頁面限定 `ADMIN_URL` 的 origin、隨機連線識別及上層視窗；前端也核對 Google 來源、iframe 關係及請求識別，管理操作仍共用 `requireAdmin_`。
+
+命令列及本機 HTTP 預覽保留原 POST 相容介面，Content-Type 為 `text/plain;charset=UTF-8`，內容為 JSON：
 
 ```json
 {"action":"progress.list","payload":{"offset":0},"token":""}
@@ -17,7 +19,7 @@
 | `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`；收件或取回同一回執。 |
 | `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
 | `auth.start` | 公開 | 64 字元 hex `browserKey`；取得 Telegram 授權網址。 |
-| `auth.exchange` | 公開 | 單次 `ticket` 與原分頁 `browserKey`；回傳管理 token、Telegram ID、到期時間。 |
+| `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`；取得完整訂單、通知狀態與歷史。 |
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
@@ -90,6 +92,6 @@
 
 Authorization Code + PKCE S256、單次 state 及 nonce；後端向固定 Telegram token 端點換碼，從固定 JWKS 端點取公鑰，只接受 RS256 並驗證簽章、issuer、audience、nonce、時間及 `profile.id` 白名單。未知金鑰重新取得一次；不使用 JWT 自帶金鑰網址。
 
-回程只能到設定的 `ADMIN_URL`。fragment 僅攜帶兩分鐘有效、單次且綁定原分頁的票證，真正 token 由 POST 回應交給記憶體。白名單不使用 username 或 OIDC `sub`。
+回程只能到設定的 `ADMIN_URL`。fragment 僅攜帶兩分鐘有效且綁定原分頁的票證，真正 token 由 API 回應交給記憶體。票證僅建立一次工作階段；原分頁重試可在原期限內重取同一結果，不刷新票證或工作階段的到期時間，已登出或撤除權限時也不能恢復。前端保留未完成的票證於記憶體並提供「重試完成登入」，成功或明確驗證失敗後清除暫存綁定。白名單不使用 username 或 OIDC `sub`。
 
 錯誤代碼：`VALIDATION` 輸入、`VERSION` 表單過期、`AUTH` 登入失效、`FORBIDDEN` 沒有管理權限、`CONFLICT` 版本或冪等衝突、`CLOSED` 停止收件、`RATE_LIMIT` 收件上限、`BUSY` 處理中、`CAPACITY` 欄位容量、`CONFIG` 設定不足、`SERVER` 未預期錯誤。平台原始例外與憑證不回傳給瀏覽器。

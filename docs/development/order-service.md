@@ -74,7 +74,9 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 5. 在 `content/integration.json` 的 `apiUrl` 填入 `/exec` URL，設定正式 `SITE_URL`，執行 `npm run build`、`npm run check`。前端只包含公開 API 網址。
 6. 用專用測試 Sheet、bot／聊天室及虛構資料驗收，再決定是否開放正式收件及發布網站。正式發布仍依專案授權規則。
 
-前端使用 `text/plain` JSON POST，跟隨 Content Service 重新導向並解析回應。不得改用 `no-cors`：讀不到回執不代表成功。Google 帳號政策、部署權限與跨來源行為須在已部署環境驗收，離線測試不能證明這些項目。
+正式 HTTPS 前端使用 GAS Html Service 通訊頁與 `google.script.run` 傳遞 JSON，後端的 `callApi` 與原 POST 共用驗證。通訊頁只接受 `ADMIN_URL` 的來源網站及原上層視窗；僅空白通訊頁允許 iframe 嵌入，登入回程與其他頁面維持原限制。前端核對來源、iframe 關係、連線識別與請求識別，不使用萬用字元接收敏感回應。
+
+命令列與本機 HTTP 預覽保留 `text/plain` JSON POST 相容介面；其 Content Service 重新導向仍可能受原環境問題影響。不得改用 `no-cors`：讀不到回執不代表成功。Google 帳號政策、部署權限與跨來源行為須在已部署環境驗收，離線測試不能證明這些項目。
 
 ## Telegram 權限與填寫方式
 
@@ -110,7 +112,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 - 用後台修改訂單，避免直接改 Sheet 繞過版本與歷史。Telegram 白名單不授予直接開表的 Google 權限。
 - `revision` 保護編輯；舊內容留在 `historyJson`，與新內容同列一次寫入。文字欄位達 45,000 字元上限時拒絕寫入，應規劃可追溯封存，不可清空歷史。
 - 通知只提醒指定使用者收件，不自動通知委託者進度；不含暱稱、聯絡方式、素材或需求全文。管理頁網址空白時只送編號與委託類型，完成 Pages 後才附後台連結。
-- 管理 token 最多一小時，只放頁面記憶體；OAuth 綁定值暫放 sessionStorage，兌換時刪除。Cache 可能提早失效，須重新登入。
+- 管理 token 最多一小時，只放頁面記憶體；OAuth 綁定值暫放 sessionStorage，兌換成功或明確驗證失敗時刪除。交換回應遺失時，可用「重試完成登入」在原票證的兩分鐘期限內重取同一結果，不延長期限；Cache 提早失效或票證到期則須重新登入。
 - 管理清單每頁 30 筆；公開看板每次最多 200 筆，回傳各階段總數，類型／階段／旗標篩選涵蓋所有工作，包含已交稿；管理頁的編號／暱稱搜尋只涵蓋已載入項目。直接掃描 Orders 適合小型工作室，不適合大量訂單。
 - 收件上限與誘捕欄位僅提供基本濫用限制，沒有驗證碼或邊緣流量防護，仍受 Apps Script、UrlFetch 與 Sheets 配額限制。
 - 尚無上傳、付款、正式報價確認、委託者登入或刪單功能；既有費率與角色動畫幣別維持原設定。

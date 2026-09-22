@@ -133,6 +133,7 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-09-23 登入可靠性修復**：依使用者要求排除後台登入失敗，正式 HTTPS 前端改用 GAS Html Service 的通訊頁，`callApi` 與舊 POST 共用管理驗證。通訊限制見 `backend/apps-script/Bridge.gs`、`src/features/orders/bridge.js`；票證在原兩分鐘期限內可由原分頁重取同一登入結果，不建立第二個工作階段或延長有效期。實際部署與驗收結果另記錄，不能以離線測試代替正式後台驗收。
 - **2026-09-23 Trello 移轉**：依使用者確認，匯入全部 174 張來源卡片（含封存），沿用歷史卡片公開名稱；新表單仍匿名。公開頁採橫向七欄，API 提供完整件數及最多 200 筆分頁。第 31 欄 `sourceJson` 保存來源，匯入由擁有者私下執行、按卡片 ID 去重、不覆蓋歷史、不發 TG；真實來源與備份不得進入公開倉庫。實作與界線見 `backend/apps-script/Import.gs`、`scripts/lib/trello-import.mjs` 及 `docs/development/trello-import.md`。
 
 以下為 2026-09-22 依現有程式碼、內容設定與使用者決策紀錄整理的交接背景；價格以 `content/commission.json`、款式以 `content/forms/sticker-options.json`、計算以 `src/features/commission/pricing.js` 為準。

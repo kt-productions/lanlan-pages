@@ -619,7 +619,7 @@ test("管理回程支援目錄網址與舊連結，仍拒絕非 HTTPS、query �
   }
 });
 
-test("OIDC 使用 PKCE 與單次 state；回程票證綁定原瀏覽器且只能兌換一次", () => {
+test("OIDC 使用 PKCE 與單次 state；綁定原瀏覽器的票證只建立一次工作階段並可重取遺失回應", () => {
   const app = backend();
   const browserKey = "a".repeat(64);
   const start = app.invoke("auth.start", { browserKey });
@@ -645,11 +645,27 @@ test("OIDC 使用 PKCE 與單次 state；回程票證綁定原瀏覽器且只能
   );
   const session = app.invoke("auth.exchange", { ticket, browserKey });
   assert.equal(session.ok, true);
-  assert.equal(
-    app.invoke("auth.exchange", { ticket, browserKey }).error.code,
-    "AUTH",
-  );
+  const key = "ticket:" + app.context.digest_(ticket);
+  const until = app.cache.get(key).until;
+  assert.deepEqual(app.invoke("auth.exchange", { ticket, browserKey }).data, session.data);
+  assert.equal(app.cache.get(key).until, until);
+  assert.equal(app.invoke("auth.exchange", { ticket, browserKey: "c".repeat(64) }).error.code, "AUTH");
   assert.equal(app.invoke("admin.list", {}, session.data.token).ok, true);
+  app.invoke("auth.logout", {}, session.data.token);
+  assert.equal(app.invoke("auth.exchange", { ticket, browserKey }).error.code, "AUTH");
+  app.cache.get(key).until = Date.now() - 1;
+  assert.equal(app.invoke("auth.exchange", { ticket, browserKey }).error.code, "AUTH");
+});
+
+test("Html Service API 與 POST 共用權限及驗證，不公開管理資料或擁有者入口", () => {
+  const app = backend();
+  const rpc = (action, payload = {}, token = "") => JSON.parse(app.context.callApi(JSON.stringify({ action, payload, token })));
+  assert.equal(rpc("admin.list").error.code, "AUTH");
+  assert.equal(rpc("admin.update").error.code, "AUTH");
+  assert.equal(rpc("setupOrders").error.code, "AUTH");
+  assert.equal(rpc("admin.list", {}, app.session()).ok, true);
+  assert.deepEqual(rpc("progress.list"), app.invoke("progress.list"));
+  assert.equal(JSON.parse(app.context.callApi("x".repeat(40001))).error.code, "VALIDATION");
 });
 
 test("前端 API 只有可解析且明確成功的回應才完成送件，不使用 no-cors", async () => {
