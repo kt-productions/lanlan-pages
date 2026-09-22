@@ -51,9 +51,9 @@
 
 建置先讀內容、解析有效款式，再組合共用模板及頁面。`templates.mjs` 統一處理 HTML 跳脫、script 內 JSON 跳脫及缺少佔位欄位的錯誤；來源格式無法解析時停止，不悄悄捨棄款式。
 
-網站建置輸出 `dist/`：頁面為 `index.html`、`commission/index.html`、`progress/index.html` 與 `admin/index.html`；來源 JS／CSS 依資料夾原貌複製至 `assets/site/`，不打包 HTML 模板。另產生各頁標題與 canonical、sitemap、robots、404 及 `.nojekyll`。不要手改產物；下一次建置會重新產生。
+網站建置輸出 `dist/`：頁面為 `index.html`、`commission/index.html`、`progress/index.html` 與 `admin/index.html`；來源 JS／CSS 依資料夾原貌複製至 `assets/site/<內容版本>/`，不打包 HTML 模板。`scripts/lib/site-assets.mjs` 對完整 JS／CSS 檔名與內容計算版本；巢狀模組變動時整個模組樹取得新網址，避免瀏覽器快取造成新舊程式混用。另產生各頁標題與 canonical、sitemap、robots、404 及 `.nojekyll`。不要手改產物；下一次建置會重新產生。
 
-例如首頁腳本網址為 `assets/site/pages/home/index.js`，其中的 `../../shared/navigation.js` 由模組檔案所在位置解析；作品 `./assets/videos/...` 則由 HTML 頁面位置解析。來源移入 `pages/` 不代表網站網址也多了一層。`npm run check` 會檢查模組匯入及 JS／CSS 產物與來源是否一致。
+例如首頁腳本網址為 `assets/site/<內容版本>/pages/home/index.js`，其中的 `../../shared/navigation.js` 由模組檔案所在位置解析；作品 `./assets/videos/...` 則由 HTML 頁面位置解析。來源移入 `pages/` 不代表網站網址也多了一層。`npm run check` 會檢查模組匯入及 JS／CSS 產物與來源是否一致。
 
 `public/` 會複製到產物，既有建置仍排除 `.gif`；`docs/` 不打包。2026-09-23 依使用者要求移除未開放及未使用素材，原始副本移至專案外；網站動畫使用 MP4。不要把私人來源副本放回 `public/`。
 

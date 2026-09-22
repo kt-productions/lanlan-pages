@@ -2,11 +2,11 @@
 
 展示角色動畫、貼圖與小動圖的靜態網站，提供作品瀏覽、委託價目及獨立委託表單。
 
-網站以 GitHub Pages 發布，原始碼位於 [kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，正式網址為 [LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。2026-09-23 已完成 Telegram 登入與測試單通知驗證，並部署 GAS 第 4 版、升級 Orders 為 31 欄，匯入 174 筆 Trello 歷史訂單。公開進度改為七欄卡片看板，支援類型、階段與急件／擱置篩選；匯入單沿用原公開名稱，新表單仍匿名。維持暫停收件；沒有檔案上傳或付款。設定與匯入步驟見[服務維護](docs/development/order-service.md)及 [Trello 匯入](docs/development/trello-import.md)。
+網站以 GitHub Pages 發布，原始碼位於 [kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，正式網址為 [LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。2026-09-23 已完成 Telegram 登入與測試單通知驗證，並部署 GAS 第 6 版、升級 Orders 為 31 欄，匯入 174 筆 Trello 歷史訂單。公開進度改為七欄卡片看板，支援類型、階段與急件／擱置篩選；匯入單沿用原公開名稱，新表單仍匿名。維持暫停收件；沒有檔案上傳或付款。設定與匯入步驟見[服務維護](docs/development/order-service.md)及 [Trello 匯入](docs/development/trello-import.md)。
 
 使用原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 建置。前端沒有第三方執行期套件；Apps Script 後端打包使用 node-forge 驗證登入簽章。
 
-初次發布曾遇到 GAS 重新導向／CORS 問題；後續曾驗證真實讀取、登入、通知與更新。最新後台驗收在登入交換階段未通過：Telegram 已確認，但瀏覽器未取得有效 GAS 回應，不能認定目前後台可正常使用。出現結果不明時勿直接重複送件或修改。歷史背景見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)，目前結果見[Trello 看板驗收](docs/records/trello-2026-09-23.md)及[後台驗收](docs/records/admin-2026-09-23.md)。
+已修復後台登入的回應傳遞問題：正式網頁採用 GAS Html Service 通訊，部署資源使用內容版本，避免快取混用。修復後兩次 Telegram 登入、175 筆讀取、搜尋、歷史來源與附件、測試單儲存及公開同步、內容還原、登出均已實測；174 筆歷史訂單逐欄一致，通知未重發。結果不明的修改仍應先重新讀取。驗收範圍及工具限制見[後台驗收](docs/records/admin-2026-09-23.md)，早期問題見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
 
 網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
 
