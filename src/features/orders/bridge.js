@@ -25,10 +25,7 @@ export function createBridge(apiUrl, host = window, doc = document) {
         .map(value => value.toString(16).padStart(2, "0")).join("");
       const frame = doc.createElement("iframe");
       frame.title = "委託服務連線";
-      // GAS 內層框架保留非零版面尺寸；此通訊框不接受焦點或滑鼠操作。
-      frame.setAttribute("aria-hidden", "true");
-      frame.style.cssText = "position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;pointer-events:none";
-      frame.tabIndex = -1;
+      frame.hidden = true;
       frame.referrerPolicy = "no-referrer";
       let peer;
       let peerOrigin;

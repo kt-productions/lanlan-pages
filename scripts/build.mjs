@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir, cp, rm } from "node:fs/promises";
 import path from "node:path";
 import { root, output as out } from "./lib/paths.mjs";
 import { readContent, readCommission } from "./lib/content.mjs";
+import { siteAssetVersion } from "./lib/site-assets.mjs";
 import {
   escapeHtml as escape,
   inlineJson,
@@ -132,7 +133,8 @@ await cp(path.join(root, "public"), out, {
   filter: (source) => !source.endsWith(".gif"),
 });
 // 保留來源模組相對位置；只複製 JS／CSS，不讓模板與開發文件進入網站。
-await cp(path.join(root, "src"), path.join(out, "assets/site"), {
+const assetVersion = await siteAssetVersion(path.join(root, "src"));
+await cp(path.join(root, "src"), path.join(out, "assets/site", assetVersion), {
   recursive: true,
   filter: (source) =>
     !path.extname(source) || [".js", ".css"].includes(path.extname(source)),
@@ -164,6 +166,7 @@ for (const page of pages) {
   const data = {
     ...replacements,
     ROOT: rootPrefix,
+    ASSET_VERSION: assetVersion,
     PAGE: page.source,
     ROBOTS:
       page.source === "admin"

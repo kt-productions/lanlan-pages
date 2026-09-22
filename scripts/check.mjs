@@ -3,6 +3,8 @@ import path from "node:path";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { root, output, resolveWithin } from "./lib/paths.mjs";
+import { siteAssetVersion } from "./lib/site-assets.mjs";
+const assetRoot = path.join(output, "assets/site", await siteAssetVersion(path.join(root, "src")));
 const works = JSON.parse(
   await readFile(path.join(root, "content/works.json"), "utf8"),
 );
@@ -165,7 +167,7 @@ async function checkModules(directory) {
       `不應輸出來源模板：${file}`,
     );
     const source = await readFile(file, "utf8");
-    const relative = path.relative(path.join(output, "assets/site"), file);
+    const relative = path.relative(assetRoot, file);
     assert.equal(
       source,
       await readFile(resolveWithin(path.join(root, "src"), relative), "utf8"),
@@ -192,7 +194,7 @@ async function checkModules(directory) {
     }
   }
 }
-await checkModules(path.join(output, "assets/site"));
+await checkModules(assetRoot);
 console.log(
   `驗證通過：${works.length} 支影片、${formAssets.length} 筆表單素材來源、${commission.stickerOptions.length} 款選項、靜態資源、模組依賴、產物一致性、分類與站內錨點。`,
 );
