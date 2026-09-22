@@ -7,7 +7,7 @@
     {{ICONS}}
     <a class="skip-link" href="#main">跳到主要內容</a>
     {{HEADER}}
-    <main id="main" class="wrap order-page">
+    <main id="main" class="wrap order-page board-page admin-page">
       <div class="order-heading">
         <div>
           <h1>委託管理</h1>
@@ -36,129 +36,149 @@
       </section>
       <p id="admin-status" role="status" tabindex="-1"></p>
       <section id="admin-workspace" hidden aria-label="委託工作區">
-        <div class="order-toolbar">
-          <label for="admin-search"
-            >尋找已載入的委託<input
+        <div class="order-toolbar admin-toolbar">
+          <label for="admin-search" class="admin-search-label"
+            >尋找委託<input
               id="admin-search"
               type="search"
               placeholder="委託編號或暱稱"
               maxlength="100"
           /></label>
+          <label for="admin-service">委託類型
+            <select id="admin-service">
+              <option value="">所有類型</option>
+              <option value="chibi">小動圖</option>
+              <option value="animation">角色動畫</option>
+              <option value="stickers">貼圖包</option>
+            </select>
+          </label>
+          <label for="admin-stage">工作階段
+            <select id="admin-stage"><option value="">所有階段</option></select>
+          </label>
+          <label for="admin-flag">附加狀態
+            <select id="admin-flag">
+              <option value="">所有工作</option>
+              <option value="rush">急件</option>
+              <option value="on_hold">擱置</option>
+            </select>
+          </label>
           <button id="admin-refresh" class="button" type="button">
             重新載入
           </button>
         </div>
-        <div class="admin-columns">
-          <aside aria-label="委託清單">
-            <div id="admin-list"></div>
-            <button id="admin-more" class="button" type="button" hidden>
-              載入更多
-            </button>
-          </aside>
-          <div>
-            <p id="admin-empty">選擇一筆委託，查看與更新內容。</p>
-            <form id="admin-edit" hidden novalidate>
-              <h2 id="edit-heading" tabindex="-1"></h2>
-              <p id="edit-estimate"></p>
-              <fieldset>
-                <legend>製作進度</legend>
-                <div class="edit-grid">
-                  <label
-                    >工作階段<select
-                      name="status"
-                      id="edit-status"
-                      required
-                    ></select
-                  ></label>
-                </div>
-                <div class="edit-flags" role="group" aria-label="附加狀態">
-                  <label><input type="checkbox" name="isRush" />急件</label>
-                  <label><input type="checkbox" name="isOnHold" />擱置</label>
-                </div>
-                <p class="field-hint">
-                  附加狀態可同時勾選；擱置會保留目前階段，取消勾選即可繼續。這裡的急件標記不會修改報價。
-                </p>
+        <p id="admin-summary"></p>
+        <p id="admin-board-hint" class="board-hint">左右捲動查看各階段，欄內可上下捲動。點選「編輯」查看與更新委託。</p>
+        <div id="admin-list" class="progress-board" role="region" tabindex="0" aria-label="委託管理看板" aria-describedby="admin-board-hint"></div>
+      </section>
+      <dialog id="admin-editor-dialog" class="admin-dialog" aria-labelledby="edit-heading">
+        <form id="admin-edit" novalidate>
+          <header class="dialog-heading">
+            <h2 id="edit-heading" tabindex="-1"></h2>
+            <button id="admin-close" type="button" class="button">關閉</button>
+          </header>
+          <div class="dialog-body">
+            <p id="admin-edit-status" role="status" tabindex="-1"></p>
+            <p id="edit-order-id"></p>
+            <p id="edit-estimate"></p>
+            <fieldset>
+              <legend>製作進度</legend>
+              <div class="edit-grid">
                 <label
-                  >公開進度說明<textarea
-                    name="publicNote"
-                    maxlength="500"
-                    rows="2"
-                  ></textarea>
-                </label>
-                <p class="field-hint">
-                  所有工作的階段與附加狀態都會出現在公開進度頁；儲存後，此說明也會公開，請勿填入暱稱、聯絡方式或參考素材連結。
-                </p>
-              </fieldset>
-              <section id="edit-source" class="import-source" aria-label="Trello 來源紀錄" hidden></section>
-              <fieldset id="edit-content">
-                <legend>委託內容</legend>
-                <div class="edit-grid">
-                  <label
-                    >暱稱<input name="nickname" maxlength="80" required
-                  /></label>
-                  <label
-                    >聯絡平台<select name="contactChannel">
-                      <option value="telegram">Telegram</option>
-                      <option value="facebook">Facebook</option>
-                      <option value="discord">Discord</option>
-                    </select></label
-                  >
-                </div>
-                <label
-                  >聯絡方式<input name="contact" maxlength="300" required
-                /></label>
-                <label
-                  >參考素材連結<input
-                    name="referenceUrl"
-                    type="url"
-                    maxlength="2000"
+                  >工作階段<select
+                    name="status"
+                    id="edit-status"
                     required
-                /></label>
-                <a id="edit-reference" target="_blank" rel="noopener noreferrer"
-                  >開啟目前已儲存的參考素材</a
-                >
-                <div id="edit-options" class="edit-grid"></div>
-                <label id="edit-notes-label"
-                  >特殊需求<textarea
-                    name="notes"
-                    maxlength="4000"
-                    rows="4"
-                  ></textarea>
-                </label>
-              </fieldset>
+                  ></select
+                ></label>
+              </div>
+              <div class="edit-flags" role="group" aria-label="附加狀態">
+                <label><input type="checkbox" name="isRush" />急件</label>
+                <label><input type="checkbox" name="isOnHold" />擱置</label>
+              </div>
+              <p class="field-hint">
+                附加狀態可同時勾選；擱置會保留目前階段，取消勾選即可繼續。這裡的急件標記不會修改報價。
+              </p>
               <label
-                >內部備註<textarea
-                  name="adminNote"
-                  maxlength="4000"
-                  rows="3"
+                >公開進度說明<textarea
+                  name="publicNote"
+                  maxlength="500"
+                  rows="2"
                 ></textarea>
               </label>
-              <div class="order-toolbar">
-                <button
-                  id="admin-save"
-                  type="submit"
-                  class="button button-primary"
-                >
-                  儲存變更</button
-                ><button id="admin-cancel-edit" type="button" class="button">
-                  還原未儲存修改
-                </button>
-              </div>
-              <p id="notification-status"></p>
-              <button id="admin-retry" type="button" class="button">
-                重試 Telegram 通知
-              </button>
-              <p id="notification-hint" class="field-hint">
-                若上次通知結果不明，重試可能再傳送一次。訂單不會重複建立。
+              <p class="field-hint">
+                所有工作的階段與附加狀態都會出現在公開進度頁；儲存後，此說明也會公開，請勿填入暱稱、聯絡方式或參考素材連結。
               </p>
-              <details>
-                <summary>修改紀錄</summary>
-                <ol id="edit-history"></ol>
-              </details>
-            </form>
+            </fieldset>
+            <section id="edit-source" class="import-source" aria-label="Trello 來源紀錄" hidden></section>
+            <fieldset id="edit-content">
+              <legend>委託內容</legend>
+              <div class="edit-grid">
+                <label
+                  >暱稱<input name="nickname" maxlength="80" required
+                /></label>
+                <label
+                  >聯絡平台<select name="contactChannel">
+                    <option value="telegram">Telegram</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="discord">Discord</option>
+                  </select></label
+                >
+              </div>
+              <label
+                >聯絡方式<input name="contact" maxlength="300" required
+              /></label>
+              <label
+                >參考素材連結<input
+                  name="referenceUrl"
+                  type="url"
+                  maxlength="2000"
+                  required
+              /></label>
+              <a id="edit-reference" target="_blank" rel="noopener noreferrer"
+                >開啟目前已儲存的參考素材</a
+              >
+              <div id="edit-options" class="edit-grid"></div>
+              <label id="edit-notes-label"
+                >特殊需求<textarea
+                  name="notes"
+                  maxlength="4000"
+                  rows="4"
+                ></textarea>
+              </label>
+            </fieldset>
+            <label
+              >內部備註<textarea
+                name="adminNote"
+                maxlength="4000"
+                rows="3"
+              ></textarea>
+            </label>
+            <p id="notification-status"></p>
+            <button id="admin-retry" type="button" class="button">
+              重試 Telegram 通知
+            </button>
+            <p id="notification-hint" class="field-hint">
+              若上次通知結果不明，重試可能再傳送一次。訂單不會重複建立。
+            </p>
+            <details>
+              <summary>修改紀錄</summary>
+              <ol id="edit-history"></ol>
+            </details>
           </div>
+          <footer class="dialog-actions">
+            <button id="admin-save" type="submit" class="button button-primary">儲存變更</button>
+            <button id="admin-cancel-edit" type="button" class="button">還原未儲存修改</button>
+          </footer>
+        </form>
+      </dialog>
+      <dialog id="admin-discard-dialog" class="discard-dialog" aria-labelledby="discard-heading" aria-describedby="discard-description">
+        <h2 id="discard-heading">放棄尚未儲存的修改？</h2>
+        <p id="discard-description">尚未儲存的內容會被還原，已儲存的委託不受影響。</p>
+        <div class="dialog-actions">
+          <button id="admin-keep-editing" type="button" class="button" autofocus>繼續編輯</button>
+          <button id="admin-discard" type="button" class="button button-primary">放棄修改</button>
         </div>
-      </section>
+      </dialog>
       <noscript><p>請啟用 JavaScript 使用管理後台。</p></noscript>
     </main>
     {{FOOTER}}

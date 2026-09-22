@@ -156,3 +156,5 @@
 - **目錄網址（2026-09-23）**：依使用者要求移除公開網址中的 `.html`；四頁以目錄首頁提供，保留舊入口轉址與 query／fragment，管理回程需相容舊 `admin.html` 與新 `admin/`。
 
 - **2026-09-23 影片分級壓縮**：依使用者要求保留原始 MP4，另以 `scripts/optimize-videos.mjs` 產生長邊最多 640px 的預覽版及 1280px 的展示版，來源與衍生雜湊記於 `content/video-assets.json`。首頁影片可見時載入預覽，檢視器開啟時才載入展示版；縮圖另延遲載入。`scripts/lib/video-assets.mjs` 由建置與檢查共用，現已核對全部影片原始及衍生雜湊；不代表核對首頁原始圖片。規格及維護見 `docs/development/video-optimization.md`。
+
+- **2026-09-23 管理看板與編輯視窗**：依使用者需求，公開進度移除「訂單資訊」展開區；`board-view.js` 與 `shared/board.css` 共用七欄外觀，管理頁卡片另有編輯按鈕。`admin-data.js` 讀完並核對所有分頁後才呈現完整看板；`src/pages/admin/` 以 HTML dialog 提供既有編輯功能及放棄修改確認，保留焦點、行動版捲動與錯誤處理。未改後端契約、GAS 設定或登入權限。

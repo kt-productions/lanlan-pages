@@ -50,7 +50,8 @@ export function setupEditor(form, config) {
     const details = order.details;
     const imported = Boolean(order.source);
     form.querySelector("#edit-heading").textContent =
-      `${order.orderId} · ${serviceNames[order.service]}`;
+      `${order.source?.cardName || details.nickname} · ${serviceNames[order.service]}`;
+    form.querySelector("#edit-order-id").textContent = `委託編號：${order.orderId}`;
     form.querySelector("#edit-estimate").textContent =
       imported ? "Trello 歷史訂單；聯絡方式、需求、報價與授權未提供。" :
       `目前預估 ${formatPriceRange(details.estimatedPrice.min, details.estimatedPrice.max, details.estimatedPrice.currency)}；仍需由繪師確認報價。`;

@@ -1,6 +1,7 @@
 import "../../shared/navigation.js";
 import { createApi, integrationConfig } from "../../features/orders/api.js";
-import { renderProgress, element } from "../../features/orders/presentation.js";
+import { element } from "../../features/orders/presentation.js";
+import { boardColumns } from "../../features/orders/board-view.js";
 import { ORDER_STATUSES } from "../../features/orders/contract.js";
 import { filterBoard } from "../../features/orders/board.js";
 
@@ -39,29 +40,7 @@ function showResult(result) {
 }
 
 function renderBoard(message = "讀取中……") {
-  const columns = Object.entries(ORDER_STATUSES).filter(([key]) => !stage.value || key === stage.value);
-  list.replaceChildren(...columns.map(([key, name]) => {
-    const column = element("section", undefined, `board-column column-${key}`);
-    const heading = element("h2", name);
-    heading.id = `stage-${key}`;
-    column.setAttribute("aria-labelledby", heading.id);
-    const cards = orders.filter((order) => order.status === key);
-    const count = counts?.[key];
-    const badge = element("span", count === undefined ? "…" : String(count), "column-count");
-    badge.setAttribute("aria-label", count === undefined ? "件數讀取中" : `${count} 件`);
-    const header = element("div", undefined, "column-heading");
-    header.append(element("span", String(Object.keys(ORDER_STATUSES).indexOf(key) + 1).padStart(2, "0"), "column-step"), heading, badge);
-    const body = element("div", undefined, "column-cards");
-    body.tabIndex = 0;
-    body.setAttribute("role", "region");
-    body.setAttribute("aria-label", `${name}卡片`);
-    body.append(...cards.map(renderProgress));
-    if (count === undefined) body.append(element("p", message, "column-empty"));
-    else if (!count) body.append(element("p", "目前沒有委託", "column-empty"));
-    else if (cards.length < count) body.append(element("p", `已顯示 ${cards.length}／${count} 件，請載入更多。`, "column-empty"));
-    column.append(header, body);
-    return column;
-  }));
+  list.replaceChildren(...boardColumns({ orders, counts, stage: stage.value, message }));
   more.hidden = offset === null;
 }
 

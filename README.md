@@ -8,6 +8,8 @@
 
 已修復後台登入的回應傳遞問題：正式網頁採用 GAS Html Service 通訊，部署資源使用內容版本，避免快取混用。修復後兩次 Telegram 登入、175 筆讀取、搜尋、歷史來源與附件、測試單儲存及公開同步、內容還原、登出均已實測；174 筆歷史訂單逐欄一致，通知未重發。結果不明的修改仍應先重新讀取。驗收範圍及工具限制見[後台驗收](docs/records/admin-2026-09-23.md)，早期問題見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
 
+委託進度已移除卡片的「訂單資訊」展開區。委託管理改為同樣的七欄看板，點「編輯」開啟保留原功能的彈跳視窗；完整資料搜尋、篩選、未儲存確認與手機版驗收見[管理看板紀錄](docs/records/admin-board-2026-09-23.md)。
+
 網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
 
 ## 快速開始

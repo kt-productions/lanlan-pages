@@ -44,19 +44,6 @@ export function renderProgress(order) {
   if (flags.childElementCount) article.append(flags);
   article.append(element("h3", order.displayTitle || order.orderId));
   if (order.publicNote) article.append(element("p", order.publicNote, "card-note"));
-  const detail = element("details", undefined, "card-details");
-  detail.append(element("summary", "訂單資訊"), element("small", order.orderId));
-  if (order.trelloCreatedAt) {
-    detail.append(
-      element("small", `Trello 建立：${dateLabel(order.trelloCreatedAt)}`),
-      element("small", `Trello 最後活動：${dateLabel(order.trelloUpdatedAt)}`),
-      element("small", `匯入本站：${dateLabel(order.importedAt)}`),
-    );
-  }
-  if (!order.importedAt || order.updatedAt !== order.importedAt) {
-    detail.append(element("small", `本站更新：${dateLabel(order.updatedAt)}`));
-  }
-  article.append(detail);
   return article;
 }
 
