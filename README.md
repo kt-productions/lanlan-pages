@@ -43,3 +43,5 @@ npm run dev
 ## 權利
 
 網站程式碼與作品未授予開源或再利用授權。作品著作權屬繪師及各角色權利人所有。
+
+頁尾分別標示「Artworks © 2026 爛爛 and respective rights holders.」與「Developed and maintained by 乾太.」，年份沿用自動更新；開發維運署名不另行宣告網站程式的權利歸屬。
