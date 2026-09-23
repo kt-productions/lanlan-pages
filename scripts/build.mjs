@@ -180,6 +180,7 @@ for (const page of pages) {
     { source: "home", route: "", label: "首頁" },
     { source: "commission", route: "commission/", label: "委託表單" },
     { source: "progress", route: "progress/", label: "委託進度" },
+    { source: "admin", route: "admin/", label: "委託管理" },
   ];
   // 子頁使用目錄首頁；明確回到網站根目錄，不用 base 改變頁內錨點。
   const rootPrefix = page.source === "home" ? "./" : "../";
@@ -203,7 +204,7 @@ for (const page of pages) {
     NAV_LINKS: navigation
       .map(
         (item) =>
-          `<a href="${rootPrefix}${item.route}"${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
+          `<a href="${rootPrefix}${item.route}"${item.source === "admin" ? " data-admin-link hidden" : ""}${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
       )
       .join(""),
   };

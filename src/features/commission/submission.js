@@ -1,4 +1,4 @@
-import { createApi, integrationConfig } from "../orders/api.js";
+import { pageApi, integrationConfig } from "../orders/api.js";
 import { attachmentManifest } from "../orders/contract.js";
 
 function encodedFile(file) {
@@ -13,7 +13,7 @@ function encodedFile(file) {
 /** 未確認的送件保留同一份快照與識別碼；逾時後只重試，不讓編輯內容造成第二筆訂單。 */
 export function setupSubmission(app, form, getSnapshot, showError, clearError) {
   const { apiUrl } = integrationConfig();
-  const request = createApi(apiUrl);
+  const request = pageApi(apiUrl);
   const button = document.querySelector("#commission-submit");
   const status = document.querySelector("#submit-status");
   const link = document.querySelector("#progress-link");

@@ -1,5 +1,14 @@
 import { createBridge } from "./bridge.js";
 
+const pageClients = new WeakMap();
+/** 同頁的導覽與表單／看板共用通訊，避免為身分檢查重建 GAS iframe。 */
+export function pageApi(apiUrl, doc = document) {
+  if (!pageClients.has(doc)) pageClients.set(doc, new Map());
+  const clients = pageClients.get(doc);
+  if (!clients.has(apiUrl)) clients.set(apiUrl, createApi(apiUrl));
+  return clients.get(apiUrl);
+}
+
 export class ApiError extends Error {
   constructor(code, message) {
     super(message);

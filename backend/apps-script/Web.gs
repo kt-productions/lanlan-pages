@@ -58,6 +58,8 @@ function callApi(text) {
       default: {
         const actor = requireAdmin_(request.token);
         switch (request.action) {
+          case "auth.session":
+            return { authenticated: true, expiresAt: actor.expiresAt };
           case "admin.list":
             return pageOrders_(payload, true);
           case "admin.update":

@@ -1,11 +1,11 @@
 import "../../shared/navigation.js";
-import { createApi, integrationConfig } from "../../features/orders/api.js";
+import { pageApi, integrationConfig } from "../../features/orders/api.js";
 import { boardColumns } from "../../features/orders/board-view.js";
 import { filterBoard } from "../../features/orders/board.js";
 import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/board-data.js";
 
 const { apiUrl } = integrationConfig();
-const api = createApi(apiUrl);
+const api = pageApi(apiUrl);
 const list = document.querySelector("#progress-list");
 const status = document.querySelector("#progress-status");
 const flag = document.querySelector("#progress-flag");

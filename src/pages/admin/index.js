@@ -1,5 +1,5 @@
-import "../../shared/navigation.js";
-import { ApiError, createApi, integrationConfig } from "../../features/orders/api.js";
+import { confirmAdminNavigation, clearAdminNavigation, onAdminNavigationInvalid } from "../../shared/navigation.js";
+import { ApiError, pageApi, integrationConfig } from "../../features/orders/api.js";
 import { ORDER_STATUSES } from "../../features/orders/contract.js";
 import { renderProgress } from "../../features/orders/presentation.js";
 import { setupEditor } from "../../features/orders/editor.js";
@@ -15,7 +15,7 @@ const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
 );
 const { apiUrl } = integrationConfig();
-const request = createApi(apiUrl);
+const request = pageApi(apiUrl);
 const savedSession = createAdminSession(apiUrl);
 async function api(action, payload, requestToken) {
   try {
@@ -23,6 +23,9 @@ async function api(action, payload, requestToken) {
     // 其他分頁登出或等待期間到期後，不讓較晚返回的回應重新顯示管理資料。
     if (requestToken && requestToken !== token) {
       throw new ApiError("SESSION_CHANGED", "登入已結束，請重新登入。");
+    }
+    if (requestToken && action.startsWith("admin.")) {
+      confirmAdminNavigation({ token: requestToken, expiresAt: sessionExpiresAt });
     }
     return result;
   } catch (error) {
@@ -142,6 +145,7 @@ function clearPendingLogin() {
   sessionStorage.removeItem(storageKey);
 }
 function clearSession(removeSaved = true) {
+  clearAdminNavigation();
   drag.reset();
   if (removeSaved) savedSession.clear();
   clearTimeout(sessionTimer);
@@ -333,6 +337,7 @@ document.addEventListener("visibilitychange", () => {
 });
 logout.addEventListener("click", () => {
   afterDiscard(() => work(async () => {
+    clearAdminNavigation();
     savedSession.clear();
     await api("auth.logout", {}, token);
     clearSession();
@@ -457,6 +462,7 @@ async function exchangeLogin() {
   const persisted = savedSession.save(session);
   clearPendingLogin();
   activateSession(session);
+  confirmAdminNavigation(session);
   // 登入與清單讀取分開回報；讀取失敗仍保留已建立的登入。
   try { await load(); }
   catch (error) { report(error, "load"); }
@@ -501,4 +507,10 @@ if (!apiUrl) {
   login.disabled = true;
   status.textContent = "管理服務尚未設定，請由維護者完成串接。";
 }
+onAdminNavigationInvalid((invalidToken) => {
+  if (token === invalidToken) {
+    clearSession();
+    message("登入已失效或管理權限已移除，請重新登入。");
+  }
+});
 finishLogin();

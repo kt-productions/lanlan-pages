@@ -27,6 +27,7 @@
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
+| `auth.session` | 管理員 | 無額外 payload；重新核對 token、原到期時間及管理白名單，只回傳 `{ authenticated: true, expiresAt }`。不讀取訂單、不回傳身分資料、不延長期限，供四頁導覽確認管理入口。 |
 
 `progress.list` 與 `admin.list` 均接受 `delivery: "active" | "delivered" | "all"`。`active` 排除已交稿，`delivered` 只回傳已交稿；省略時沿用 `all`，相容尚未重新整理的舊前端。舊 `completed` 狀態先對應為 `delivered`，交稿範圍由伺服器在分頁及計算件數前套用。
 
