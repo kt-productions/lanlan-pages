@@ -10,6 +10,7 @@ import { boardColumns } from "../../features/orders/board-view.js";
 import { filterBoard } from "../../features/orders/board.js";
 import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/board-data.js";
 import { setupAttachments } from "../../features/orders/attachments-view.js";
+import { createLoginPopup } from "../../features/orders/login-popup.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
@@ -19,6 +20,7 @@ const api = createApi(apiUrl);
 const status = document.querySelector("#admin-status");
 const login = document.querySelector("#admin-login");
 const loginRetry = document.querySelector("#admin-login-retry");
+const loginCancel = document.querySelector("#admin-login-cancel");
 const loginPanel = document.querySelector("#admin-login-panel");
 const logout = document.querySelector("#admin-logout");
 const workspace = document.querySelector("#admin-workspace");
@@ -47,6 +49,23 @@ let discardAction = null;
 let returnOrderId = null;
 const storageKey = "lanlan-admin-login-binding";
 const attachments = setupAttachments(document.querySelector("#edit-attachments"), api, () => token, report);
+const popupLogin = createLoginPopup(api, {
+  onWaiting() {
+    message("請在 Telegram 視窗完成驗證，此頁會自動登入。");
+    loginCancel.hidden = false;
+  },
+  onTicket(payload) {
+    loginCancel.hidden = true;
+    pendingLogin = payload;
+    loginRetry.hidden = false;
+    work(exchangeLogin, "exchange");
+  },
+  onError(error) {
+    clearPendingLogin();
+    login.disabled = !apiUrl;
+    report(error, "login");
+  },
+});
 
 for (const [value, label] of Object.entries(ORDER_STATUSES)) {
   const option = element("option", label);
@@ -100,6 +119,8 @@ document.querySelector("#admin-discard").addEventListener("click", () => {
 });
 
 function clearPendingLogin() {
+  popupLogin.cancel();
+  loginCancel.hidden = true;
   pendingLogin = null;
   loginRetry.hidden = true;
   sessionStorage.removeItem(storageKey);
@@ -228,6 +249,7 @@ async function work(task, operation = "load") {
     disabled.forEach((value, control) => {
       control.disabled = value;
     });
+    login.disabled = !apiUrl || popupLogin.active();
     if (token) {
       renderList();
       retry.disabled = ["sent", "not_required"].includes(selected?.notificationStatus);
@@ -261,17 +283,15 @@ login.addEventListener("click", () =>
     // 只暫存 OAuth 綁定值；管理工作階段留在記憶體，不放 localStorage 或網址。
     sessionStorage.setItem(storageKey, browserKey);
     status.textContent = "正在準備 Telegram 登入……";
-    const result = await api("auth.start", { browserKey });
-    const destination = new URL(result.url);
-    if (
-      destination.origin !== "https://oauth.telegram.org" ||
-      destination.pathname !== "/auth"
-    ) {
-      throw new Error("登入網址不正確，請聯絡維護者。");
-    }
-    location.assign(destination.href);
+    await popupLogin.start(browserKey);
   }, "login"),
 );
+loginCancel.addEventListener("click", () => {
+  clearPendingLogin();
+  login.disabled = !apiUrl;
+  message("已取消登入，可以重新透過 Telegram 登入。");
+});
+window.addEventListener("pagehide", () => popupLogin.cancel());
 logout.addEventListener("click", () => {
   afterDiscard(() => work(async () => {
     await api("auth.logout", {}, token);

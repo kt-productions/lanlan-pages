@@ -631,7 +631,7 @@ test("OIDC 使用 PKCE 與單次 state；綁定原瀏覽器的票證只建立一
   assert.equal(url.searchParams.get("code_challenge_method"), "S256");
   const state = url.searchParams.get("state");
   app.faults.token = jwt({ nonce: url.searchParams.get("nonce") });
-  const destination = app.context.completeLogin_({
+  const { destination } = app.context.completeLogin_({
     state,
     code: "fixture-code",
   });

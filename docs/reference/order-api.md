@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 11 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 12 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
 
 ## 請求與回應
 
@@ -19,7 +19,8 @@
 | `orders.upload` | 公開 | 與送件相同的 `requestId`、`details`、`website`、完整 `attachments` 清單，以及本檔 `index`（0–4）、`data`（base64）；回傳 `{index, uploaded:true}`。 |
 | `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`、`attachments` 清單（無附件為 `[]`）；收件或取回同一回執。 |
 | `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
-| `auth.start` | 公開 | 64 字元 hex `browserKey`；取得 Telegram 授權網址。 |
+| `auth.start` | 公開 | 64 字元 hex `browserKey`、選填 boolean `popup`；取得 Telegram 授權網址。 |
+| `auth.poll` | 公開 | 原分頁 64 字元 hex `browserKey`；彈出視窗登入回傳 `{ pending: true }`、`{ ticket }` 或驗證錯誤，不回傳工作階段 token。 |
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`、選填 `delivery`；取得指定交稿範圍的完整訂單、通知狀態與歷史。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
@@ -121,5 +122,7 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 Authorization Code + PKCE S256、單次 state 及 nonce；後端向固定 Telegram token 端點換碼，從固定 JWKS 端點取公鑰，只接受 RS256 並驗證簽章、issuer、audience、nonce、時間及 `profile.id` 白名單。未知金鑰重新取得一次；不使用 JWT 自帶金鑰網址。
 
 回程只能到設定的 `ADMIN_URL`。fragment 僅攜帶兩分鐘有效且綁定原分頁的票證，真正 token 由 API 回應交給記憶體。票證僅建立一次工作階段；原分頁重試可在原期限內重取同一結果，不刷新票證或工作階段的到期時間，已登出或撤除權限時也不能恢復。前端保留未完成的票證於記憶體並提供「重試完成登入」，成功或明確驗證失敗後清除暫存綁定。白名單不使用 username 或 OIDC `sub`。
+
+管理頁在使用者按登入時同步開啟 Telegram 視窗，指定 `popup: true`，原頁以 `auth.poll` 取得綁定結果後沿用 `auth.exchange`。等待期限十分鐘，成功／失敗結果快取兩分鐘；結果以 browserKey 雜湊保存並核對對應 state，另一把 browserKey 不能取得結果。取消或離開原頁停止輪詢，網路錯誤最多連續嘗試三次，逾時及拒絕可重新登入。GAS 成功頁及原頁均嘗試關閉驗證視窗，關閉受阻不影響登入。彈出視窗被阻擋時退回原分頁驗證及手動回程，不要求新增 Telegram 權限。
 
 錯誤代碼：`VALIDATION` 輸入、`VERSION` 表單過期、`AUTH` 登入失效、`FORBIDDEN` 沒有管理權限、`CONFLICT` 版本或冪等衝突、`CLOSED` 停止收件、`RATE_LIMIT` 收件上限、`BUSY` 處理中、`CAPACITY` 欄位容量、`CONFIG` 設定不足、`SERVER` 未預期錯誤。平台原始例外與憑證不回傳給瀏覽器。

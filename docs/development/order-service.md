@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 10 版與 32 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 12 版與 32 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
@@ -71,7 +71,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 1. Apps Script 建立 Web App 部署，執行身分為部署者，存取範圍允許未登入 Google 的訪客。這讓前台能收件與讀取公開進度；管理操作仍由 Telegram 驗證保護。Workspace 若禁止此設定，先處理帳號政策，不能關閉管理驗證。
 2. 將正式 `/exec` URL 填入 `WEB_APP_URL`。更新時優先更新既有 deployment 的版本；若網址改變，同步 BotFather 與前端設定。
 3. BotFather mini app → bot → Login Widget → Allowed URLs，登記**與 `WEB_APP_URL` 完全一致的回呼網址**；Advanced 維持 **RS256**。本站採 OIDC 重新導向，沒有在各靜態頁嵌入 widget，因此 Telegram 回呼在 Apps Script；多站共用 bot 時，各部署回呼均須登記。
-4. `ADMIN_URL` 指向正式管理頁。管理員先到 Telegram 驗證，再於 Apps Script 回程頁點選「返回管理後台」，回到原分頁。回程票證不能交給另一個瀏覽器或分頁使用。
+4. `ADMIN_URL` 指向正式管理頁。按登入後，Telegram 驗證在另一個視窗開啟，完成後原管理頁自動登入並關閉驗證視窗；若視窗無法關閉，直接回原管理頁即可。瀏覽器阻擋彈出視窗時改用原分頁登入，仍須在 GAS 回程頁點「返回管理後台」。回程票證不能交給另一個瀏覽器或分頁使用。
 5. 在 `content/integration.json` 的 `apiUrl` 填入 `/exec` URL，設定正式 `SITE_URL`，執行 `npm run build`、`npm run check`。前端只包含公開 API 網址。
 6. 用專用測試 Sheet、bot／聊天室及虛構資料驗收，再決定是否開放正式收件及發布網站。正式發布仍依專案授權規則。
 

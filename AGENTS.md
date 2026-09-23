@@ -133,6 +133,8 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-09-23 管理登入自動完成**：依使用者要求，`login-popup.js` 在點擊登入時同步開啟 Telegram 視窗，原管理頁以綁定 browserKey 的 `auth.poll` 取得結果後沿用票證交換。GAS 的 iframe 禁止無使用者操作的頂層轉址，因此保留原分頁並自動完成登入；視窗受阻時沿用同分頁手動回程。原有 PKCE、RS256、白名單、兩分鐘票證及記憶體工作階段不變，未增加 OAuth 權限。實作見 `Auth.gs`、`Web.gs` 與管理頁，驗證見 `docs/records/login-popup-2026-09-23.md`。
+
 - **2026-09-23 已交稿按需載入**：依使用者確認，公開進度與委託管理預設只向 API 要求未交稿，已交稿欄位內按鈕才補載已交稿；重新載入回到未交稿。`board-data.js` 取代原 `admin-data.js`，共用範圍分頁與完整性驗證，`Orders.gs` 在分頁前套用 `delivery`；省略參數相容舊前端。封存展示、登入權限、訂單原始資料及通知規則不變。完整契約見 `docs/reference/order-api.md`。
 
 - **2026-09-23 公開文案與管理入口更新**：依使用者明確要求，`src/templates/footer.html` 移除四頁共用的「委託管理」連結，管理員使用 Telegram 通知入口或既有管理網址；此為使用者對第 7 節頁尾入口的後續變更要求。進度介紹合併為單段，排序提示簡化；委託頁依服務選項切換介紹，文案共用 `content/site.json`，由 `scripts/build.mjs` 注入前端資料，保留原生 HTML／JavaScript。

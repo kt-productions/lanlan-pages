@@ -114,6 +114,8 @@ function beginLogin_(payload) {
     "登入請求不正確。",
     "AUTH",
   );
+  Core_.requireValue(payload.popup === undefined || typeof payload.popup === "boolean",
+    "登入方式不正確。", "AUTH");
   adminUrl_();
   const state = randomKey_();
   const verifier = randomKey_();
@@ -124,8 +126,14 @@ function beginLogin_(payload) {
       verifier: verifier,
       nonce: nonce,
       browserHash: digest_(payload.browserKey),
+      popup: payload.popup === true,
       createdAt: Date.now(),
     }),
+    600,
+  );
+  if (payload.popup) CacheService.getScriptCache().put(
+    "login:" + digest_(payload.browserKey),
+    JSON.stringify({ stateHash: digest_(state), expiresAt: Date.now() + 600000 }),
     600,
   );
   const params = {
@@ -282,6 +290,43 @@ function completeLogin_(params) {
     "AUTH",
   );
   const pending = takeCache_("oauth:" + digest_(params.state));
+  try {
+    return completePendingLogin_(params, pending);
+  } catch (error) {
+    saveLoginResult_(pending, params.state, {
+      error: {
+        code: error instanceof Core_.OrderError ? error.code : "AUTH",
+        message: error instanceof Core_.OrderError ? error.message : "登入未完成，請重新登入。",
+      },
+    });
+    throw error;
+  }
+}
+
+/** 回傳給原管理頁的結果仍綁定 browserKey；不透過跨視窗訊息傳遞憑證。 */
+function saveLoginResult_(pending, state, result) {
+  if (!pending.popup) return;
+  const cache = CacheService.getScriptCache();
+  const key = "login:" + pending.browserHash;
+  const current = JSON.parse(cache.get(key) || "null");
+  if (!current || !equal_(current.stateHash, digest_(state))) return;
+  cache.put(key, JSON.stringify(Object.assign({}, current, result, {
+    expiresAt: Date.now() + 120000,
+  })), 120);
+}
+
+function pollLogin_(payload) {
+  Core_.requireValue(/^[a-f0-9]{64}$/.test(payload.browserKey || ""),
+    "登入請求不正確。", "AUTH");
+  const value = CacheService.getScriptCache().get("login:" + digest_(payload.browserKey));
+  Core_.requireValue(value, "登入已逾時，請重新登入。", "AUTH");
+  const result = JSON.parse(value);
+  Core_.requireValue(result.expiresAt > Date.now(), "登入已逾時，請重新登入。", "AUTH");
+  if (result.error) throw new Core_.OrderError(result.error.code, result.error.message);
+  return result.ticket ? { ticket: result.ticket } : { pending: true };
+}
+
+function completePendingLogin_(params, pending) {
   Core_.requireValue(
     !params.error &&
       typeof params.code === "string" &&
@@ -331,7 +376,8 @@ function completeLogin_(params) {
     }),
     120,
   );
-  return adminUrl_() + "#ticket=" + ticket;
+  saveLoginResult_(pending, params.state, { ticket: ticket });
+  return { destination: adminUrl_() + "#ticket=" + ticket, popup: pending.popup === true };
 }
 
 function exchangeTicket_(payload) {
