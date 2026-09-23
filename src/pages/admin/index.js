@@ -157,6 +157,7 @@ function clearSession(removeSaved = true) {
   list.replaceChildren();
   summary.textContent = "";
   form.reset();
+  editor.clear();
   form.querySelector("#edit-source").replaceChildren();
   form.querySelector("#edit-history").replaceChildren();
   editStatus.textContent = "";

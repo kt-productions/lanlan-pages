@@ -115,6 +115,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ## 維護與限制
 
 - 用後台修改訂單，避免直接改 Sheet 繞過版本與歷史。Telegram 白名單不授予直接開表的 Google 權限。
+- 管理金額保存在 `detailsJson.quote`，不需升級表頭或重寫舊單。一般委託可編輯明細並加總，Trello 只記錄總額；原系統預估及來源保留。發布時先更新共用驗證的 GAS 版本，再發布前端；舊前端省略報價仍保留已存值，詳見[服務契約](../reference/order-api.md)。
 - `revision` 保護編輯；舊內容留在 `historyJson`，與新內容同列一次寫入。文字欄位達 45,000 字元上限時拒絕寫入，應規劃可追溯封存，不可清空歷史。
 - 通知只提醒指定使用者收件，不自動通知委託者進度；不含暱稱、聯絡方式或需求全文，附件依[附件維護](reference-attachments.md)傳送。管理頁網址空白時只送編號與委託類型，完成 Pages 後才附後台連結。
 - 管理 token 自核發起固定有效 3 天（72 小時），不因讀取或重新開頁續期。後端以 Script Properties 的 `session:<token 雜湊>` 保存 ID 與到期時間；每次管理請求仍核對期限與白名單，登出或驗證失效時刪除，新登入時清理過期紀錄。GAS Cache 最長六小時且可能提早淘汰，不作為新工作階段儲存；部署前的快取工作階段仍依原一小時期限有效。

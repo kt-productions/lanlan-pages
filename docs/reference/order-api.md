@@ -96,6 +96,14 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 
 管理修改在 ScriptLock 內核對 `revision`，保存舊內容及操作者 Telegram ID，再一次寫入新內容、版本與歷史；不提供刪單 API。字串寫入 Sheet 前做公式跳脫，畫面以 `textContent` 呈現。
 
+### 管理金額與明細（2026-09-24）
+
+`admin.update` 可選擇另傳 `quote`。一般訂單為 `{ currency: "TWD", items: [{ label, amount }] }`，總額由伺服器以整數分加總，忽略客戶端自行提供的總額；Trello 歷史訂單為 `{ currency: "TWD", amount, items: null }`，只允許總額，不補造明細或原表單資料。
+
+正規化結果 `{ currency, amount, items }` 保存在原有 `detailsJson.quote`，管理回應從 `details.quote` 讀取，不增加 Sheets 欄位。省略 `quote` 保留目前金額，包含舊管理頁與拖曳移欄；明確傳 `null` 才清除。`input.details.quote` 不作為修改入口，新收件忽略此欄。金額只在管理介面顯示，不進入公開進度、客戶回執或收件通知，也不代表已付款或委託者已同意報價。
+
+明細限 1–50 項，名稱為 1–120 字元；金額最多兩位小數，單項允許負數折扣，絕對值及總額上限為 NT$ 9,999,999.99，總額不可為負。空白與零元分開處理。一般訂單仍保留系統 `estimatedPrice`，預估範圍不得直接當成確定報價；修改需求後，手動金額保留供管理員另行確認。報價更新、清除與其他變更沿用相同 revision、鎖定、歷史快照及權限檢查，沒有新通知或資料批次改寫。
+
 通知狀態為 `pending`、`sending`、`sent`、`failed`、`unknown`；歷史匯入為 `not_required`，前後端均禁止發送收件通知。先存訂單再傳送，失敗不回滾。傳送中兩分鐘內不允許重試，逾時可人工重試；已通知不重傳。通知不更改業務版本，完成時重新讀取再寫狀態，避免覆蓋同期的管理修改。
 
 `TELEGRAM_NOTIFY_USER_IDS` 支援 1–20 位正整數使用者 ID，去重後逐位傳送；未設定時相容舊 `TELEGRAM_CHAT_ID`。第 30 欄 `notificationRecipientsJson` 保存第一次通知的固定名單，每位含 `id`、`status`、`attempts`、`at`、`error`。逐位保存成功結果，重試不再傳給已送達者；後續名單設定只影響新單。舊版已標記 `sent` 的單不補發。每輪仍更新 `notificationAttempts`，以該輪識別防止過期回應覆寫較新的重試；每位開始與完成時更新 `notificationAt`。

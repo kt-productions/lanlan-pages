@@ -6,6 +6,7 @@ import {
   notificationNames,
 } from "./presentation.js";
 import { formatPriceRange } from "../commission/pricing.js";
+import { setupQuoteEditor } from "./quote-editor.js";
 
 const choices = {
   payment: [
@@ -38,6 +39,7 @@ const choices = {
 };
 
 export function setupEditor(form, config) {
+  const quote = setupQuoteEditor(form);
   const options = form.querySelector("#edit-options");
   const fields = form.elements;
   for (const [value, label] of Object.entries(ORDER_STATUSES)) {
@@ -53,8 +55,9 @@ export function setupEditor(form, config) {
       `${order.source?.cardName || details.nickname} · ${serviceNames[order.service]}`;
     form.querySelector("#edit-order-id").textContent = `委託編號：${order.orderId}`;
     form.querySelector("#edit-estimate").textContent =
-      imported ? "Trello 歷史訂單；聯絡方式、需求、報價與授權未提供。" :
+      imported ? "Trello 歷史訂單；原始聯絡方式、需求、報價與授權未提供，可另外記錄訂單金額。" :
       `目前預估 ${formatPriceRange(details.estimatedPrice.min, details.estimatedPrice.max, details.estimatedPrice.currency)}；仍需由繪師確認報價。`;
+    quote.fill(order);
     for (const key of ["status", "publicNote", "adminNote"])
       fields[key].value = order[key];
     fields.isRush.checked = order.isRush;
@@ -74,7 +77,7 @@ export function setupEditor(form, config) {
         element("p", `Trello 最後活動：${dateLabel(order.source.lastActivity)}`),
         element("p", `匯入本站：${dateLabel(order.source.importedAt)}`),
         element("p", "以上為台灣時間。Trello 最後活動包含卡片移動、內容或標籤等異動，不一定代表製作進度更新。"),
-        element("p", "可更新製作進度與備註；原標籤只作來源紀錄，不代表本站確認的付款或報價。"),
+        element("p", "可更新製作進度、金額與備註；原標籤只作來源紀錄，不代表本站確認的付款或報價。"),
       );
       const link = element("a", "查看原 Trello 卡片");
       link.href = order.source.cardUrl;
@@ -183,6 +186,7 @@ export function setupEditor(form, config) {
       orderId: order.orderId,
       revision: order.revision,
       details,
+      quote: quote.collect(),
       status: fields.status.value,
       isRush: fields.isRush.checked,
       isOnHold: fields.isOnHold.checked,
@@ -193,5 +197,5 @@ export function setupEditor(form, config) {
     validateUpdate(payload, order, config);
     return payload;
   }
-  return { fill, collect };
+  return { fill, collect, clear: quote.clear };
 }

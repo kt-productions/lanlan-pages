@@ -269,13 +269,17 @@ export function validateUpdate(input, current, config) {
   requireValue(typeof input.isOnHold === "boolean", "請選擇是否標記擱置。");
   requireValue(input.isArchived === undefined || typeof input.isArchived === "boolean", "封存狀態不正確。");
   const currentDetails = current.details || JSON.parse(current.detailsJson);
-  const details = orderSource(current) ? currentDetails : validateSubmission(input.details, config, {
+  const imported = Boolean(orderSource(current));
+  const details = imported ? { ...currentDetails } : validateSubmission(input.details, config, {
     hasAttachments: Boolean(currentDetails.attachments?.length), allowPreviousVersion: true,
   });
   // 附件只能由上傳流程建立；管理欄位更新保留伺服器既有附件，拒絕客戶端換入其他 Drive ID。
   if (currentDetails.attachments) details.attachments = currentDetails.attachments;
+  // 管理報價與系統預估分開；拖曳及舊管理頁未傳 quote 時保留已儲存金額。
+  if (input.quote !== undefined) details.quote = validateQuote(input.quote, imported);
+  else if (Object.hasOwn(currentDetails, "quote")) details.quote = currentDetails.quote;
   return {
-    // 歷史訂單沒有完整表單資料；以伺服器保存的內容為準，不接受客戶端補造報價或授權。
+    // 歷史訂單只允許獨立報價欄位，不接受客戶端補造原表單或授權。
     details,
     status,
     isRush: input.isRush,
@@ -285,6 +289,40 @@ export function validateUpdate(input, current, config) {
     publicNote: textField(input.publicNote, "公開進度說明", 500, false),
     adminNote: textField(input.adminNote, "內部備註", 4000, false),
   };
+}
+
+export const QUOTE_MAX_AMOUNT = 9999999.99;
+export const QUOTE_MAX_ITEMS = 50;
+
+/** 以整數分驗證及加總；金額接受數值或欄位字串，但不接受指數或超過兩位小數。 */
+export function quoteCents(value, label = "金額", allowNegative = false) {
+  requireValue((typeof value === "string" || typeof value === "number") &&
+    /^-?\d+(?:\.\d{1,2})?$/.test(String(value)), `${label}請填寫最多兩位小數的金額。`);
+  const amount = Number(value);
+  requireValue(Number.isFinite(amount) && Math.abs(amount) <= QUOTE_MAX_AMOUNT &&
+    (allowNegative || amount >= 0), `${label}須介於${allowNegative ? " -9,999,999.99" : " 0"} 與 9,999,999.99 元之間。`);
+  return Math.round(amount * 100);
+}
+
+/** 只有已驗證的管理更新可寫入；收件及公開投影不採用這份資料。 */
+export function validateQuote(input, imported = false) {
+  if (input === null) return null;
+  requireValue(input && typeof input === "object" && !Array.isArray(input) &&
+    input.currency === "TWD", "訂單金額格式不正確，幣別須為新台幣。");
+  if (imported) {
+    requireValue(input.items === null, "Trello 歷史訂單只提供總金額，不提供明細。");
+    return { currency: "TWD", amount: quoteCents(input.amount, "訂單總金額") / 100, items: null };
+  }
+  requireValue(Array.isArray(input.items) && input.items.length >= 1 && input.items.length <= QUOTE_MAX_ITEMS,
+    `請提供 1–${QUOTE_MAX_ITEMS} 筆金額明細。`);
+  const items = input.items.map((item, index) => ({
+    label: textField(item?.label, `第 ${index + 1} 筆項目名稱`, 120),
+    amount: quoteCents(item?.amount, `第 ${index + 1} 筆金額`, true) / 100,
+  }));
+  const cents = items.reduce((sum, item) => sum + Math.round(item.amount * 100), 0);
+  requireValue(cents >= 0 && cents <= Math.round(QUOTE_MAX_AMOUNT * 100), "明細加總須介於 0 與 9,999,999.99 元之間。");
+  // 總額由伺服器重新加總，不採用客戶端自行提供的 amount。
+  return { currency: "TWD", amount: cents / 100, items };
 }
 
 export function attachmentManifest(input = []) {

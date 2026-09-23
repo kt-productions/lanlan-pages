@@ -81,6 +81,29 @@
             <p id="admin-edit-status" role="status" tabindex="-1"></p>
             <p id="edit-order-id"></p>
             <p id="edit-estimate"></p>
+            <section class="quote-section" aria-labelledby="edit-quote-heading">
+              <h3 id="edit-quote-heading">訂單金額</h3>
+              <details id="edit-estimate-details">
+                <summary>系統預估明細</summary>
+                <ul id="edit-estimate-items" class="estimate-items"></ul>
+              </details>
+              <div class="edit-flags">
+                <label><input type="checkbox" name="quoteEnabled" />設定訂單金額</label>
+              </div>
+              <p id="edit-quote-hint" class="field-hint"></p>
+              <fieldset id="edit-quote-controls" hidden disabled>
+                <legend>金額編輯</legend>
+                <label id="edit-quote-amount-label">總金額（NT$）
+                  <input name="quoteAmount" type="number" inputmode="decimal" min="0" max="9999999.99" step="0.01" required />
+                </label>
+                <div id="edit-quote-item-editor">
+                  <div id="edit-quote-lines"></div>
+                  <button id="edit-quote-add" type="button" class="button">新增明細</button>
+                </div>
+              </fieldset>
+              <p id="edit-quote-total" class="quote-total" aria-live="polite"></p>
+              <p class="field-hint">金額僅供管理員查看。取消勾選並儲存可清除金額，先前內容會保留於修改紀錄。</p>
+            </section>
             <fieldset>
               <legend>製作進度</legend>
               <div class="edit-grid">

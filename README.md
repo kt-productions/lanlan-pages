@@ -20,6 +20,8 @@ Telegram 收件通知已包含完整表單內容與伺服器預估明細；長�
 
 委託進度已移除卡片的「訂單資訊」展開區。兩個看板於桌機並排顯示六欄，公開進度已移除工作階段選單。管理卡片隱藏編號與編輯按鈕，直接點選或按 Enter／空白鍵即可開啟編輯視窗，拖曳移欄仍保留；驗證見[六欄與卡片互動紀錄](docs/records/compact-board-2026-09-24.md)。
 
+管理編輯視窗提供訂單金額：一般訂單可查看系統預估、編輯明細並自動加總，Trello 歷史訂單僅編輯總額。手動金額與原預估分開保存，沿用權限、版本與修改歷史，金額不公開且不觸發通知；驗證見[金額編輯紀錄](docs/records/order-quote-2026-09-24.md)。
+
 網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
 
 2026-09-24 首頁小動圖分類改為桌機每列四張、每批八張；委託看板合併「草稿確認/等待付款」，卡片依原始建立時間由舊到新排列。管理頁預設小動圖，移除上方工作階段篩選，支援拖曳移欄；編輯視窗仍保留階段選擇。急件卡片紅底、擱置藍底，並存時加紅色側框。GAS 已更新至第 15 版，前端由本次 `main` 推送觸發 GitHub Pages 發布；驗證與發布範圍見[本次紀錄](docs/records/gallery-form-2026-09-24.md)。
