@@ -5,7 +5,7 @@ import { backend } from "./helpers/apps-script.mjs";
 
 const session = (token = "b".repeat(64)) => ({ token, expiresAt: 10000 });
 function fixture(saved = session()) {
-  const state = { saved, visible: false, now: 1000, requests: [], invalid: [], timers: new Map() };
+  const state = { saved, visible: false, changes: [], now: 1000, requests: [], invalid: [], timers: new Map() };
   let nextTimer = 0;
   const access = createAdminAccess({
     api(action, payload, token) {
@@ -13,7 +13,7 @@ function fixture(saved = session()) {
     },
     readSession: () => state.saved,
     clearSession: () => { state.saved = null; },
-    onChange: (visible) => { state.visible = visible; },
+    onChange: (visible) => { state.visible = visible; state.changes.push(visible); },
     onInvalid: (token) => state.invalid.push(token),
     now: () => state.now,
     schedule: (fn) => { state.timers.set(++nextTimer, fn); return nextTimer; },
@@ -22,13 +22,13 @@ function fixture(saved = session()) {
   return { state, access };
 }
 
-test("未登入不驗證，保存憑證也須等伺服器確認才顯示管理導覽", async () => {
+test("未登入不驗證，未到期的登入在伺服器回覆前立即顯示管理導覽", async () => {
   const { state, access } = fixture(null);
   await access.sync();
   assert.equal(state.requests.length, 0);
   state.saved = session();
   const task = access.sync();
-  assert.equal(state.visible, false);
+  assert.equal(state.visible, true);
   assert.equal(state.requests[0].action, "auth.session");
   assert.deepEqual(state.requests[0].payload, {});
   state.requests[0].resolve({ authenticated: true, expiresAt: 9000 });
@@ -68,32 +68,38 @@ test("跨分頁登出與切換登入後，延遲的成功或失敗不覆蓋較�
   assert.equal(state.visible, false);
 });
 
-test("網路失敗隱藏入口但保留登入供重試；明確失效才清除，重複檢查共用請求", async () => {
+test("背景檢查與網路失敗不閃爍；明確失效才清除，重複檢查共用請求", async () => {
   const { state, access } = fixture();
   const first = access.sync();
   const duplicate = access.refresh();
   assert.equal(state.requests.length, 1);
   state.requests[0].reject({ code: "NETWORK" });
   await Promise.all([first, duplicate]);
-  assert.equal(state.visible, false);
+  assert.equal(state.visible, true);
   assert.ok(state.saved);
   const retry = access.refresh();
+  assert.equal(state.visible, true);
   state.requests[1].resolve({ authenticated: true, expiresAt: 10000 });
   await retry;
   assert.equal(state.visible, true);
   const invalid = access.refresh();
+  assert.ok(state.changes.every(Boolean));
   state.requests[2].reject({ code: "FORBIDDEN" });
   await invalid;
   assert.equal(state.visible, false);
   assert.equal(state.saved, null);
 });
 
-test("格式錯誤不顯示，已驗證的本頁登入不依賴 localStorage 且不能延長期限", async () => {
+test("格式錯誤的回覆不延長登入，已驗證的本頁登入不依賴 localStorage", async () => {
   const { state, access } = fixture();
   const pending = access.sync();
   state.requests[0].resolve({ authenticated: true, expiresAt: "10000" });
   await pending;
+  assert.equal(state.visible, true);
+  state.now = 10000;
+  [...state.timers.values()][0]();
   assert.equal(state.visible, false);
+  state.now = 1000;
   state.saved = null;
   access.confirm({ ...session(), expiresAt: 5000 });
   assert.equal(state.visible, true);
@@ -101,7 +107,27 @@ test("格式錯誤不顯示，已驗證的本頁登入不依賴 localStorage 且
   state.now = 5000;
   [...state.timers.values()][0]();
   assert.equal(state.visible, false);
-  assert.equal(state.invalid.length, 1);
+  assert.equal(state.invalid.length, 2);
+});
+
+test("缺少、格式錯誤或已到期的登入紀錄不顯示也不請求；等待期間到期不能被晚回覆恢復", async () => {
+  for (const saved of [null, { ...session(), token: "invalid" }, { ...session(), expiresAt: 1000 },
+    { ...session(), expiresAt: "10000" }]) {
+    const { state, access } = fixture(saved);
+    await access.sync();
+    assert.equal(state.visible, false);
+    assert.equal(state.requests.length, 0);
+  }
+  const { state, access } = fixture();
+  const pending = access.sync();
+  assert.equal(state.visible, true);
+  state.now = 10000;
+  [...state.timers.values()][0]();
+  assert.equal(state.visible, false);
+  assert.equal(state.saved, null);
+  state.requests[0].resolve({ authenticated: true, expiresAt: 10000 });
+  await pending;
+  assert.equal(state.visible, false);
 });
 
 test("身分檢查沿用到期與白名單驗證，不讀訂單、不回傳身分或續期", () => {
