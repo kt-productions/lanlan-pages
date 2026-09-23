@@ -4,11 +4,11 @@
     {
       "id": "chibi-58",
       "category": "chibi",
-      "title": "系統流程測試 20260924（驗收後下架）",
+      "title": "系統流程測試 20260924（文字更新驗收）",
       "alt": "米黃色測試圖，標示系統流程測試與非繪師作品",
-      "description": "系統驗收：草稿重開與雲端預覽已確認；此圖不是繪師作品，發布流程驗收後下架。",
-      "revision": 1,
-      "operationId": "0887f6ed-8734-417b-a34a-fb5ea7790383",
+      "description": "已驗證原圖保存與暫存清理。這次僅更新作品文字，不重新上傳檔案；測試完成後下架。",
+      "revision": 2,
+      "operationId": "50309e35-5e38-48d4-ac0f-2928dba8bae0",
       "deleted": false,
       "media": {
         "type": "image",
