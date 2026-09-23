@@ -4,6 +4,20 @@
 .admin-toolbar {
   flex-wrap: wrap;
 }
+.admin-page .progress-card[role="button"] {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.admin-page .progress-card[role="button"]:hover {
+  box-shadow: 0 0 0 1px var(--brand);
+}
+.admin-page .progress-card[role="button"]:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+.admin-page .progress-card[aria-disabled="true"] {
+  cursor: default;
+}
 .admin-page .progress-card[draggable="true"] {
   cursor: grab;
 }
@@ -27,26 +41,6 @@
 #admin-summary {
   margin-top: 18px;
   font-weight: 700;
-}
-.admin-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-}
-.admin-card-footer small {
-  min-width: 0;
-  color: var(--muted);
-  font-size: 11px;
-}
-.admin-card-footer .button {
-  flex: none;
-  font-size: 13px;
-  padding: 9px 12px;
-  min-height: 44px;
 }
 body.admin-modal-open {
   overflow: hidden;

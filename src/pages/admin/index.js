@@ -1,10 +1,7 @@
 import "../../shared/navigation.js";
 import { ApiError, createApi, integrationConfig } from "../../features/orders/api.js";
 import { ORDER_STATUSES } from "../../features/orders/contract.js";
-import {
-  element,
-  renderProgress,
-} from "../../features/orders/presentation.js";
+import { renderProgress } from "../../features/orders/presentation.js";
 import { setupEditor } from "../../features/orders/editor.js";
 import { boardColumns } from "../../features/orders/board-view.js";
 import { filterBoard } from "../../features/orders/board.js";
@@ -121,7 +118,7 @@ dialog.addEventListener("cancel", (event) => {
 dialog.addEventListener("close", () => {
   document.body.classList.remove("admin-modal-open");
   const trigger = [...list.querySelectorAll("[data-order-id]")]
-    .find((button) => button.dataset.orderId === returnOrderId);
+    .find((card) => card.dataset.orderId === returnOrderId);
   (workspace.hidden ? login : trigger || list).focus({ preventScroll: true });
 });
 document.querySelector("#admin-keep-editing").addEventListener("click", () => {
@@ -211,22 +208,24 @@ function renderList() {
     deferredDisabled: busy || !hasSnapshot,
     message: busy ? "讀取中……" : "尚未取得委託",
     renderCard(order) {
-      const title = order.source?.cardName || order.details.nickname;
+      const title = order.source?.cardName || order.details.nickname || "未命名委託";
       const card = renderProgress({ ...order, displayTitle: title });
       card.dataset.dragOrderId = order.orderId;
       card.draggable = !busy && !movementBlocked;
-      const footer = element("div", undefined, "admin-card-footer");
-      const button = element("button", "編輯", "button admin-edit-button");
-      button.type = "button";
-      button.dataset.orderId = order.orderId;
-      button.setAttribute("aria-label", `編輯 ${title}`);
-      button.setAttribute("aria-haspopup", "dialog");
-      button.disabled = busy;
-      button.addEventListener("click", () => {
-        if (!busy) selectOrder(order);
+      card.dataset.orderId = order.orderId;
+      card.tabIndex = busy ? -1 : 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", `編輯 ${title}`);
+      card.setAttribute("aria-haspopup", "dialog");
+      card.setAttribute("aria-disabled", String(busy));
+      card.addEventListener("click", () => {
+        if (!busy && !dialog.open) selectOrder(order);
       });
-      footer.append(element("small", order.orderId), button);
-      card.append(footer);
+      card.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        if (!event.repeat && !busy && !dialog.open) selectOrder(order);
+      });
       return card;
     },
   }));
@@ -258,6 +257,11 @@ async function work(task, operation = "load") {
   controls.forEach((control) => {
     control.disabled = true;
   });
+  for (const card of list.querySelectorAll("[data-order-id]")) {
+    card.setAttribute("aria-disabled", "true");
+    card.tabIndex = -1;
+    card.draggable = false;
+  }
   list.setAttribute("aria-busy", "true");
   form.setAttribute("aria-busy", "true");
   try {

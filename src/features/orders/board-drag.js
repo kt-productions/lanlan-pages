@@ -20,6 +20,18 @@ export function setupBoardDrag(board, { canDrag, onMove }) {
   let target = null;
   let point = null;
   let frame = 0;
+  let suppressClick = false;
+
+  // 原生拖曳結束可能接著送出 click；只放行下一次新的按下，避免誤開編輯視窗。
+  board.addEventListener("pointerdown", () => {
+    if (!active) suppressClick = false;
+  }, true);
+  board.addEventListener("click", (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    suppressClick = false;
+  }, true);
 
   function reset() {
     active?.classList.remove("is-dragging");
@@ -52,6 +64,7 @@ export function setupBoardDrag(board, { canDrag, onMove }) {
       return;
     }
     active = card;
+    suppressClick = true;
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", card.dataset.dragOrderId);
     card.classList.add("is-dragging");

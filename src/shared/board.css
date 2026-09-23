@@ -1,5 +1,5 @@
 .board-page {
-  max-width: 1680px;
+  width: min(1920px, calc(100% - 48px));
   padding-block: 40px 64px;
 }
 .board-page .order-heading {
@@ -26,7 +26,7 @@
 }
 .progress-board {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   overflow-x: auto;
   align-items: flex-start;
   padding: 4px 3px 18px;
@@ -34,7 +34,7 @@
   scrollbar-color: var(--brand) var(--surface);
 }
 .board-column {
-  flex: 0 0 272px;
+  flex: 0 0 240px;
   min-width: 0;
   background: #f1ead4;
   border: 1px solid var(--line);
@@ -45,12 +45,16 @@
 .column-heading {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 17px 13px 14px;
+  gap: 6px;
+  padding: 10px 8px;
+  min-height: 72px;
   border-top: 4px solid #bbaa7c;
 }
 .column-heading h2 {
-  font-size: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  min-width: 0;
+  overflow-wrap: anywhere;
   margin: 0;
   flex: 1;
 }
@@ -77,8 +81,8 @@
 .column-cards {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 0 10px 12px;
+  gap: 7px;
+  padding: 0 7px 9px;
   max-height: 60vh;
   min-height: 130px;
   overflow-y: auto;
@@ -90,15 +94,15 @@
   min-width: 0;
   border: 1px solid #e1d7bc;
   border-radius: 9px;
-  padding: 13px;
+  padding: 10px;
   background: #fffef9;
   box-shadow: 0 2px 0 #46301f08;
   overflow-wrap: anywhere;
 }
 .progress-card h3 {
-  font-size: 17px;
-  line-height: 1.55;
-  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.45;
+  margin: 6px 0 0;
   font-weight: 800;
 }
 .progress-card.is-rush {
@@ -134,9 +138,9 @@
   padding: 2px 6px;
 }
 .card-note {
-  font-size: 13px;
-  line-height: 1.8;
-  margin: 9px 0;
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 6px 0 0;
   white-space: pre-wrap;
 }
 .column-empty {
@@ -145,8 +149,21 @@
   text-align: center;
   padding: 18px 4px;
 }
+/* 桌機六欄平均分配可用寬度；窄螢幕維持可閱讀的卡片並在看板內捲動。 */
+@media (min-width: 1024px) {
+  .progress-board {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    scroll-snap-type: none;
+  }
+  .column-cards > .button {
+    padding: 10px 6px;
+    font-size: 13px;
+  }
+}
 @media (max-width: 760px) {
   .board-page {
+    width: 90%;
     padding-top: 24px;
   }
   .board-page .order-heading {
@@ -168,7 +185,7 @@
     margin-top: 20px;
   }
   .board-column {
-    flex-basis: min(272px, 80vw);
+    flex-basis: min(240px, 80vw);
   }
   .board-page .order-toolbar {
     display: grid;
