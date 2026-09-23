@@ -23,6 +23,7 @@ export function setupArtworkAdmin({ api, getToken, report, beforeSwitch }) {
   let trigger;
 
   const request = (name, payload) => api(`admin.artworks.${name}`, payload, getToken());
+  const jobState = job => job.action === "delete" && job.state === "published" ? "已下架" : ARTWORK_STATES[job.state] || job.state;
   function message(text) { $(dialog.open ? "artwork-editor-status" : "artwork-status").textContent = text; }
   function clearPreview() {
     $("artwork-preview-media").querySelector("video")?.pause();
@@ -89,7 +90,7 @@ export function setupArtworkAdmin({ api, getToken, report, beforeSwitch }) {
       const button = document.createElement("button");
       button.className = "artwork-job button";
       button.type = "button";
-      button.textContent = `${job.work.title} · ${ARTWORK_STATES[job.state] || job.state}${job.cleanup === "pending" && (job.commitSha || job.state === "cancelled") ? " · 暫存待清理" : ""}`;
+      button.textContent = `${job.work.title} · ${jobState(job)}${job.cleanup === "pending" && (job.commitSha || job.state === "cancelled") ? " · 暫存待清理" : ""}`;
       button.addEventListener("click", () => open(works.find(work => work.id === job.work.id), job, button));
       return button;
     }));
@@ -131,7 +132,7 @@ export function setupArtworkAdmin({ api, getToken, report, beforeSwitch }) {
     if (work) preview(previewBase + (work.playbackSrc || work.src), work.type, work.title);
     $("artwork-preview-load").hidden = !job?.uploaded || job.cleanup === "cleaned";
     $("artwork-editor-heading").textContent = action === "delete" ? "下架作品" : work || job ? "編輯作品" : "新增作品";
-    $("artwork-editor-status").textContent = job ? `${ARTWORK_STATES[job.state]}。${job.error || ""}` : "草稿不會公開；發布後才會加入公開倉庫及網站。";
+    $("artwork-editor-status").textContent = job ? `${jobState(job)}。${job.error || ""}` : "草稿不會公開；發布後才會加入公開倉庫及網站。";
     $("artwork-save").hidden = Boolean(job && job.state !== "draft");
     $("artwork-publish").hidden = Boolean(job && ["processing", "published", "cancelled", "superseded"].includes(job.state));
     $("artwork-publish").textContent = job && job.state !== "draft" ? "重試發布" : action === "delete" ? "確認下架" : "儲存並發布";

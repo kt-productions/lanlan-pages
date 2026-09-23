@@ -33,8 +33,8 @@ export function artworkBackend() {
   for (const [key, value] of Object.entries({ ARTWORKS_ENABLED: "true", ARTWORK_SITE_ID: "fixture",
     ARTWORK_GITHUB_REPO: "fixture/site", ARTWORK_GITHUB_APP_ID: "123", ARTWORK_GITHUB_INSTALLATION_ID: "456",
     ARTWORK_GITHUB_PRIVATE_KEY: signingKeys.privateKey.export({ type: "pkcs1", format: "pem" }),
-    ARTWORK_WORKER_SECRET: "fixture-worker-secret-not-for-production", ARTWORK_FOLDER_ID: "fixture-artwork-folder" })) properties.set(key, value);
-  files.set("fixture-artwork-folder", { id: "fixture-artwork-folder", mimeType: "application/vnd.google-apps.folder", appProperties: { artworkStorage: "1" } });
+    ARTWORK_WORKER_SECRET: "fixture-worker-secret-not-for-production", LANLAN_PAGES_DRIVE_FOLDER_ID: "fixture-lanlan-pages-folder", ARTWORK_FOLDER_ID: "fixture-artwork-folder" })) properties.set(key, value);
+  files.set("fixture-artwork-folder", { id: "fixture-artwork-folder", mimeType: "application/vnd.google-apps.folder", parents: ["fixture-lanlan-pages-folder"], appProperties: { artworkStorage: "1" } });
   context.Drive.Files.remove = id => {
     if (faults.artworkDelete) throw new Error("模擬 Drive 刪除失敗");
     files.delete(id);

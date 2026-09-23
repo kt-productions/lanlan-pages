@@ -11,7 +11,7 @@ import { readCommission } from "../../scripts/lib/content.mjs";
 
 export const config = await readCommission();
 const source = await Promise.all(
-  ["Forge.gs", "Core.gs", "Config.gs", "ArtworkCore.gs", "ArtworkBase.gs", "Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "Web.gs"].map(
+  ["Forge.gs", "Core.gs", "Config.gs", "ArtworkCore.gs", "ArtworkBase.gs", "Auth.gs", "Orders.gs", "Attachments.gs", "DriveStorage.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "Web.gs"].map(
     async (name) => [
       name,
       await readFile(
@@ -98,11 +98,12 @@ export function backend() {
       ADMIN_URL: "https://example.com/lanlan-pages/admin/",
       TELEGRAM_BOT_TOKEN: "fixture-bot-token",
       TELEGRAM_CHAT_ID: "987654",
+      LANLAN_PAGES_DRIVE_FOLDER_ID: "fixture-lanlan-pages-folder",
       REFERENCE_FOLDER_ID: "fixture-folder",
     }),
   );
   const calls = [];
-  const files = new Map([["fixture-folder", { id: "fixture-folder", mimeType: "application/vnd.google-apps.folder",
+  const files = new Map([["fixture-folder", { id: "fixture-folder", mimeType: "application/vnd.google-apps.folder", parents: ["fixture-lanlan-pages-folder"],
     appProperties: { lanlanReferenceStorage: "1" } }]]);
   const writes = [];
   const faults = { telegram: false, lock: false, write: false, token: null, maxColumns: 26 };

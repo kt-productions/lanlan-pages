@@ -1,6 +1,6 @@
 # 作品管理與發布服務
 
-2026-09-24：已設定正式 GitHub App 與作品儲存、部署 GAS 第 18 版，切換 production 發布並開啟作品管理。已完成的雲端驗證與仍待確認的完整公開測試見[正式啟用紀錄](../records/artwork-activation-2026-09-24.md)。[設計背景](../plans/artwork-upload.md)。
+2026-09-24：已設定正式 GitHub App 與作品儲存，切換 production 發布並開啟作品管理。GAS 已更新第 20 版以接續 Google 結果遺失，並強制驗證所有 LanLan Pages Drive 資源位於指定父資料夾；正式完成 PNG 的草稿、預覽、發布、清理、文字更新及下架驗收，測試圖已下架。設定背景見[正式啟用紀錄](../records/artwork-activation-2026-09-24.md)，實際證據與格式涵蓋範圍見[完整流程驗收](../records/artwork-flow-2026-09-24.md)。[設計背景](../plans/artwork-upload.md)。
 
 ## 繪師操作
 
@@ -30,7 +30,7 @@
 
 `artworks.worker` 使用獨立 HMAC-SHA256；簽署 `<timestamp>.<nonce>.<body>`，body 包含 siteId、操作與工作內容。接受五分鐘內的請求，後續操作須持有目前有效的工作租約。租約以 Script Properties 持久保存，預設十分鐘，runner 每分鐘續期。佇列保存在 Sheet，不依賴 Actions concurrency 的待執行數量。重試依狀態、工作 ID 與租約去重；簽章請求不公開到前端或日誌。
 
-Actions 明確處理 Content Service 的 Google 結果轉址，只用無負載 GET 讀取結果；暫時無法解析時最多重讀三次，不自動重送可能已生效的 POST。持續無法確認時停止，交由既有工作紀錄、租約到期及重試流程接續。
+Actions 明確處理 Content Service 的 Google 結果轉址，只用無負載 GET 讀取結果，最多重讀三次。一次性結果票證持續失效時，最多送出三次完全相同的 HMAC 請求，整段上限四分鐘；已確認的業務錯誤不重送。GAS 第 19 版起，同一 claim nonce 取回原租約，結束租約則以最多 20 筆、五分鐘有效的收據取回結果，不重新修改工作或其他 runner 的租約。必須先部署此後端才能更新重試客戶端；持續無法確認時仍停止，交由工作紀錄、租約到期及重試流程接續。
 
 ## 設定 GitHub App
 
@@ -59,9 +59,11 @@ Actions 明確處理 Content Service 的 Google 結果轉址，只用無負載 G
 | `ARTWORK_GITHUB_INSTALLATION_ID` | 安裝到該帳號的 installation ID。 |
 | `ARTWORK_GITHUB_PRIVATE_KEY` | App PEM 私鑰；支援 PKCS#1／PKCS#8 及實際換行。 |
 | `ARTWORK_WORKER_SECRET` | 獨立的至少 32 字元密碼學亂數，與 Actions 保存同一值；不得沿用登入密鑰。 |
+| `LANLAN_PAGES_DRIVE_FOLDER_ID` | 所有 LanLan Pages 私人 Drive 資源的唯一父資料夾；目前為 `乾太工作室 KT Productions/LanLan Pages`。 |
 | `ARTWORK_FOLDER_ID` | 由初始化函式建立，不手動改成委託附件資料夾。 |
+| `REFERENCE_FOLDER_ID` | 由附件初始化函式建立；必須是上述父資料夾的直接子資料夾。 |
 
-由專案編輯者執行 `setupArtworkStorage()`，建立 `ArtworkJobs` 與專用私人資料夾；重跑保留資料，未知表頭停止。函式不接受匿名 HTTP 初始化。既有 `SPREADSHEET_ID`、Telegram 設定與 Orders 不需重建。
+由專案編輯者執行 `setupArtworkStorage()`，建立 `ArtworkJobs` 與專用私人資料夾；重跑保留資料，未知表頭停止。`setupReferenceStorage()` 同樣只使用這個父資料夾。兩個初始化入口都會驗證父資料夾、子資料夾類型、標記與直接隸屬關係；若有人將資料夾移到根目錄或其他位置，服務會停止，不會在錯誤位置建立替代資源。函式不接受匿名 HTTP 初始化。既有 `SPREADSHEET_ID`、Telegram 設定與 Orders 不需重建。
 
 ## GitHub 設定與切換順序
 

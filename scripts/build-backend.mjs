@@ -34,7 +34,7 @@ await copyFile(
   path.join(root, "node_modules/node-forge/LICENSE"),
   path.join(out, "THIRD_PARTY_LICENSE.txt"),
 );
-for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "appsscript.json"]) {
+for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "DriveStorage.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "appsscript.json"]) {
   await copyFile(
     path.join(root, "backend/apps-script", file),
     path.join(out, file),

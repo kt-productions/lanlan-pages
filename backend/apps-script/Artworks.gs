@@ -5,6 +5,7 @@ function setupArtworkStorage() {
   const active = Session.getActiveUser().getEmail();
   Core_.requireValue(active && active === Session.getEffectiveUser().getEmail(), "請由專案編輯者執行初始化。", "FORBIDDEN");
   return lock_(function () {
+    const parent = setting_("ARTWORK_FOLDER_ID", true) ? lanlanPagesDriveFolder_() : verifyLanlanPagesDriveFolder_();
     const book = SpreadsheetApp.openById(setting_("SPREADSHEET_ID"));
     let sheet = book.getSheetByName("ArtworkJobs");
     if (!sheet) sheet = book.insertSheet("ArtworkJobs");
@@ -12,7 +13,7 @@ function setupArtworkStorage() {
     artworkSheet_();
     if (!setting_("ARTWORK_FOLDER_ID", true)) {
       const folder = Drive.Files.create({ name: "作品發布暫存", mimeType: "application/vnd.google-apps.folder",
-        appProperties: { artworkStorage: "1" } }, null, { fields: "id" });
+        parents: [parent], appProperties: { artworkStorage: "1" } }, null, { fields: "id" });
       PropertiesService.getScriptProperties().setProperty("ARTWORK_FOLDER_ID", folder.id);
     }
     artworkFolder_();
@@ -54,10 +55,12 @@ function artworkJob_(operationId) {
   return job;
 }
 function artworkFolder_() {
+  const parent = lanlanPagesDriveFolder_();
   const id = setting_("ARTWORK_FOLDER_ID");
   Core_.requireValue(/^[A-Za-z0-9_-]+$/.test(id), "作品暫存資料夾設定不正確。", "CONFIG");
-  const file = JSON.parse(driveReferenceResponse_(id + "?fields=id,mimeType,trashed,appProperties").getContentText());
-  Core_.requireValue(!file.trashed && file.mimeType === "application/vnd.google-apps.folder" && file.appProperties?.artworkStorage === "1",
+  const file = JSON.parse(driveReferenceResponse_(id + "?fields=id,mimeType,trashed,parents,appProperties").getContentText());
+  Core_.requireValue(!file.trashed && file.mimeType === "application/vnd.google-apps.folder" &&
+    file.parents?.includes(parent) && file.appProperties?.artworkStorage === "1",
     "作品暫存資料夾設定不正確。", "CONFIG");
   return id;
 }

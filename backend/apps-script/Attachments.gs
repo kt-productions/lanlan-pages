@@ -4,6 +4,7 @@ function setupReferenceStorage() {
   Core_.requireValue(active && active === Session.getEffectiveUser().getEmail(),
     "請由專案編輯者執行附件儲存初始化。", "FORBIDDEN");
   return lock_(function () {
+    const parent = setting_("REFERENCE_FOLDER_ID", true) ? lanlanPagesDriveFolder_() : verifyLanlanPagesDriveFolder_();
     if (setting_("REFERENCE_FOLDER_ID", true)) {
       referenceFolder_();
       return "附件儲存已設定。";
@@ -11,6 +12,7 @@ function setupReferenceStorage() {
     const folder = Drive.Files.create({
       name: "爛爛 LANLAN｜委託附件",
       mimeType: "application/vnd.google-apps.folder",
+      parents: [parent],
       appProperties: { lanlanReferenceStorage: "1" },
     }, null, { fields: "id" });
     PropertiesService.getScriptProperties().setProperty("REFERENCE_FOLDER_ID", folder.id);
@@ -32,12 +34,14 @@ function driveReferenceResponse_(path, missingAllowed) {
 }
 
 function referenceFolder_() {
+  const parent = lanlanPagesDriveFolder_();
   const id = setting_("REFERENCE_FOLDER_ID", true);
   Core_.requireValue(typeof id === "string" && /^[A-Za-z0-9_-]+$/.test(id),
     "圖片上傳尚未完成設定，請先提供參考素材連結。", "NOT_CONFIGURED");
-  const folder = JSON.parse(driveReferenceResponse_(id + "?fields=id,mimeType,trashed,appProperties").getContentText());
+  const folder = JSON.parse(driveReferenceResponse_(id + "?fields=id,mimeType,trashed,parents,appProperties").getContentText());
   Core_.requireValue(!folder.trashed && folder.mimeType === "application/vnd.google-apps.folder" &&
-    folder.appProperties?.lanlanReferenceStorage === "1", "附件資料夾設定不正確。", "CONFIG");
+    folder.parents?.includes(parent) && folder.appProperties?.lanlanReferenceStorage === "1",
+    "附件資料夾設定不正確。", "CONFIG");
   return id;
 }
 
@@ -190,7 +194,7 @@ function completedReferences_(requestId, input) {
 function referenceBlob_(order, index) {
   const attachment = JSON.parse(order.detailsJson).attachments?.[index];
   Core_.requireValue(attachment && /^[A-Za-z0-9_-]+$/.test(attachment.id), "這筆委託沒有已上傳圖片。", "NOT_FOUND");
-  const folder = setting_("REFERENCE_FOLDER_ID");
+  const folder = referenceFolder_();
   const file = JSON.parse(driveReferenceResponse_(attachment.id + "?fields=id,parents,size,mimeType,trashed").getContentText());
   Core_.requireValue(!file.trashed && file.parents?.includes(folder) && Number(file.size) === attachment.size &&
     attachment.size <= Core_.ATTACHMENT_MAX_BYTES && file.mimeType === attachment.type,

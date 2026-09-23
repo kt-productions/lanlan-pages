@@ -135,6 +135,8 @@
 
 - **2026-09-24 作品管理正式啟用**：依使用者明確授權，GitHub App 限定本站 repo，GAS 第 18 版及作品專用暫存已啟用，178 筆既有委託在初始化前後一致。main 驗證、production 發布，Pages environment 只允許 production；維護者更新程式也須驗證後快轉 production，不能只推 main。正式結果及完整公開測試的界線見 `docs/records/artwork-activation-2026-09-24.md`；本段更新下列實作時尚未啟用的歷史狀態。
 
+- **2026-09-24 LanLan Pages Drive 父目錄**：依使用者指定，將作品發布暫存移到 `乾太工作室 KT Productions/LanLan Pages`，並以 Script Property `LANLAN_PAGES_DRIVE_FOLDER_ID` 作為所有 LanLan Pages 私人 Drive 資源的唯一父目錄。作品與委託附件初始化都驗證直接隸屬、資料夾型別及應用程式標記；若資源被移出指定目錄，服務停止而不在根目錄重建。既有資料夾 ID、檔案與 Orders 不變，實際搬移與核對見 `docs/records/drive-storage-2026-09-24.md`。
+
 - **2026-09-24 管理導覽立即顯示**：依使用者要求改善登入後入口延遲，`admin-access.js` 改為依已保存且未到期的登入同步顯示，再於背景呼叫 `auth.session`。暫時無法連線不隱藏入口，登出、到期或明確權限失效仍清除；延遲回應不能恢復已登出狀態。此更新先前「等候驗證才顯示」的呈現決策，只影響公開的管理頁連結，管理資料與操作仍由伺服器獨立驗證，不新增保存資料或延長期限。
 - **2026-09-24 作品管理與發布程式**：依使用者確認的 Drive 暫存、main 保存與 production 發布流程，新增 `src/features/artworks/`、`content/artworks.json`、三個作品 GAS 模組及作品／驗證 workflows。原始位元組與衍生檔一併保存；GAS 核對遠端提交及原檔雜湊後，只清理該次已確認的暫存。production 使用 GitHub App token 正常快轉，分歧停止，不強制覆蓋。程式及離線驗證已完成，正式 App、Secrets、作品儲存初始化及 Pages 分支切換尚未執行；啟用順序見 `docs/development/artwork-service.md`。此為使用者對後續發布流程的更新，既有正式網站仍維持原部署，未以附錄放寬外部操作權限。
 

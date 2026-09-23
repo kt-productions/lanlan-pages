@@ -48,6 +48,7 @@ npm exec --yes --package @google/clasp@3.4.1 -- clasp --auth "$env:LANLAN_CLASP_
 | --- | --- |
 | `SPREADSHEET_ID` | 專用 Google Sheets ID；部署帳號需有編輯權限。 |
 | `REFERENCE_FOLDER_ID` | 執行 `setupReferenceStorage` 自動建立的私人附件資料夾；不要手動換成別的資料夾。 |
+| `LANLAN_PAGES_DRIVE_FOLDER_ID` | `乾太工作室 KT Productions/LanLan Pages` 的唯一 Drive 父資料夾；附件資料夾必須是它的直接子資料夾。 |
 | `TELEGRAM_BOT_TOKEN` | 通知用 bot 的 Token。 |
 | `TELEGRAM_NOTIFY_USER_IDS` | 1–20 位收件者的正整數 Telegram 使用者 ID，以半形逗號分隔，例如虛構的 `123456789,987654321`；重複 ID 只送一次。不是 username，不必都是管理員。 |
 | `TELEGRAM_CHAT_ID` | 舊版相容：只有 `TELEGRAM_NOTIFY_USER_IDS` 空白時才使用。新設定請用上一列，不必填此項。 |
