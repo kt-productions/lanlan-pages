@@ -15,7 +15,8 @@ const contract = (await read("src/features/orders/contract.js"))
   .replace(/^import .*;\r?\n/gm, "")
   .replace(/^export /gm, "");
 const attachments = (await read("src/features/orders/attachment-contract.js")).replace(/^export /gm, "");
-const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareOrderAge, attachmentManifest, attachmentFileError, formatPriceRange, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
+const revenue = (await read("src/features/orders/revenue.js")).replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
+const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\n${revenue}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareOrderAge, attachmentManifest, attachmentFileError, formatPriceRange, taipeiDate, buildRevenueReport, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
 await writeFile(path.join(out, "Core.gs"), core);
 await writeFile(
   path.join(out, "Config.gs"),

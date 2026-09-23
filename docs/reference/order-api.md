@@ -23,6 +23,8 @@
 | `auth.poll` | 公開 | 原分頁 64 字元 hex `browserKey`；彈出視窗登入回傳 `{ pending: true }`、`{ ticket }` 或驗證錯誤，不回傳工作階段 token。 |
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`、選填 `delivery`；取得指定交稿範圍的完整訂單、通知狀態與歷史。 |
+| `admin.get` | 管理員 | `orderId`；取得單筆最新完整訂單，供收益報表開啟編輯。 |
+| `admin.revenue` | 管理員 | 選填整數 `year`；一次讀完整訂單，回傳每月及全年收益、明細與待補資料。金額單位為整數分，規則見[收益報表](revenue-report.md)。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
@@ -40,6 +42,8 @@
 管理 token 每次重新核對工作階段、到期與最新白名單，不能把前端顯示條件當成權限控制。
 
 ## 收件內容
+
+管理更新另接受頂層選填 `revenue`，包含訂金金額及三種日期，保存至 `detailsJson.revenue`；不屬於收件內容。省略時保留原值，收件與 `details.revenue` 不能寫入，規格與交稿自動記錄行為見[收益報表](revenue-report.md)。
 
 伺服器重建白名單：`schemaVersion`、`service`、`nickname`、`contact`、`referenceUrl`、`stickerIds`、`chibiPlan`、`characterCount`、`transition`、`commercial`、`background`、`rush`、`payment`、`allowLivestream`、`allowPortfolio`、`notes`、`rulesReviewed`。
 

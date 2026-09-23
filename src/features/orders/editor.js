@@ -7,6 +7,7 @@ import {
 } from "./presentation.js";
 import { formatPriceRange } from "../commission/pricing.js";
 import { setupQuoteEditor } from "./quote-editor.js";
+import { setupRevenueEditor } from "./revenue-editor.js";
 
 const choices = {
   payment: [
@@ -40,6 +41,7 @@ const choices = {
 
 export function setupEditor(form, config) {
   const quote = setupQuoteEditor(form);
+  const revenue = setupRevenueEditor(form);
   const options = form.querySelector("#edit-options");
   const fields = form.elements;
   for (const [value, label] of Object.entries(ORDER_STATUSES)) {
@@ -60,6 +62,7 @@ export function setupEditor(form, config) {
     quote.fill(order);
     for (const key of ["status", "publicNote", "adminNote"])
       fields[key].value = order[key];
+    revenue.fill(order);
     fields.isRush.checked = order.isRush;
     fields.isOnHold.checked = order.isOnHold;
     fields.isArchived.checked = order.isArchived;
@@ -187,6 +190,7 @@ export function setupEditor(form, config) {
       revision: order.revision,
       details,
       quote: quote.collect(),
+      revenue: revenue.collect(),
       status: fields.status.value,
       isRush: fields.isRush.checked,
       isOnHold: fields.isOnHold.checked,
@@ -197,5 +201,5 @@ export function setupEditor(form, config) {
     validateUpdate(payload, order, config);
     return payload;
   }
-  return { fill, collect, clear: quote.clear };
+  return { fill, collect, clear() { quote.clear(); revenue.clear(); } };
 }

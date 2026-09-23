@@ -20,6 +20,7 @@
 
 ## 規格與來源 · reference
 
+- [收益報表](reference/revenue-report.md)：每月／年度分類、交稿與訂金日期、待補資料、管理 API 及發布順序。
 - [委託表單與計價](reference/commission.md)：目前欄位、檔案限制、費率、折扣順序、首頁價目及已確認／未確認差異。
 - [JSON 草稿契約](reference/draft-schema.md)：第 4 版草稿的完整欄位、型別、空值與狀態。
 - [委託服務契約](reference/order-api.md)：收件、進度、管理 API、Sheet 欄位與登入邊界。

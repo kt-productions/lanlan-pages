@@ -278,6 +278,13 @@ export function validateUpdate(input, current, config) {
   // 管理報價與系統預估分開；拖曳及舊管理頁未傳 quote 時保留已儲存金額。
   if (input.quote !== undefined) details.quote = validateQuote(input.quote, imported);
   else if (Object.hasOwn(currentDetails, "quote")) details.quote = currentDetails.quote;
+  // 收款與日期只接受管理欄位；舊頁、拖曳及偽造的表單 details 都不能清掉原值。
+  if (input.revenue !== undefined) details.revenue = validateRevenue(input.revenue, details.quote);
+  else if (Object.hasOwn(currentDetails, "revenue")) details.revenue = currentDetails.revenue;
+  if (details.revenue?.depositAmount > 0) {
+    requireValue(details.quote && quoteCents(details.revenue.depositAmount) <= quoteCents(details.quote.amount),
+      "訂金不可超過訂單金額；清除金額前請先清除訂金紀錄。");
+  }
   return {
     // 歷史訂單只允許獨立報價欄位，不接受客戶端補造原表單或授權。
     details,
@@ -293,6 +300,35 @@ export function validateUpdate(input, current, config) {
 
 export const QUOTE_MAX_AMOUNT = 9999999.99;
 export const QUOTE_MAX_ITEMS = 50;
+
+/** 使用台灣日曆日期，避免 UTC 的月底／跨年偏移；空值表示待補，不猜測日期。 */
+export function revenueDate(value, label = "日期") {
+  if (value === null || value === "") return null;
+  requireValue(typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value), `${label}格式不正確。`);
+  const date = new Date(`${value}T00:00:00.000Z`);
+  requireValue(Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value &&
+    Number(value.slice(0, 4)) >= 1900 && Number(value.slice(0, 4)) <= 9999, `${label}不是有效日期。`);
+  return value;
+}
+
+export function taipeiDate(value) {
+  const time = Date.parse(value);
+  return Number.isFinite(time) ? new Date(time + 8 * 60 * 60 * 1000).toISOString().slice(0, 10) : null;
+}
+
+export function validateRevenue(input, quote) {
+  requireValue(input && typeof input === "object" && !Array.isArray(input), "收益資料格式不正確。");
+  const deposit = quoteCents(input.depositAmount, "已收訂金");
+  requireValue(!deposit || (quote && deposit <= quoteCents(quote.amount)), "請先設定訂單金額，且訂金不可超過訂單金額。");
+  const depositReceivedOn = revenueDate(input.depositReceivedOn, "訂金收款日");
+  requireValue(deposit > 0 || !depositReceivedOn, "請先填寫已收訂金，或清除訂金收款日。");
+  return {
+    depositAmount: deposit / 100,
+    depositReceivedOn,
+    expectedDeliveryOn: revenueDate(input.expectedDeliveryOn, "預計交稿日"),
+    deliveredOn: revenueDate(input.deliveredOn, "實際交稿日"),
+  };
+}
 
 /** 以整數分驗證及加總；金額接受數值或欄位字串，但不接受指數或超過兩位小數。 */
 export function quoteCents(value, label = "金額", allowNegative = false) {

@@ -38,6 +38,56 @@
         </button>
       </section>
       <p id="admin-status" role="status" tabindex="-1"></p>
+      <section id="revenue-panel" hidden aria-labelledby="revenue-heading">
+        <div class="order-heading revenue-heading">
+          <div>
+            <h2 id="revenue-heading">收益報表</h2>
+            <p>每份委託，從預計收益到完成交稿。</p>
+          </div>
+          <div class="revenue-controls">
+            <label>年度<select id="revenue-year" aria-label="報表年度"></select></label>
+            <button id="revenue-refresh" class="button" type="button">更新報表</button>
+          </div>
+        </div>
+        <p id="revenue-status" role="status"></p>
+        <div id="revenue-content" hidden>
+          <dl id="revenue-summary" class="revenue-summary"></dl>
+          <p class="field-hint">總計包含真實收益、暫收訂金與未完成餘額，不代表全部已收款。所有金額為新台幣。</p>
+          <details class="revenue-rules">
+            <summary>計算方式與日期</summary>
+            <p>已交稿的訂單全額按實際交稿日列為真實收益；未交稿的已收訂金按收款日列為暫時收益，其餘金額按預計交稿日列為未完成收益。交稿後，訂金與餘額會轉入交稿月份的全額，不重複計入。</p>
+            <p>這是依目前訂單狀態重算的報表，過去月份可能隨交稿或金額修改而調整，並非歷史收款流水帳。包含所有委託類型及封存訂單，不受看板篩選影響；舊取消單排除。只使用已設定的訂單金額，系統預估不列入收益。</p>
+            <p>日期採台灣時間。舊資料無法確認日期時列在待補資料，不以建立日或最後修改日代替；缺少日期的金額不列入月份及年度合計。</p>
+          </details>
+          <div class="revenue-table-scroll" tabindex="0" role="region" aria-label="每月收益明細，可左右捲動">
+            <table class="revenue-table">
+              <caption id="revenue-caption"></caption>
+              <thead>
+                <tr>
+                  <th scope="col">月份</th>
+                  <th scope="col">真實收益</th>
+                  <th scope="col">暫時收益<br>已收訂金</th>
+                  <th scope="col">未完成收益<br>未收餘額</th>
+                  <th scope="col">總計<br>含未完成</th>
+                </tr>
+              </thead>
+              <tbody id="revenue-months"></tbody>
+              <tfoot id="revenue-total"></tfoot>
+            </table>
+          </div>
+          <div class="revenue-detail-heading">
+            <h3 id="revenue-detail-heading">訂單明細</h3>
+            <label>查看範圍
+              <select id="revenue-month" aria-label="收益明細範圍">
+                <option value="all">全年明細</option>
+                <option value="missing">待補資料（所有年度）</option>
+              </select>
+            </label>
+          </div>
+          <p id="revenue-missing" class="field-hint"></p>
+          <div id="revenue-details" class="revenue-details" aria-labelledby="revenue-detail-heading"></div>
+        </div>
+      </section>
       <section id="admin-workspace" hidden aria-label="委託工作區">
         <div class="order-toolbar admin-toolbar">
           <label for="admin-search" class="admin-search-label"
@@ -104,6 +154,25 @@
               <p id="edit-quote-total" class="quote-total" aria-live="polite"></p>
               <p class="field-hint">金額僅供管理員查看。取消勾選並儲存可清除金額，先前內容會保留於修改紀錄。</p>
             </section>
+            <fieldset>
+              <legend>收益與收款紀錄</legend>
+              <div class="edit-grid">
+                <label>已收訂金（NT$）
+                  <input name="depositAmount" type="number" inputmode="decimal"
+                    min="0" max="9999999.99" step="0.01" required />
+                </label>
+                <label>訂金收款日
+                  <input name="depositReceivedOn" type="date" min="1900-01-01" max="9999-12-31" />
+                </label>
+                <label>預計交稿日
+                  <input name="expectedDeliveryOn" type="date" min="1900-01-01" max="9999-12-31" />
+                </label>
+                <label>實際交稿日
+                  <input name="deliveredOn" type="date" min="1900-01-01" max="9999-12-31" />
+                </label>
+              </div>
+              <p class="field-hint">沒有收訂金請填 0；不從工作階段或 Trello 標籤推定已付款。訂金不可超過訂單金額。改為已交稿時，未填實際日期會自動記錄當天；歷史訂單可補填正確日期。缺少日期的金額列為待補資料。</p>
+            </fieldset>
             <fieldset>
               <legend>製作進度</legend>
               <div class="edit-grid">
