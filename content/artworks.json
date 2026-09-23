@@ -17,41 +17,9 @@
       "title": "測試",
       "alt": "測試",
       "description": "測試",
-      "revision": 1,
-      "operationId": "ec1a5bf0-3227-432a-9854-17be78dd7a72",
-      "deleted": false,
-      "media": {
-        "type": "image",
-        "animated": false,
-        "width": 1299,
-        "height": 870,
-        "duration": 0,
-        "src": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/original.png",
-        "poster": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/poster.png",
-        "playbackSrc": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/display.png",
-        "source": {
-          "path": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/original.png",
-          "bytes": 50011,
-          "sha256": "a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f"
-        },
-        "assets": [
-          {
-            "path": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/original.png",
-            "bytes": 50011,
-            "sha256": "a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f"
-          },
-          {
-            "path": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/poster.png",
-            "bytes": 102487,
-            "sha256": "126eff1f13025b344d5138900196394f52b5703c5e4d05d8798356fdd6873fe7"
-          },
-          {
-            "path": "assets/artworks/chibi-59/a366a4eec54b80d4f6a610e63ec65b7037207766066df7b6c9dcb084b7ffdf7f/display.png",
-            "bytes": 194502,
-            "sha256": "f1c3d28e984d7f557aec290c5e4bd08ad67259c16f589b2838e812482f70c8e5"
-          }
-        ]
-      }
+      "revision": 2,
+      "operationId": "4caf739f-9c92-4bb3-86ed-5ce469c4ef84",
+      "deleted": true
     }
   ]
 }
