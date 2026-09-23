@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 9 版與 32 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 10 版與 32 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
@@ -20,7 +20,7 @@ npm run build:backend
 npm test
 ```
 
-`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Attachments.gs`、`AttachmentNotifications.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 10 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
+`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Attachments.gs`、`AttachmentNotifications.gs`、`NotificationText.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 11 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
 
 部署工具使用鎖定的 `@google/clasp@3.4.1`。各維護者使用自己的授權，將專案外憑證檔路徑及登入設定名稱分別提供給 `LANLAN_CLASP_AUTH`、`LANLAN_CLASP_USER` 環境變數；實際值不寫入文件，不複製其他人的憑證：
 

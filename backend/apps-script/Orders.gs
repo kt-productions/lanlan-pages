@@ -404,8 +404,9 @@ function notificationStates_(order) {
 
 function notificationStatus_(states) {
   if (states.every(function (entry) { return entry.status === "sent"; })) return "sent";
-  if (states.some(function (entry) { return ["pending", "sending"].includes(entry.status); })) return "sending";
   if (states.some(function (entry) { return entry.status === "unknown"; })) return "unknown";
+  if (states.some(function (entry) { return entry.status === "failed"; })) return "failed";
+  if (states.some(function (entry) { return ["pending", "sending"].includes(entry.status); })) return "sending";
   return "failed";
 }
 
@@ -434,6 +435,17 @@ function notifyOrder_(id, retry) {
       recipients = order.notificationRecipientsJson
         ? notificationStates_(order)
         : notificationRecipients_();
+      // 文字快照只保存一份；管理員修改或重試時，不會混用不同版本的分段內容。
+      if (!recipients[0].messageTexts) recipients[0].messageTexts = orderNotificationChunks_(order);
+      const attachments = JSON.parse(order.detailsJson).attachments || [];
+      recipients.forEach(function (recipient) {
+        if (recipient.status !== "sent" && !recipient.textParts) {
+          recipient.textParts = recipients[0].messageTexts.map(function () { return { status: "pending", attempts: 0 }; });
+        }
+        if (recipient.status !== "sent" && attachments.length && !recipient.parts) {
+          recipient.parts = attachments.map(function () { return { status: "pending", attempts: 0 }; });
+        }
+      });
       order.notificationRecipientsJson = JSON.stringify(recipients);
     } catch (error) {
       order.notificationStatus = "failed";
@@ -445,56 +457,5 @@ function notifyOrder_(id, retry) {
     return { order: order, recipients: recipients };
   });
   if (claim.done) return { status: claim.status };
-  if (JSON.parse(claim.order.detailsJson).attachments?.length) return notifyAttachmentOrder_(id, claim);
-  for (const recipient of claim.recipients) {
-    if (recipient.status === "sent") continue;
-    const prepared = lock_(function () {
-      const sheet = orderSheet_();
-      const current = findOrder_(sheet, id);
-      if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return false;
-      const states = notificationStates_(current);
-      const target = states.find(function (entry) { return entry.id === recipient.id; });
-      target.status = "sending";
-      target.attempts += 1;
-      target.at = new Date().toISOString();
-      target.error = "";
-      current.notificationAt = target.at;
-      current.notificationRecipientsJson = JSON.stringify(states);
-      writeOrder_(sheet, current);
-      return true;
-    });
-    if (!prepared) break;
-    let status = "unknown";
-    let errorCode = "DELIVERY_UNKNOWN";
-    try {
-      const response = sendOrderNotification_(claim.order, recipient);
-      const body = JSON.parse(response.getContentText());
-      status = response.getResponseCode() === 200 && body.ok === true ? "sent" : "failed";
-      errorCode = status === "sent" ? "" : "TELEGRAM_REJECTED";
-    } catch (error) {
-      if (error.code === "CONFIG") {
-        status = "failed";
-        errorCode = "CONFIG";
-      }
-      // 網路中斷可能已送達；只對未確認者重試，仍可能重複通知該位使用者。
-    }
-    lock_(function () {
-      const sheet = orderSheet_();
-      const current = findOrder_(sheet, id);
-      if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return;
-      const states = notificationStates_(current);
-      const target = states.find(function (entry) { return entry.id === recipient.id; });
-      target.status = status;
-      target.error = errorCode;
-      target.at = new Date().toISOString();
-      current.notificationRecipientsJson = JSON.stringify(states);
-      current.notificationStatus = notificationStatus_(states);
-      current.notificationAt = target.at;
-      current.notificationError = current.notificationStatus === "sent" ? "" :
-        states.some(function (entry) { return entry.status === "sent"; }) ? "PARTIAL_DELIVERY" : errorCode;
-      // 每位結果立即保存，且重讀訂單以保留通知期間的管理員修改。
-      writeOrder_(sheet, current);
-    });
-  }
-  return { status: findOrder_(orderSheet_(), id).notificationStatus };
+  return notifyOrderParts_(id, claim);
 }

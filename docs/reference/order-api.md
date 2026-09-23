@@ -94,9 +94,17 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 
 `TELEGRAM_NOTIFY_USER_IDS` 支援 1–20 位正整數使用者 ID，去重後逐位傳送；未設定時相容舊 `TELEGRAM_CHAT_ID`。第 30 欄 `notificationRecipientsJson` 保存第一次通知的固定名單，每位含 `id`、`status`、`attempts`、`at`、`error`。逐位保存成功結果，重試不再傳給已送達者；後續名單設定只影響新單。舊版已標記 `sent` 的單不補發。每輪仍更新 `notificationAttempts`，以該輪識別防止過期回應覆寫較新的重試；每位開始與完成時更新 `notificationAt`。
 
-整筆 `sent` 代表所有對象成功；尚有傳送中者為 `sending`，全部嘗試結束後只要有不明結果即為 `unknown`，其他失敗為 `failed`。部分已送達時 `notificationError` 為 `PARTIAL_DELIVERY`，實際逐位代碼留在紀錄中，不保存 Telegram 原始回應或例外。無管理網址時省略通知中的後台連結。通知名單、結果 JSON 均不進入公開進度回應。
+整筆 `sent` 代表所有對象的文字與附件都成功；執行期間保留 `sending` 租約。整輪結束後，優先標示不明結果 `unknown`，其次失敗 `failed`；只有尚未嘗試的部分才留為 `pending`，不能因後續段落未送而自動重試不明結果。部分已送達時 `notificationError` 為 `PARTIAL_DELIVERY`，實際逐位代碼留在紀錄中，不保存 Telegram 原始回應或例外。無管理網址時省略通知中的後台連結。通知名單、結果 JSON 均不進入公開進度回應。
 
-兩至五張 PNG／JPEG／WebP 透過 Telegram `sendMediaGroup` 合併成相簿，只有首張附委託編號、類型、數量與後台入口。單張使用 `sendPhoto`，單檔 GIF 使用 `sendAnimation`，其他檔案使用 `sendDocument`；多個其他格式合併為文件群組，與圖片分組。圖片受到 Telegram 限制而明確回覆 400 才整組改送文件；網路結果不明不自動改送。每位收件人的 `parts` 逐檔保存狀態、嘗試次數、成功的 Telegram `file_id` 及相簿 `groupId`，供同 bot 重用傳送，重試只補未成功部分或收件人；不明結果仍可能重複。相簿成功回應必須包含完整訊息陣列，缺項視為不明。每輪約 80 秒後停止開始新群組，剩餘標示 `pending`，由後台重試接續。只有素材連結時使用文字通知並附上連結。舊版已成功的通知不自動補寄圖片。
+兩至五張 PNG／JPEG／WebP 透過 Telegram `sendMediaGroup` 合併成相簿，只有首張附委託編號、類型、數量與後台入口。單張使用 `sendPhoto`，單檔 GIF 使用 `sendAnimation`，其他檔案使用 `sendDocument`；多個其他格式合併為文件群組，與圖片分組。圖片受到 Telegram 限制而明確回覆 400 才整組改送文件；網路結果不明不自動改送。每位收件人的 `parts` 逐檔保存狀態、嘗試次數、成功的 Telegram `file_id` 及相簿 `groupId`，供同 bot 重用傳送，重試只補未成功部分或收件人；不明結果仍可能重複。相簿成功回應必須包含完整訊息陣列，缺項視為不明。每輪約 80 秒後停止開始新文字或群組，剩餘標示 `pending`，由後台重試接續。舊版已成功的通知不自動補寄圖片。
+
+### 完整表單通知
+
+不論是否附檔，先傳送完整文字內容，再傳圖片相簿／檔案。文字包含委託編號、類型、暱稱、聯絡平台與方式、參考連結及檔名、適用的款式／方案／人數／轉場／背景／急件、商用、付款、直播與範例授權、閱讀確認、特殊需求、伺服器預估範圍與計價明細、報價說明及後台入口。未詢問的選項標示「此表單未詢問」，不當作否；不傳內部備註、私人 Drive 識別碼或登入資料。
+
+`NotificationText.gs` 使用純文字，不解析使用者 HTML／Markdown，停用連結預覽。單則最多 4096 字元；超過時以保留完整內容的段落拆分，每段附編號與段次，避免切斷表情符號。圖片首張仍只附簡短說明，維持一組相簿。限制來源為 [Telegram sendMessage](https://core.telegram.org/bots/api#sendmessage) 及 [InputMediaPhoto](https://core.telegram.org/bots/api#inputmediaphoto)。
+
+第一次通知把文字快照保存一次於名單首項的 `messageTexts`，每位的 `textParts` 逐段保存狀態、次數、時間及錯誤代碼，與附件 `parts` 分開。後台重試沿用文字快照，已送達段落或相簿不重傳；未知結果人工重試仍可能重複。舊版已完成的訂單及收件人不補寄；舊未完成通知重試時才建立完整文字快照。此更新沿用第 30 欄 JSON，不新增欄位、權限或收件對象。
 
 ### 封存與解除
 

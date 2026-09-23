@@ -130,7 +130,8 @@ test("成功先寫入 Sheets 再通知；重送同一內容只有一筆訂單與
     app.calls.filter((call) => call.url.endsWith("/sendMessage")).length,
     1,
   );
-  assert.ok(!app.calls[0].options.payload.includes("fictional_test"));
+  // 使用者要求通知完整填單內容；聯絡方式只送往既有通知名單。
+  assert.ok(app.calls[0].options.payload.includes("fictional_test"));
   payload.details.notes = "不同內容";
   assert.equal(app.invoke("orders.submit", payload).error.code, "CONFLICT");
 });

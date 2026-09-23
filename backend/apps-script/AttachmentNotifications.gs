@@ -17,9 +17,10 @@ function referenceDeliveryResults_(response, count) {
   });
 }
 
-/** 靜態圖片合併為相簿；每位收件人的整批結果一起保存，保留逐檔相容重試。 */
-function notifyAttachmentOrder_(id, claim) {
-  const attachments = JSON.parse(claim.order.detailsJson).attachments;
+/** 文字逐段與圖片相簿各自保存回執，重試不重送已確認的文字或附件。 */
+function notifyOrderParts_(id, claim) {
+  const attachments = JSON.parse(claim.order.detailsJson).attachments || [];
+  const texts = claim.recipients[0].messageTexts;
   const started = Date.now();
   const reusable = {};
   claim.recipients.forEach(function (recipient) {
@@ -29,6 +30,51 @@ function notifyAttachmentOrder_(id, claim) {
   });
   outer: for (const recipient of claim.recipients) {
     if (recipient.status === "sent") continue;
+    for (let index = 0; index < texts.length; index += 1) {
+      if (recipient.textParts[index].status === "sent") continue;
+      if (Date.now() - started > 80000) break outer;
+      const prepared = lock_(function () {
+        const sheet = orderSheet_();
+        const current = findOrder_(sheet, id);
+        if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return false;
+        const states = notificationStates_(current);
+        const target = states.find(function (item) { return item.id === recipient.id; });
+        if (target.textParts[index].status === "sent") return false;
+        target.textParts[index] = { status: "sending", attempts: target.textParts[index].attempts + 1 };
+        target.status = "sending";
+        target.attempts += 1;
+        current.notificationAt = new Date().toISOString();
+        current.notificationRecipientsJson = JSON.stringify(states);
+        writeOrder_(sheet, current);
+        return true;
+      });
+      if (!prepared) continue;
+      let result = { status: "unknown", error: "DELIVERY_UNKNOWN" };
+      try {
+        const response = sendNotificationText_(recipient, texts[index]);
+        const accepted = response.getResponseCode() === 200 && JSON.parse(response.getContentText()).ok === true;
+        result = { status: accepted ? "sent" : "failed", error: accepted ? "" : "TELEGRAM_REJECTED" };
+      } catch (error) {
+        if (error.code === "CONFIG") result = { status: "failed", error: "CONFIG" };
+      }
+      lock_(function () {
+        const sheet = orderSheet_();
+        const current = findOrder_(sheet, id);
+        if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return;
+        const states = notificationStates_(current);
+        const target = states.find(function (item) { return item.id === recipient.id; });
+        Object.assign(target.textParts[index], result, { at: new Date().toISOString() });
+        target.status = notificationStatus_([...(target.parts || []), ...target.textParts]);
+        target.error = target.status === "sent" ? "" : "PARTIAL_DELIVERY";
+        target.at = new Date().toISOString();
+        current.notificationAt = target.at;
+        current.notificationRecipientsJson = JSON.stringify(states);
+        // 維持整份通知的 sending 租約，避免文字完成到附件送出之間重入。
+        writeOrder_(sheet, current);
+      });
+      // 一段失敗時保留後續段落待重試，避免閱讀順序被打亂。
+      if (result.status !== "sent") break;
+    }
     const pending = attachments.map(function (_, index) { return index; }).filter(function (index) {
       return recipient.parts?.[index]?.status !== "sent";
     });
@@ -79,7 +125,7 @@ function notifyAttachmentOrder_(id, claim) {
         prepared.forEach(function (index, position) {
           Object.assign(target.parts[index], results[position], { at: new Date().toISOString() });
         });
-        target.status = notificationStatus_(target.parts);
+        target.status = notificationStatus_([...target.parts, ...target.textParts]);
         target.error = target.status === "sent" ? "" : "PARTIAL_DELIVERY";
         current.notificationAt = new Date().toISOString();
         current.notificationRecipientsJson = JSON.stringify(states);

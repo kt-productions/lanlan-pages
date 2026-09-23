@@ -105,8 +105,9 @@ test("多人相簿部分失敗後只重試未送達者，送出期間不可重�
   upload(service, input);
   let count = 0;
   service.faults.telegramResult = (_, url, options) => {
-    count += 1;
     assert.equal(service.invoke("admin.retryNotification", { orderId: order(service).orderId }, service.session()).error.code, "BUSY");
+    if (url.endsWith("/sendMessage")) return response(200, {ok: true});
+    count += 1;
     assert.ok(url.endsWith("/sendMediaGroup"));
     return response(count === 2 ? 500 : 200, { ok: count !== 2, result: JSON.parse(options.payload.media).map((_,index)=>({photo:[{file_id:'fixture-'+index}],media_group_id:'fixture-group'})) });
   };
@@ -174,6 +175,7 @@ test("相簿被明確拒絕時整組改送文件，成功結果保存同一群�
   upload(service, input);
   let count = 0;
   service.faults.telegramResult = (_, url, options) => {
+    if (url.endsWith('/sendMessage')) return response(200, {ok:true});
     count += 1;
     assert.ok(url.endsWith('/sendMediaGroup'));
     const media = JSON.parse(options.payload.media);

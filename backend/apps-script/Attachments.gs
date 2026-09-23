@@ -220,11 +220,6 @@ function sendOrderNotification_(order, recipient, blob, index, reuse) {
   const heading = referenceCaption_(order, attachment ? [attachment.name] : []) +
     (attachment ? "\n附件：" + attachment.name : "");
   const endpoint = "https://api.telegram.org/bot" + setting_("TELEGRAM_BOT_TOKEN") + "/";
-  if (!attachment) return UrlFetchApp.fetch(endpoint + "sendMessage", {
-    method: "post", contentType: "application/json", muteHttpExceptions: true, followRedirects: false,
-    payload: JSON.stringify({ chat_id: recipient.id,
-      text: heading + (details.referenceUrl ? "\n參考素材：" + details.referenceUrl : ""), disable_web_page_preview: true }),
-  });
   const method = reuse?.method || (["image/jpeg", "image/png", "image/webp"].includes(attachment.type) ? "sendPhoto" :
     attachment.type === "image/gif" ? "sendAnimation" : "sendDocument");
   const field = { sendPhoto: "photo", sendAnimation: "animation", sendDocument: "document" }[method];

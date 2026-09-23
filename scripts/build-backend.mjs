@@ -15,7 +15,7 @@ const contract = (await read("src/features/orders/contract.js"))
   .replace(/^import .*;\r?\n/gm, "")
   .replace(/^export /gm, "");
 const attachments = (await read("src/features/orders/attachment-contract.js")).replace(/^export /gm, "");
-const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, attachmentManifest, attachmentFileError, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
+const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, attachmentManifest, attachmentFileError, formatPriceRange, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
 await writeFile(path.join(out, "Core.gs"), core);
 await writeFile(
   path.join(out, "Config.gs"),
@@ -30,7 +30,7 @@ await copyFile(
   path.join(root, "node_modules/node-forge/LICENSE"),
   path.join(out, "THIRD_PARTY_LICENSE.txt"),
 );
-for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "Import.gs", "Bridge.gs", "Web.gs", "appsscript.json"]) {
+for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "appsscript.json"]) {
   await copyFile(
     path.join(root, "backend/apps-script", file),
     path.join(out, file),
