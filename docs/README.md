@@ -34,6 +34,7 @@
 
 ## 歷史紀錄 · records
 
+- [2026-09-24 作品管理正式啟用](records/artwork-activation-2026-09-24.md)：GitHub App、GAS 第 18 版、私人暫存初始化、production 部署與正式驗收界線。
 - [2026-09-24 作品管理本機驗收](records/artworks-2026-09-24.md)：上傳／草稿／發布、清理及 Git 重試、四種媒體處理、桌機手機與正式串接限制。
 - [2026-09-23 完整 Telegram 通知](records/notification-text-2026-09-23.md)：完整欄位、長文分段、相簿及逐段重試與正式傳送驗證。
 

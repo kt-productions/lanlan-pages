@@ -1,6 +1,6 @@
 # 作品管理與發布服務
 
-2026-09-24：已加入程式與離線驗證，尚未設定正式 GitHub App、初始化正式作品儲存或切換 production 部署。啟用狀態須以實際雲端設定與成功執行紀錄為準。[設計背景](../plans/artwork-upload.md)。
+2026-09-24：已設定正式 GitHub App 與作品儲存、部署 GAS 第 18 版，切換 production 發布並開啟作品管理。已完成的雲端驗證與仍待確認的完整公開測試見[正式啟用紀錄](../records/artwork-activation-2026-09-24.md)。[設計背景](../plans/artwork-upload.md)。
 
 ## 繪師操作
 
@@ -29,6 +29,8 @@
 管理 API 均使用既有管理 token：`admin.artworks.list`、`save`、`upload`、`publish`、`preview`、`cancel`、`cleanup`。草稿使用固定 UUID 與 revision，發布後不可修改該工作；下一次編輯建立新工作並提供作品 expectedRevision。文字欄位只取白名單，ID 由伺服器配發，表單不能指定 repo、分支或 Drive 路徑。
 
 `artworks.worker` 使用獨立 HMAC-SHA256；簽署 `<timestamp>.<nonce>.<body>`，body 包含 siteId、操作與工作內容。接受五分鐘內的請求，後續操作須持有目前有效的工作租約。租約以 Script Properties 持久保存，預設十分鐘，runner 每分鐘續期。佇列保存在 Sheet，不依賴 Actions concurrency 的待執行數量。重試依狀態、工作 ID 與租約去重；簽章請求不公開到前端或日誌。
+
+Actions 明確處理 Content Service 的 Google 結果轉址，只用無負載 GET 讀取結果；暫時無法解析時最多重讀三次，不自動重送可能已生效的 POST。持續無法確認時停止，交由既有工作紀錄、租約到期及重試流程接續。
 
 ## 設定 GitHub App
 
