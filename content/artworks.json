@@ -1,4 +1,47 @@
 {
   "version": 1,
-  "items": []
+  "items": [
+    {
+      "id": "chibi-58",
+      "category": "chibi",
+      "title": "系統流程測試 20260924（驗收後下架）",
+      "alt": "米黃色測試圖，標示系統流程測試與非繪師作品",
+      "description": "系統驗收：草稿重開與雲端預覽已確認；此圖不是繪師作品，發布流程驗收後下架。",
+      "revision": 1,
+      "operationId": "0887f6ed-8734-417b-a34a-fb5ea7790383",
+      "deleted": false,
+      "media": {
+        "type": "image",
+        "animated": false,
+        "width": 640,
+        "height": 360,
+        "duration": 0,
+        "src": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/original.png",
+        "poster": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/poster.png",
+        "playbackSrc": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/display.png",
+        "source": {
+          "path": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/original.png",
+          "bytes": 5604,
+          "sha256": "b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/original.png",
+            "bytes": 5604,
+            "sha256": "b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd"
+          },
+          {
+            "path": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/poster.png",
+            "bytes": 5202,
+            "sha256": "d3e5ca61e9e980ad677f19de42a1c8c9d220180e4ad8a1cba684f1e116ecee87"
+          },
+          {
+            "path": "assets/artworks/chibi-58/b5df7187e88085151df1bc94cea72628a3ec9b934bcc7473b35daa7354debdfd/display.png",
+            "bytes": 5202,
+            "sha256": "d3e5ca61e9e980ad677f19de42a1c8c9d220180e4ad8a1cba684f1e116ecee87"
+          }
+        ]
+      }
+    }
+  ]
 }
