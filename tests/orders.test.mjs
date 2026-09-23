@@ -319,6 +319,9 @@ test("未授權、權限撤除與登出後均無法讀寫訂單", () => {
   app.properties.set("ADMIN_TELEGRAM_IDS", "123");
   assert.equal(app.invoke("admin.list", {}, token).error.code, "AUTH");
   app.properties.set("ADMIN_TELEGRAM_IDS", "987654");
+  assert.equal(app.invoke("admin.list", {}, token).error.code, "AUTH");
+  // 白名單恢復後需要新的登入，原工作階段不會復活。
+  app.session();
   assert.equal(app.invoke("auth.logout", {}, token).ok, true);
   assert.equal(app.invoke("admin.list", {}, token).error.code, "AUTH");
 });

@@ -67,9 +67,7 @@ function callApi(text) {
           case "admin.retryNotification":
             return notifyOrder_(payload.orderId, true);
           case "auth.logout":
-            CacheService.getScriptCache().remove(
-              "session:" + digest_(request.token),
-            );
+            revokeAdminSession_(request.token);
             return { loggedOut: true };
           default:
             throw new Core_.OrderError("NOT_FOUND", "不支援這個操作。");

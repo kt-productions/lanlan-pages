@@ -121,7 +121,9 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 
 Authorization Code + PKCE S256、單次 state 及 nonce；後端向固定 Telegram token 端點換碼，從固定 JWKS 端點取公鑰，只接受 RS256 並驗證簽章、issuer、audience、nonce、時間及 `profile.id` 白名單。未知金鑰重新取得一次；不使用 JWT 自帶金鑰網址。
 
-回程只能到設定的 `ADMIN_URL`。fragment 僅攜帶兩分鐘有效且綁定原分頁的票證，真正 token 由 API 回應交給記憶體。票證僅建立一次工作階段；原分頁重試可在原期限內重取同一結果，不刷新票證或工作階段的到期時間，已登出或撤除權限時也不能恢復。前端保留未完成的票證於記憶體並提供「重試完成登入」，成功或明確驗證失敗後清除暫存綁定。白名單不使用 username 或 OIDC `sub`。
+回程只能到設定的 `ADMIN_URL`。fragment 僅攜帶兩分鐘有效且綁定原分頁的票證，真正 token 由 API 回應交給前端；前端以 API 網址區隔 localStorage，僅保存 token、版本與 `expiresAt`。新工作階段從核發起固定 72 小時，後端將 token 雜湊對應的 ID、到期時間持久保存於 Script Properties，每次管理請求驗證期限與白名單。重新開頁、讀取或重試皆不續期；登出、到期或確認白名單已撤除即撤銷，原 token 不再恢復。舊版快取工作階段沿用原期限，不自動延長。
+
+票證僅建立一次工作階段；原分頁重試可在原期限內重取同一結果，不刷新票證或工作階段的到期時間，已登出或撤除權限時也不能恢復。前端保留未完成的票證於記憶體並提供「重試完成登入」，成功或明確驗證失敗後清除 sessionStorage 暫存綁定。瀏覽器儲存被阻擋時提示登入只在本頁有效；一般網路錯誤不刪除已保存的登入。白名單不使用 username 或 OIDC `sub`。
 
 管理頁在使用者按登入時同步開啟 Telegram 視窗，指定 `popup: true`，原頁以 `auth.poll` 取得綁定結果後沿用 `auth.exchange`。等待期限十分鐘，成功／失敗結果快取兩分鐘；結果以 browserKey 雜湊保存並核對對應 state，另一把 browserKey 不能取得結果。取消或離開原頁停止輪詢，網路錯誤最多連續嘗試三次，逾時及拒絕可重新登入。GAS 成功頁及原頁均嘗試關閉驗證視窗，關閉受阻不影響登入。彈出視窗被阻擋時退回原分頁驗證及手動回程，不要求新增 Telegram 權限。
 

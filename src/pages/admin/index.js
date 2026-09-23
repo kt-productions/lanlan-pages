@@ -1,5 +1,5 @@
 import "../../shared/navigation.js";
-import { createApi, integrationConfig } from "../../features/orders/api.js";
+import { ApiError, createApi, integrationConfig } from "../../features/orders/api.js";
 import { ORDER_STATUSES } from "../../features/orders/contract.js";
 import {
   element,
@@ -11,12 +11,29 @@ import { filterBoard } from "../../features/orders/board.js";
 import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/board-data.js";
 import { setupAttachments } from "../../features/orders/attachments-view.js";
 import { createLoginPopup } from "../../features/orders/login-popup.js";
+import { createAdminSession } from "../../features/orders/admin-session.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
 );
 const { apiUrl } = integrationConfig();
-const api = createApi(apiUrl);
+const request = createApi(apiUrl);
+const savedSession = createAdminSession(apiUrl);
+async function api(action, payload, requestToken) {
+  try {
+    const result = await request(action, payload, requestToken);
+    // 其他分頁登出或等待期間到期後，不讓較晚返回的回應重新顯示管理資料。
+    if (requestToken && requestToken !== token) {
+      throw new ApiError("SESSION_CHANGED", "登入已結束，請重新登入。");
+    }
+    return result;
+  } catch (error) {
+    if (requestToken && requestToken !== token) {
+      throw new ApiError("SESSION_CHANGED", "登入已結束，請重新登入。");
+    }
+    throw error;
+  }
+}
 const status = document.querySelector("#admin-status");
 const login = document.querySelector("#admin-login");
 const loginRetry = document.querySelector("#admin-login-retry");
@@ -38,6 +55,8 @@ const discardDialog = document.querySelector("#admin-discard-dialog");
 const retry = document.querySelector("#admin-retry");
 const editor = setupEditor(form, config);
 let token = "";
+let sessionExpiresAt = 0;
+let sessionTimer;
 let orders = [];
 let selected = null;
 let hasSnapshot = false;
@@ -125,7 +144,10 @@ function clearPendingLogin() {
   loginRetry.hidden = true;
   sessionStorage.removeItem(storageKey);
 }
-function clearSession() {
+function clearSession(removeSaved = true) {
+  if (removeSaved) savedSession.clear();
+  clearTimeout(sessionTimer);
+  sessionExpiresAt = 0;
   clearPendingLogin();
   token = "";
   orders = [];
@@ -153,7 +175,7 @@ function report(error, operation = "load") {
           load: "暫時無法載入訂單，請按「重新載入」重試。",
           save: "無法確認儲存結果，請重新載入訂單確認，再決定是否修改。",
           notify: "無法確認通知結果，請先重新載入訂單查看通知狀態。",
-          logout: "無法確認登出結果，請重試登出；關閉此頁會清除本頁登入資料。",
+          logout: "已停止保存此瀏覽器的登入，但無法確認伺服器登出結果，請再按「登出」重試。",
         }[operation])
       : error.message;
   message(text, true);
@@ -280,7 +302,7 @@ login.addEventListener("click", () =>
     const browserKey = [...bytes]
       .map((value) => value.toString(16).padStart(2, "0"))
       .join("");
-    // 只暫存 OAuth 綁定值；管理工作階段留在記憶體，不放 localStorage 或網址。
+    // OAuth 綁定值只暫存在原分頁，與登入完成後保存的工作階段分開。
     sessionStorage.setItem(storageKey, browserKey);
     status.textContent = "正在準備 Telegram 登入……";
     await popupLogin.start(browserKey);
@@ -292,8 +314,20 @@ loginCancel.addEventListener("click", () => {
   message("已取消登入，可以重新透過 Telegram 登入。");
 });
 window.addEventListener("pagehide", () => popupLogin.cancel());
+window.addEventListener("storage", (event) => {
+  if (event.key !== savedSession.key && event.key !== null) return;
+  if (token && savedSession.read()?.token !== token) {
+    clearSession(false);
+    message("登入狀態已在其他分頁變更，請重新整理或登入。");
+  }
+});
+window.addEventListener("pageshow", checkSessionExpiry);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) checkSessionExpiry();
+});
 logout.addEventListener("click", () => {
   afterDiscard(() => work(async () => {
+    savedSession.clear();
     await api("auth.logout", {}, token);
     clearSession();
     status.textContent = "已登出。";
@@ -393,19 +427,40 @@ async function exchangeLogin() {
   if (!pendingLogin) return;
   status.textContent = "正在完成 Telegram 登入……";
   const session = await api("auth.exchange", pendingLogin);
-  token = session.token;
+  const persisted = savedSession.save(session);
   clearPendingLogin();
-  loginPanel.hidden = true;
-  workspace.hidden = logout.hidden = false;
+  activateSession(session);
   // 登入與清單讀取分開回報；讀取失敗仍保留已建立的登入。
   try { await load(); }
   catch (error) { report(error, "load"); }
+  if (!persisted && token) message(`${status.textContent} 瀏覽器無法保存登入，關閉或重新整理後需再登入。`);
+}
+function activateSession(session) {
+  token = session.token;
+  sessionExpiresAt = session.expiresAt;
+  clearTimeout(sessionTimer);
+  sessionTimer = setTimeout(checkSessionExpiry, Math.max(0, sessionExpiresAt - Date.now()));
+  loginPanel.hidden = true;
+  workspace.hidden = logout.hidden = false;
+}
+function checkSessionExpiry() {
+  if (token && sessionExpiresAt <= Date.now()) {
+    clearSession();
+    message("登入已滿 3 天或已到期，請重新透過 Telegram 登入。");
+  }
 }
 loginRetry.addEventListener("click", () => work(exchangeLogin, "exchange"));
 async function finishLogin() {
   const fragment = new URLSearchParams(location.hash.slice(1));
   const ticket = fragment.get("ticket");
-  if (!ticket) return;
+  if (!ticket) {
+    const session = apiUrl && savedSession.read();
+    if (session) {
+      activateSession(session);
+      await work(load);
+    }
+    return;
+  }
   history.replaceState(null, "", location.pathname + location.search);
   await work(async () => {
     const browserKey = sessionStorage.getItem(storageKey);

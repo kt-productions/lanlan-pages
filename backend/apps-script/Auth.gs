@@ -410,16 +410,37 @@ function exchangeTicket_(payload) {
       return ticket.session;
     }
     const token = randomKey_();
-    const expiresAt = Date.now() + 3600000;
-    cache.put(
+    const expiresAt = Date.now() + 3 * 24 * 60 * 60 * 1000;
+    // GAS 快取可能提早失效且最多保存六小時；工作階段改用持久屬性，僅保存 token 雜湊。
+    pruneAdminSessions_();
+    PropertiesService.getScriptProperties().setProperty(
       "session:" + digest_(token),
       JSON.stringify({ id: ticket.id, expiresAt: expiresAt }),
-      3600,
     );
     ticket.session = { token: token, id: ticket.id, expiresAt: expiresAt };
     cache.put(key, JSON.stringify(ticket), Math.max(1, Math.ceil((ticket.expiresAt - Date.now()) / 1000)));
     return ticket.session;
   });
+}
+
+/** 在建立新登入的鎖內清理過期紀錄，避免長期累積；不碰其他服務設定。 */
+function pruneAdminSessions_() {
+  const properties = PropertiesService.getScriptProperties();
+  const saved = properties.getProperties();
+  Object.keys(saved).filter(function (key) { return key.startsWith("session:"); })
+    .forEach(function (key) {
+      let session;
+      try { session = JSON.parse(saved[key]); } catch (error) { session = null; }
+      if (!session || !Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now()) {
+        properties.deleteProperty(key);
+      }
+    });
+}
+
+function revokeAdminSession_(token) {
+  const key = "session:" + digest_(token);
+  PropertiesService.getScriptProperties().deleteProperty(key);
+  CacheService.getScriptCache().remove(key);
 }
 
 function requireAdmin_(token) {
@@ -428,13 +449,15 @@ function requireAdmin_(token) {
     "請先登入管理後台。",
     "AUTH",
   );
-  const value = CacheService.getScriptCache().get("session:" + digest_(token));
+  const key = "session:" + digest_(token);
+  // 部署前的一小時工作階段仍依原期限有效，不替舊 token 自動續期。
+  const value = PropertiesService.getScriptProperties().getProperty(key) ||
+    CacheService.getScriptCache().get(key);
   Core_.requireValue(value, "登入已逾時，請重新登入。", "AUTH");
   const session = JSON.parse(value);
-  Core_.requireValue(
-    session.expiresAt > Date.now() && isAdmin_(session.id),
-    "登入已失效或管理權限已移除。",
-    "AUTH",
-  );
+  if (!Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now() || !isAdmin_(session.id)) {
+    revokeAdminSession_(token);
+    throw new Core_.OrderError("AUTH", "登入已失效或管理權限已移除。");
+  }
   return session;
 }
