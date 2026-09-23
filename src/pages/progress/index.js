@@ -35,7 +35,7 @@ function showResult(result) {
   counts = result.stageCounts;
   renderBoard();
   status.textContent = result.total
-    ? `共 ${result.total} 件委託${offset === null ? "" : `，已顯示 ${orders.length} 件`} · 歷史委託依原看板順序排列`
+    ? `共 ${result.total} 件委託${offset === null ? "" : `，已顯示 ${orders.length} 件`} · 依照委託順序排列`
     : "目前沒有符合條件的委託，可切換其他類型、階段或附加狀態。";
 }
 

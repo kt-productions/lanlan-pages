@@ -126,6 +126,8 @@ form.addEventListener("change", (event) => {
 });
 function applyService() {
   const details = config.services[service];
+  document.querySelector("#commission-description").textContent =
+    config.serviceDescriptions[service];
   document.querySelector("#commission-service-name").textContent = details.name;
   populateList("#commission-rules", details.rules);
   populateList("#commission-workflow", details.workflow);

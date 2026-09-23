@@ -73,7 +73,15 @@ const replacements = {
   TITLE: escape(site.title),
   DESCRIPTION: escape(site.description),
   SITE_URL: escape(siteUrl.href),
-  COMMISSION_DATA: inlineJson(commission),
+  COMMISSION_DATA: inlineJson({
+    ...commission,
+    serviceDescriptions: Object.fromEntries(
+      site.services.map(({ id, description }) => [id, description]),
+    ),
+  }),
+  COMMISSION_DESCRIPTION: escape(
+    site.services.find(({ id }) => id === "animation").description,
+  ),
   INTEGRATION_DATA: inlineJson({ apiUrl: integration.apiUrl || "" }),
   WORKS: htmlWorks,
   HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
