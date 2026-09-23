@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 9 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 11 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
 
 ## 請求與回應
 
@@ -21,13 +21,19 @@
 | `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
 | `auth.start` | 公開 | 64 字元 hex `browserKey`；取得 Telegram 授權網址。 |
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
-| `admin.list` | 管理員 | `offset`；取得完整訂單、通知狀態與歷史。 |
+| `admin.list` | 管理員 | `offset`、選填 `delivery`；取得指定交稿範圍的完整訂單、通知狀態與歷史。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
 
-分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。已交稿與擱置仍列出；封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 因需支援封存切換，仍向已登入管理員提供完整資料；管理畫面預設排除封存，只有 `flag=archived` 篩選顯示封存項目。管理清單維持最新加入優先；前端依序讀完所有分頁，按編號去重並核對總數後才更新看板，編號／暱稱搜尋與類型／階段／旗標篩選涵蓋完整資料。分頁失敗或讀取期間總數變動時保留先前完整快照，提示重新載入。offset 不是伺服器固定快照，同時更新但筆數不變時仍應重新載入確認。
+`progress.list` 與 `admin.list` 均接受 `delivery: "active" | "delivered" | "all"`。`active` 排除已交稿，`delivered` 只回傳已交稿；省略時沿用 `all`，相容尚未重新整理的舊前端。舊 `completed` 狀態先對應為 `delivered`，交稿範圍由伺服器在分頁及計算件數前套用。
+
+分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 保留所選交稿範圍中的封存資料，管理畫面只有 `flag=archived` 篩選顯示封存項目；管理清單維持最新加入優先。
+
+兩個看板初次開啟或重新載入時只要求 `delivery: "active"`，完整讀完此範圍所有分頁後才更新畫面。已交稿欄標示「未載入」，欄內提供「載入已交稿」按鈕；選取已交稿篩選本身不觸發下載，仍需按該按鈕。按下後只要求 `delivery: "delivered"`，完成所有分頁才合併到現有快照，按編號去重並使用最新回應。同一頁後續搜尋、類型／階段／旗標篩選沿用已載入快照，不重抓已交稿；重新載入會恢復未交稿範圍。尚未補載時，搜尋提示明確排除已交稿，不將未載入件數顯示為零。管理員將未交稿改為已交稿時，若尚未補載，關閉編輯視窗並移出目前清單。
+
+分頁失敗、交稿範圍錯誤、重複缺漏或讀取期間總數變動時保留先前快照，補載按鈕可重試。offset 不是伺服器固定快照，同時更新但筆數不變時仍應重新載入確認。此最佳化減少 API 回傳、前端解析與渲染量；GAS 仍讀取 Sheets 原始資料以套用篩選，沒有新增索引或快取。
 
 管理 token 每次重新核對工作階段、到期與最新白名單，不能把前端顯示條件當成權限控制。
 

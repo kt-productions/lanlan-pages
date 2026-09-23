@@ -4,6 +4,7 @@ import { element } from "../../features/orders/presentation.js";
 import { boardColumns } from "../../features/orders/board-view.js";
 import { ORDER_STATUSES } from "../../features/orders/contract.js";
 import { filterBoard } from "../../features/orders/board.js";
+import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/board-data.js";
 
 const { apiUrl } = integrationConfig();
 const api = createApi(apiUrl);
@@ -13,84 +14,79 @@ const stage = document.querySelector("#progress-stage");
 const flag = document.querySelector("#progress-flag");
 const service = document.querySelector("#progress-service");
 const refresh = document.querySelector("#progress-refresh");
-const more = document.querySelector("#progress-more");
 for (const [value, label] of Object.entries(ORDER_STATUSES)) {
   const option = element("option", label);
   option.value = value;
   stage.append(option);
 }
 let orders = [];
-let offset = null;
-let counts = null;
 let busy = false;
-let snapshot = null;
+let hasSnapshot = false;
+let deliveredLoaded = false;
 
-function filters() {
-  return { status: stage.value, flag: flag.value, service: service.value };
+function renderBoard(message = "尚未取得進度") {
+  const result = filterBoard(orders, {
+    status: stage.value, flag: flag.value, service: service.value,
+  });
+  list.replaceChildren(...boardColumns({
+    orders: result.orders, counts: hasSnapshot ? result.stageCounts : null,
+    stage: stage.value, message,
+    deferredStages: deliveredLoaded ? [] : ["delivered"],
+    onLoadDeferred: () => load(true),
+    deferredDisabled: busy || !hasSnapshot || !apiUrl,
+  }));
+  if (!hasSnapshot) return;
+  status.textContent = !deliveredLoaded && stage.value === "delivered"
+    ? "已交稿尚未載入，請按「載入已交稿」。"
+    : result.total
+      ? `共 ${result.total} 件${deliveredLoaded ? "" : "未交稿"}委託 · 依照委託順序排列`
+      : "目前沒有符合條件的委託，可切換其他類型、階段或附加狀態";
+  if (!deliveredLoaded && stage.value !== "delivered") status.textContent += "；已交稿尚未載入。";
 }
 
-function showResult(result) {
-  orders = result.orders;
-  offset = result.nextOffset;
-  counts = result.stageCounts;
-  renderBoard();
-  status.textContent = result.total
-    ? `共 ${result.total} 件委託${offset === null ? "" : `，已顯示 ${orders.length} 件`} · 依照委託順序排列`
-    : "目前沒有符合條件的委託，可切換其他類型、階段或附加狀態。";
-}
-
-function renderBoard(message = "讀取中……") {
-  list.replaceChildren(...boardColumns({ orders, counts, stage: stage.value, message }));
-  more.hidden = offset === null;
-}
-
-async function load(reset) {
+async function load(includeDelivered = false) {
   if (busy) return;
   busy = true;
-  const controls = [refresh, more, stage, flag, service];
+  const controls = [refresh, stage, flag, service, ...list.querySelectorAll("button")];
   controls.forEach((control) => { control.disabled = true; });
   list.setAttribute("aria-busy", "true");
-  if (reset) {
-    snapshot = null;
-    orders = [];
-    offset = null;
-    counts = null;
-    renderBoard();
-    list.scrollLeft = 0;
-  }
-  status.textContent = "正在讀取委託進度……";
+  const label = includeDelivered ? "已交稿" : "未交稿";
+  if (!hasSnapshot) renderBoard("讀取中……");
+  status.textContent = `正在讀取${label}委託……`;
   try {
-    let result = await api("progress.list", {
-      offset: reset ? 0 : offset, limit: 200,
-      ...(reset ? {} : filters()),
+    const snapshot = await loadBoardOrders(api, {
+      delivery: includeDelivered ? "delivered" : "active",
+      onProgress(loaded, total) {
+        status.textContent = `正在讀取${label}委託：${loaded}／${total} 件……`;
+      },
     });
-    if (reset) {
-      snapshot = result.nextOffset === null ? result.orders : null;
-      if (snapshot) result = filterBoard(snapshot, filters());
-      else if (stage.value || flag.value || service.value) {
-        result = await api("progress.list", { offset: 0, limit: 200, ...filters() });
-      }
-    } else result.orders = [...new Map([...orders, ...result.orders].map(order => [order.orderId, order])).values()];
-    showResult(result);
+    orders = includeDelivered ? mergeDeliveredOrders(orders, snapshot) : snapshot;
+    deliveredLoaded = includeDelivered;
+    hasSnapshot = true;
+    renderBoard();
+    if (!includeDelivered) list.scrollLeft = 0;
   } catch (error) {
+    if (!hasSnapshot) renderBoard();
     status.textContent = error.code === "NOT_CONFIGURED"
-      ? "工作進度尚未開放，繪師啟用後會在這裡公開所有工作。"
+      ? "工作進度尚未開放，繪師啟用後會在這裡公開工作。"
       : error.code === "NETWORK"
-        ? "暫時無法讀取最新進度，請稍後重新整理。"
+        ? "暫時無法讀取最新進度，請稍後重試。"
         : error.message;
-    if (reset) renderBoard("尚未取得進度");
   } finally {
     busy = false;
     controls.forEach((control) => { control.disabled = !apiUrl; });
+    const loadButton = list.querySelector(".column-delivered button");
+    if (loadButton) loadButton.disabled = !hasSnapshot || !apiUrl;
     list.setAttribute("aria-busy", "false");
+    if (includeDelivered) {
+      const target = loadButton || list.querySelector(".column-delivered .column-cards");
+      target?.focus({ preventScroll: true });
+    }
   }
 }
 for (const filter of [stage, flag, service]) filter.addEventListener("change", () => {
-  if (snapshot) {
-    showResult(filterBoard(snapshot, filters()));
-    list.scrollLeft = 0;
-  } else load(true);
+  renderBoard();
+  list.scrollLeft = 0;
 });
-refresh.addEventListener("click", () => load(true));
-more.addEventListener("click", () => load(false));
-load(true);
+refresh.addEventListener("click", () => load());
+load();

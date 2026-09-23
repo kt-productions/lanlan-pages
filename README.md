@@ -2,13 +2,15 @@
 
 展示角色動畫、貼圖與小動圖的靜態網站，提供作品瀏覽、委託價目及獨立委託表單。
 
-網站以 GitHub Pages 發布，原始碼位於 [kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，正式網址為 [LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。2026-09-23 已完成 Telegram 登入與測試單通知驗證，並部署 GAS 第 10 版、升級 Orders 為 32 欄，匯入 174 筆 Trello 歷史訂單。公開進度改為七欄卡片看板，支援類型、階段與急件／擱置篩選；匯入單沿用原公開名稱，新表單改為顯示暱稱；封存工作不出現在公開進度，後台只在「封存」篩選顯示。2026-09-23 已依使用者要求開啟收件；已加入五檔私人附件與 Telegram 多圖相簿通知，沒有付款功能；附件發布與驗收狀態見[附件紀錄](docs/records/attachments-2026-09-23.md)。設定與匯入步驟見[服務維護](docs/development/order-service.md)及 [Trello 匯入](docs/development/trello-import.md)。
+網站以 GitHub Pages 發布，原始碼位於 [kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，正式網址為 [LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。2026-09-23 已完成 Telegram 登入與測試單通知驗證，並部署 GAS 第 11 版、升級 Orders 為 32 欄，匯入 174 筆 Trello 歷史訂單。公開進度改為七欄卡片看板，支援類型、階段與急件／擱置篩選；匯入單沿用原公開名稱，新表單改為顯示暱稱；封存工作不出現在公開進度，後台只在「封存」篩選顯示。2026-09-23 已依使用者要求開啟收件；已加入五檔私人附件與 Telegram 多圖相簿通知，沒有付款功能；附件發布與驗收狀態見[附件紀錄](docs/records/attachments-2026-09-23.md)。設定與匯入步驟見[服務維護](docs/development/order-service.md)及 [Trello 匯入](docs/development/trello-import.md)。
 
 使用原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 建置。前端沒有第三方執行期套件；Apps Script 後端打包使用 node-forge 驗證登入簽章。
 
 已修復後台登入的回應傳遞問題：正式網頁採用 GAS Html Service 通訊，部署資源使用內容版本，避免快取混用。修復後兩次 Telegram 登入、175 筆讀取、搜尋、歷史來源與附件、測試單儲存及公開同步、內容還原、登出均已實測；174 筆歷史訂單逐欄一致，通知未重發。結果不明的修改仍應先重新讀取。驗收範圍及工具限制見[後台驗收](docs/records/admin-2026-09-23.md)，早期問題見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
 
 Telegram 收件通知已包含完整表單內容與伺服器預估明細；長文自動分段，多張圖片維持一組相簿，補送只處理未成功的部分。正式驗證見[完整通知紀錄](docs/records/notification-text-2026-09-23.md)。
+
+委託進度與管理看板預設只載入未交稿；已交稿欄內提供「載入已交稿」按鈕，按下才補載，重新載入回到未交稿。搜尋與篩選會提示目前的資料範圍，詳見[按需載入驗收](docs/records/delivery-loading-2026-09-23.md)。
 
 委託進度已移除卡片的「訂單資訊」展開區。委託管理改為同樣的七欄看板，點「編輯」開啟保留原功能的彈跳視窗；完整資料搜尋、篩選、未儲存確認與手機版驗收見[管理看板紀錄](docs/records/admin-board-2026-09-23.md)。
 

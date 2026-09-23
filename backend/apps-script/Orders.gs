@@ -254,6 +254,10 @@ function submitOrder_(payload) {
 }
 
 function pageOrders_(payload, admin) {
+  // 舊版呼叫端省略此欄時保留原回應；新版看板明確要求未交稿或已交稿。
+  const delivery = payload.delivery === undefined ? "all" : payload.delivery;
+  Core_.requireValue(["all", "active", "delivered"].includes(delivery),
+    "交稿範圍不正確。");
   const offset = payload.offset === undefined ? 0 : payload.offset;
   const limit = admin || payload.limit === undefined ? 30 : payload.limit;
   Core_.requireValue(Number.isInteger(limit) && limit >= 1 && limit <= 200,
@@ -263,6 +267,9 @@ function pageOrders_(payload, admin) {
     "分頁位置不正確。",
   );
   let orders = readOrders_(orderSheet_());
+  if (delivery !== "all") orders = orders.filter(function (order) {
+    return (Core_.orderWorkflow(order).status === "delivered") === (delivery === "delivered");
+  });
   let stageCounts;
   if (admin) {
     orders.reverse();

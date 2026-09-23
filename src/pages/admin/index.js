@@ -8,7 +8,7 @@ import {
 import { setupEditor } from "../../features/orders/editor.js";
 import { boardColumns } from "../../features/orders/board-view.js";
 import { filterBoard } from "../../features/orders/board.js";
-import { loadAdminOrders } from "../../features/orders/admin-data.js";
+import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/board-data.js";
 import { setupAttachments } from "../../features/orders/attachments-view.js";
 
 const config = JSON.parse(
@@ -39,6 +39,7 @@ let token = "";
 let orders = [];
 let selected = null;
 let hasSnapshot = false;
+let deliveredLoaded = false;
 let dirty = false;
 let busy = false;
 let pendingLogin = null;
@@ -108,6 +109,7 @@ function clearSession() {
   token = "";
   orders = [];
   hasSnapshot = false;
+  deliveredLoaded = false;
   discardAction = null;
   if (discardDialog.open) discardDialog.close();
   closeEditor();
@@ -161,6 +163,9 @@ function renderList() {
     orders: result.orders,
     counts: hasSnapshot ? result.stageCounts : null,
     stage: stage.value,
+    deferredStages: deliveredLoaded ? [] : ["delivered"],
+    onLoadDeferred: loadDelivered,
+    deferredDisabled: busy || !hasSnapshot,
     message: busy ? "讀取中……" : "尚未取得委託",
     renderCard(order) {
       const title = order.source?.cardName || order.details.nickname;
@@ -184,10 +189,15 @@ function renderList() {
     column.querySelector(".column-cards").scrollTop = scrollPositions.get(column.className) || 0;
   }
   const scopeTotal = filterBoard(orders, { flag: flag.value === "archived" ? "archived" : "" }).total;
-  const scopeLabel = flag.value === "archived" ? "封存委託" : "未封存委託";
-  summary.textContent = !hasSnapshot ? "" : result.total
+  const scopeLabel = `${flag.value === "archived" ? "封存" : "未封存"}${deliveredLoaded ? "" : "、未交稿"}委託`;
+  summary.textContent = !hasSnapshot ? "" : !deliveredLoaded && stage.value === "delivered"
+    ? "已交稿尚未載入，請按「載入已交稿」。"
+    : result.total
     ? `顯示 ${result.total}／${scopeTotal} 件${scopeLabel}`
-    : `目前沒有符合條件的委託（共 ${scopeTotal} 件${scopeLabel}）。`;
+    : `目前沒有符合條件的委託（共 ${scopeTotal} 件${scopeLabel}）`;
+  if (hasSnapshot && !deliveredLoaded && stage.value !== "delivered") {
+    summary.textContent += "；搜尋與篩選暫不含已交稿。";
+  }
 }
 async function work(task, operation = "load") {
   if (busy) return;
@@ -224,17 +234,22 @@ async function work(task, operation = "load") {
     }
   }
 }
-async function load() {
-  message("正在讀取委託看板……");
+async function load(includeDelivered = false) {
+  const label = includeDelivered ? "已交稿" : "未交稿";
+  message(`正在讀取${label}委託……`);
   renderList();
-  const snapshot = await loadAdminOrders(api, token, (loaded, total) => {
-    message(`正在讀取委託看板：${loaded}／${total} 件……`);
+  const snapshot = await loadBoardOrders(api, {
+    admin: true, token, delivery: includeDelivered ? "delivered" : "active",
+    onProgress(loaded, total) {
+      message(`正在讀取${label}委託：${loaded}／${total} 件……`);
+    },
   });
-  orders = snapshot;
+  orders = includeDelivered ? mergeDeliveredOrders(orders, snapshot) : snapshot;
+  deliveredLoaded = includeDelivered;
   hasSnapshot = true;
   closeEditor();
   renderList();
-  message(`已載入全部 ${orders.length} 件委託。`);
+  message(`已載入 ${snapshot.length} 件${label}委託。${includeDelivered ? "" : "已交稿可按需載入。"}`);
 }
 login.addEventListener("click", () =>
   work(async () => {
@@ -267,6 +282,16 @@ logout.addEventListener("click", () => {
 refresh.addEventListener("click", () => {
   afterDiscard(() => work(load));
 });
+function loadDelivered() {
+  afterDiscard(async () => {
+    await work(() => load(true));
+    if (token) {
+      const target = list.querySelector(".column-delivered .column-cards > button") ||
+        list.querySelector(".column-delivered .column-cards");
+      target?.focus({ preventScroll: true });
+    }
+  });
+}
 search.addEventListener("input", renderList);
 for (const filter of [stage, flag, service]) filter.addEventListener("change", () => {
   renderList();
@@ -305,7 +330,11 @@ form.addEventListener("submit", (event) => {
     orders = orders.map((item) =>
       item.orderId === order.orderId ? order : item,
     );
-    if (order.isArchived !== (flag.value === "archived")) {
+    if (!deliveredLoaded && order.status === "delivered") {
+      orders = orders.filter((item) => item.orderId !== order.orderId);
+      closeEditor();
+      message("已儲存為已交稿；可按「載入已交稿」查看或繼續編輯。");
+    } else if (order.isArchived !== (flag.value === "archived")) {
       closeEditor();
       message(order.isArchived
         ? "已封存；可從附加狀態選擇「封存」查看或解除封存。"
