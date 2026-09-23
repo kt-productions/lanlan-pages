@@ -1,5 +1,4 @@
 .board-page {
-  width: min(1920px, calc(100% - 48px));
   padding-block: 40px 64px;
 }
 .board-page .order-heading {
@@ -152,6 +151,10 @@
 /* 桌機六欄平均分配可用寬度；窄螢幕維持可閱讀的卡片並在看板內捲動。 */
 @media (min-width: 1024px) {
   .progress-board {
+    /* 只有看板延伸至 main 外側；標題、篩選與說明仍沿用 .wrap 的寬度。 */
+    --board-width: min(1920px, calc(100vw - 48px));
+    width: var(--board-width);
+    margin-inline: calc((100% - var(--board-width)) / 2);
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     scroll-snap-type: none;
@@ -163,7 +166,6 @@
 }
 @media (max-width: 760px) {
   .board-page {
-    width: 90%;
     padding-top: 24px;
   }
   .board-page .order-heading {
