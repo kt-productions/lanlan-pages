@@ -1,4 +1,4 @@
-/** 導覽只依伺服器確認的管理工作階段顯示；較晚返回的驗證不可恢復已登出的入口。 */
+/** 先用未到期的登入紀錄顯示入口，再於背景驗證；管理資料仍由 API 獨立授權。 */
 export function createAdminAccess({ api, readSession, clearSession, onChange, onInvalid = () => {},
   now = Date.now, schedule = setTimeout, cancel = clearTimeout }) {
   let active = null;
@@ -8,11 +8,11 @@ export function createAdminAccess({ api, readSession, clearSession, onChange, on
   const valid = (session) => session && /^[a-f0-9]{64}$/.test(session.token || "") &&
     Number.isSafeInteger(session.expiresAt) && session.expiresAt > now();
 
-  function replace(session, verified = false) {
+  function replace(session) {
     generation += 1;
     cancel(timer);
     active = valid(session) ? { token: session.token, expiresAt: session.expiresAt } : null;
-    onChange(Boolean(active && verified));
+    onChange(Boolean(active));
     if (active) {
       const current = active;
       timer = schedule(() => invalidate(current), Math.max(0, active.expiresAt - now()));
@@ -29,7 +29,7 @@ export function createAdminAccess({ api, readSession, clearSession, onChange, on
   function confirm(session) {
     const expiresAt = active?.token === session.token
       ? Math.min(active.expiresAt, session.expiresAt) : session.expiresAt;
-    replace({ ...session, expiresAt }, true);
+    replace({ ...session, expiresAt });
   }
 
   function refresh(session = active || readSession()) {
@@ -48,7 +48,7 @@ export function createAdminAccess({ api, readSession, clearSession, onChange, on
       } catch (error) {
         if (revision !== generation) return;
         if (["AUTH", "FORBIDDEN"].includes(error.code)) invalidate(current);
-        // 暫時無法驗證時維持隱藏，保留憑證供回到頁面或網路恢復時重試。
+        // 網路中斷不讓入口閃爍；原期限仍有效，到期或明確拒絕才清除。
       } finally {
         if (pending?.generation === revision) pending = null;
       }
