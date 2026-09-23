@@ -26,6 +26,18 @@ npm run check
 
 ## 載入與播放
 
+### 首頁中央 GIF
+
+2026-09-24 使用者另提供 `public/assets/videos/逼餔撩髮2.gif` 作為首頁中央影片。此素材獨立於 94 支作品清單，以 `content/hero-video.json` 記錄來源、雜湊、編碼與縮圖；不改動 `animation-02` 原作品。
+
+執行 `npm run optimize:hero` 可重新產生專用 MP4 與 JPEG 首格縮圖，沿用 `FFMPEG_PATH`、`FFPROBE_PATH`。影片採 960px 長邊、H.264 CRF 23、`yuv420p`、faststart；GIF 的 80／90ms 影格使用 `-fps_mode passthrough -enc_time_base 1/100 -video_track_timescale 1000` 保留，轉檔後逐格核對時間戳、12 格與 1 秒片長。縮圖採 JPEG 品質參數 3。編碼器需提供 `libx264` 及 `mjpeg`，一般建置和 CI 不執行轉檔。
+
+原 GIF 為 6,010,209 bytes，MP4 為 182,465 bytes，縮圖為 55,611 bytes；加上縮圖仍減少約 96% 傳輸量。原 GIF 保留不覆寫，建置仍排除 GIF；網頁只使用帶雜湊版本的 MP4 和縮圖。`readHeroVideo()` 於建置／檢查時核對來源與衍生檔，並確認比例、尺寸、片長、影格數及起播索引。
+
+同日於本機 1280 × 900 與 390 × 844 驗證新影片載入、循環、桌機暫停／恢復、手機完整比例及無橫向溢出；主控台無警告或錯誤。原 GIF 與 MP4 的全部影格時間戳一致，建置與靜態檢查通過。發布沿用既有 GitHub Pages workflow，GAS 不需更新。
+
+### 共用播放行為
+
 - 背景影片只有 `data-src` 和 `preload="none"`，由播放模組判斷可見性後設定 `src`；不使用會繞過播放狀態的原生 `autoplay` 屬性。
 - 首屏三張縮圖保留即時載入，作品縮圖使用 `data-poster`，距離視窗 200px 時才載入。影片本體仍需進入可見範圍。
 - 離開畫面、切換分類、暫停動畫、隱藏分頁及開啟檢視器時，背景影片暫停。未緩衝完成的影片移除來源並中止下載；已完整緩衝的影片保留以便返回。

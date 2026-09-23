@@ -29,7 +29,7 @@
 
 舊盤點記錄原站播放器顯示預設的「Your Video Title」，因此初期採中性編號。現有 `title` 是本站顯示資料，不據此推定原站正式作品名、委託人或其他角色身分。首屏影片的替代說明仍由 `src/pages/home/index.html` 單獨維護。
 
-2026-09-24 使用者確認作品編號越大越新，作品牆由 `scripts/build.mjs` 依 ID 的數字部分由大到小排列；同號保留來源順序。各分類、載入更多與檢視器共用此順序，不另推定完成日期。`content/site.json` 的 `featured` 保留原精選紀錄，但不再影響作品牆排序。首屏展示仍固定為 `chibi-01`、`animation-02`、`animation-01`。
+2026-09-24 使用者確認作品編號越大越新，作品牆由 `scripts/build.mjs` 依 ID 的數字部分由大到小排列；同號保留來源順序。各分類、載入更多與檢視器共用此順序，不另推定完成日期。`content/site.json` 的 `featured` 保留原精選紀錄，但不再影響作品牆排序。首屏兩側固定為 `chibi-01`、`animation-01`；同日依使用者要求，中央改為新提供的「逼餔撩髮」GIF 衍生影片。
 
 建置另加入 `stickers-01` 貼圖總覽，因此作品牆共 95 件，分類件數為角色動畫 37、小動圖 57、貼圖 1；「貼圖 1」代表一張總覽，不代表只有一款可委託。依使用者同日後續要求，移除「全部作品」選項，預設顯示小動圖。
 
@@ -39,9 +39,10 @@
 
 | 資料／目錄 | 目前內容與用途 |
 | --- | --- |
-| `public/assets/videos/` | 94 支原始 MP4，保留來源供後續操作。 |
+| `public/assets/videos/` | 94 支原始 MP4，以及使用者提供的 `逼餔撩髮2.gif`；保留來源供後續操作。 |
 | `public/assets/videos/optimized/`、`content/video-assets.json` | 2026-09-23 另存 94 支預覽版與 94 支展示版；記錄對應原始來源、編碼設定、大小、尺寸、片長與 SHA-256。原始影片及 `works.json` 保留不變。 |
 | `public/assets/posters/` | 94 張影片 WebP 縮圖及 1 張貼圖總覽縮圖；網站以完整比例呈現。 |
+| `content/hero-video.json` | 首頁中央專用來源紀錄；原 GIF 6,010,209 bytes、1920 × 1080、1 秒／12 格。另存 960 × 540 H.264 MP4（182,465 bytes）及 JPEG 縮圖（55,611 bytes），素材網址含 SHA-256 前綴。未加入作品牆或變更原作品 ID。 |
 | `content/source-assets.json`、`public/assets/originals/` | 1 筆首頁原始素材：`stickers.png`，原名 `R8R8.png`，作品牆的貼圖總覽原圖。 |
 | `content/form-assets.json` | 50 筆使用中素材來源紀錄，對應 50 個專案相對路徑。 |
 | `public/assets/forms/` | 48 張貼圖款式圖、1 張折扣圖、1 張中文交付說明圖。 |

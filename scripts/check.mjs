@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { root, output, resolveWithin } from "./lib/paths.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
-import { readVideoAssets } from "./lib/video-assets.mjs";
+import { readVideoAssets, readHeroVideo } from "./lib/video-assets.mjs";
 const assetRoot = path.join(output, "assets/site", await siteAssetVersion(path.join(root, "src")));
 const works = JSON.parse(
   await readFile(path.join(root, "content/works.json"), "utf8"),
@@ -13,6 +13,12 @@ const site = JSON.parse(
   await readFile(path.join(root, "content/site.json"), "utf8"),
 );
 const videoAssets = await readVideoAssets(works);
+const heroVideo = await readHeroVideo();
+for (const kind of ["video", "poster"]) {
+  const bytes = await readFile(resolveWithin(output, heroVideo[kind].src));
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), heroVideo[kind].sha256,
+    `首頁 ${kind} 未正確輸出`);
+}
 for (const asset of videoAssets.values()) {
   for (const kind of ["preview", "display"]) {
     assert.equal(
@@ -149,6 +155,7 @@ const portfolio = JSON.parse(html.match(/<script id="portfolio-data" type="appli
 for (const work of portfolio.works.filter((item) => item.type === "video"))
   assert.equal(work.playbackSrc, videoAssets.get(work.id).display.src, "檢視器必須使用壓縮版");
 const previewSources = new Set([...videoAssets.values()].map((item) => `./${item.preview.src}`));
+previewSources.add(`./${heroVideo.video.src}`);
 for (const [, source] of html.matchAll(/<video\b[^>]*data-src="([^"]+)"/g))
   assert.ok(previewSources.has(source), "背景影片不可使用展示版或原始檔");
 const formAssets = JSON.parse(

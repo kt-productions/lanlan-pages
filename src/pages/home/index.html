@@ -47,16 +47,16 @@
                 id="hero-video"
                 data-autoplay
                 data-src="./{{HERO_MAIN_SRC}}"
-                poster="./assets/posters/animation-02.webp"
-                width="1920"
-                height="1080"
+                poster="./{{HERO_MAIN_POSTER}}"
+                width="{{HERO_MAIN_WIDTH}}"
+                height="{{HERO_MAIN_HEIGHT}}"
                 muted
                 loop
                 playsinline
                 preload="none"
-                aria-label="角色動畫 02，金黃色獸人角色"
+                aria-label="{{HERO_MAIN_TITLE}}"
               ></video>
-              <figcaption class="sr-only">角色動畫 02</figcaption>
+              <figcaption class="sr-only">{{HERO_MAIN_TITLE}}</figcaption>
               <span class="video-notice" hidden></span>
             </figure>
             <figure class="reel-side reel-animation">

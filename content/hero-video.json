@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "title": "逼餔撩髮",
+  "source": {
+    "src": "assets/videos/逼餔撩髮2.gif",
+    "providedBy": "使用者提供並指定為首頁中央影片",
+    "reviewedAt": "2026-09-24",
+    "bytes": 6010209,
+    "sha256": "2f1d134f7bd8f3cd0cd1102f1b43053af8a1b37f48030c920b5bb8526903d1f4",
+    "width": 1920,
+    "height": 1080,
+    "duration": 1,
+    "frames": 12
+  },
+  "encoder": "ffmpeg version 7.0.2-full_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+  "profile": {
+    "codec": "libx264",
+    "crf": 23,
+    "preset": "slow",
+    "pixelFormat": "yuv420p",
+    "maxDimension": 960,
+    "frameTiming": "passthrough",
+    "fastStart": true,
+    "posterCodec": "mjpeg",
+    "posterQuality": 3
+  },
+  "video": {
+    "src": "assets/videos/optimized/hero-main-29fe8b7425c4.mp4",
+    "bytes": 182465,
+    "sha256": "29fe8b7425c4fadf24add54e0352e5fd27f3cf7b1c45e2008cb455c40edaa265",
+    "width": 960,
+    "height": 540,
+    "duration": 1,
+    "frames": 12
+  },
+  "poster": {
+    "src": "assets/posters/hero-main-eb8868eb51c6.jpg",
+    "bytes": 55611,
+    "sha256": "eb8868eb51c6bd76c95138f8266c67482424dcc8166448c4bbc0b376ad81e743",
+    "width": 960,
+    "height": 540
+  }
+}

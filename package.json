@@ -9,6 +9,7 @@
   },
   "scripts": {
     "optimize:videos": "node scripts/optimize-videos.mjs",
+    "optimize:hero": "node scripts/optimize-hero.mjs",
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
     "test": "node scripts/build-backend.mjs && node --test tests/*.test.mjs",

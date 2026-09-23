@@ -133,6 +133,8 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-09-24 首頁中央 GIF**：依使用者指定，中央改用 `逼餔撩髮2.gif` 的 MP4 衍生檔；原 GIF 不覆寫，建置不打包 GIF。`content/hero-video.json` 保存來源與衍生資料，`scripts/optimize-hero.mjs` 產生 960 × 540 影片與縮圖並核對逐格時間戳；沿用原播放控制，不新增作品牆項目或修改既有作品 ID。
+
 - **2026-09-24 作品排序與表單文案**：依使用者確認「編號越大越新」，`scripts/build.mjs` 將作品依 ID 數字由大到小排列，同號保留來源順序；第 7 節所列 `site.json` 精選紀錄保留，但不再控制作品牆排序。`content/commission.json` 與委託頁更新貼圖包單一角色及修改條款、準備提示、聯絡 ID 與素材標籤，計價及第 4 版草稿契約不變。原始來源、作品 ID 與素材不改寫；詳細規格見 `docs/reference/assets.md` 及 `docs/reference/commission.md`。
 
 - **2026-09-24 管理登入保留三天**：依使用者要求修復關閉網頁後需重登並延長 session，更新第 9 節原記憶體登入決策：`admin-session.js` 僅將 token、版本與伺服器到期時間保存於按 API 網址區隔的 localStorage，不保存委託資料；OAuth 綁定值仍使用 sessionStorage。`Auth.gs` 以 Script Properties 保存 token 雜湊對應紀錄，從核發起固定 72 小時，不滑動續期；每次管理操作重新核對白名單，登出、到期及權限失效可撤銷。舊工作階段沿用原期限，前端處理跨分頁登出、儲存受阻及網路中斷。此為本次明確需求對原登入保存限制的更新，不變更表單草稿保存方式。

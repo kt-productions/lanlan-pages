@@ -3,7 +3,7 @@ import path from "node:path";
 import { root, output as out } from "./lib/paths.mjs";
 import { readContent, readCommission } from "./lib/content.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
-import { readVideoAssets } from "./lib/video-assets.mjs";
+import { readVideoAssets, readHeroVideo } from "./lib/video-assets.mjs";
 import {
   escapeHtml as escape,
   inlineJson,
@@ -15,6 +15,7 @@ if (out !== path.join(root, "dist")) throw new Error("不安全的建置目錄")
 const site = await readContent("site.json");
 const rawWorks = await readContent("works.json");
 const videoAssets = await readVideoAssets(rawWorks);
+const heroVideo = await readHeroVideo();
 const commission = await readCommission();
 const integration = await readContent("integration.json");
 if (
@@ -80,7 +81,11 @@ const replacements = {
   INTEGRATION_DATA: inlineJson({ apiUrl: integration.apiUrl || "" }),
   WORKS: htmlWorks,
   HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
-  HERO_MAIN_SRC: escape(videoAssets.get("animation-02").preview.src),
+  HERO_MAIN_SRC: escape(heroVideo.video.src),
+  HERO_MAIN_POSTER: escape(heroVideo.poster.src),
+  HERO_MAIN_TITLE: escape(heroVideo.title),
+  HERO_MAIN_WIDTH: heroVideo.video.width,
+  HERO_MAIN_HEIGHT: heroVideo.video.height,
   HERO_SIDE_SRC: escape(videoAssets.get("animation-01").preview.src),
   COUNT_ANIMATION: works.filter((work) => work.category === "animation").length,
   COUNT_CHIBI: works.filter((work) => work.category === "chibi").length,

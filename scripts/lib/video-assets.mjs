@@ -72,3 +72,26 @@ export async function readVideoAssets(works) {
   }
   return assets;
 }
+
+/** 首頁專用 GIF 不加入作品清單；來源、影片與縮圖仍須可追溯並通過建置核對。 */
+export async function readHeroVideo() {
+  const hero = JSON.parse(await readFile(path.join(root, "content/hero-video.json"), "utf8"));
+  assert.equal(hero.version, 1, "未知的首頁影片清單版本");
+  for (const key of ["source", "video", "poster"]) {
+    const asset = hero[key];
+    const bytes = await readFile(resolveWithin(path.join(root, "public"), asset.src));
+    assert.equal(bytes.length, asset.bytes, `首頁 ${key} 大小不符`);
+    assert.equal(sha256(bytes), asset.sha256, `首頁 ${key} 雜湊不符`);
+    assert.ok(asset.width > 0 && asset.height > 0, `首頁 ${key} 尺寸不正確`);
+    assert.ok(Math.abs(asset.width / asset.height - hero.source.width / hero.source.height) < 0.01,
+      `首頁 ${key} 比例不正確`);
+    if (key === "source") continue;
+    assert.ok(asset.src.includes(`-${asset.sha256.slice(0, 12)}.`), "首頁素材網址須包含內容版本");
+    assert.ok(asset.bytes < hero.source.bytes, `首頁 ${key} 未縮小`);
+    assert.ok(Math.max(asset.width, asset.height) <= 960, `首頁 ${key} 尺寸過大`);
+    if (key === "video") assert.ok(hasFastStart(bytes), "首頁影片缺少起播索引");
+  }
+  assert.equal(hero.video.frames, hero.source.frames, "首頁影片影格數改變");
+  assert.equal(hero.video.duration, hero.source.duration, "首頁影片片長改變");
+  return hero;
+}
