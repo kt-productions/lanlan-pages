@@ -50,13 +50,10 @@
           <label for="admin-service">委託類型
             <select id="admin-service">
               <option value="">所有類型</option>
-              <option value="chibi">小動圖</option>
+              <option value="chibi" selected>小動圖</option>
               <option value="animation">角色動畫</option>
               <option value="stickers">貼圖包</option>
             </select>
-          </label>
-          <label for="admin-stage">工作階段
-            <select id="admin-stage"><option value="">所有階段</option></select>
           </label>
           <label for="admin-flag">附加狀態
             <select id="admin-flag">
@@ -71,7 +68,7 @@
           </button>
         </div>
         <p id="admin-summary"></p>
-        <p id="admin-board-hint" class="board-hint">左右捲動查看各階段，欄內可上下捲動。點選「編輯」查看與更新委託；封存委託只在附加狀態選擇「封存」時顯示。</p>
+        <p id="admin-board-hint" class="board-hint">卡片由舊到新排列，可拖曳至其他欄位更新狀態。左右捲動查看各階段，欄內可上下捲動；也可點「編輯」調整工作階段。封存委託只在附加狀態選擇「封存」時顯示。</p>
         <div id="admin-list" class="progress-board" role="region" tabindex="0" aria-label="委託管理看板" aria-describedby="admin-board-hint"></div>
       </section>
       <dialog id="admin-editor-dialog" class="admin-dialog" aria-labelledby="edit-heading">

@@ -110,6 +110,7 @@ test("公開投影不含聯絡資訊、參考素材、內部備註與通知資�
     "isOnHold",
     "isArchived",
     "publicNote",
+    "createdAt",
     "updatedAt",
     "displayTitle",
   ]);
@@ -595,7 +596,7 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
   assert.equal(held.orders[0].orderId, "LL-0000000000000032");
   assert.equal(held.orders[0].publicNote, "");
   assert.deepEqual(Object.keys(held.orders[0]), [
-    "orderId", "service", "status", "isRush", "isOnHold", "isArchived", "publicNote", "updatedAt", "displayTitle",
+    "orderId", "service", "status", "isRush", "isOnHold", "isArchived", "publicNote", "createdAt", "updatedAt", "displayTitle",
   ]);
   assert.equal(app.invoke("progress.list", { status: "drafting", flag: "on_hold", offset: 1 }).data.orders.length, 0);
   assert.equal(app.invoke("progress.list", { status: "awaiting_payment" }).data.total, 0);

@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | `orders.upload` | 公開 | 與送件相同的 `requestId`、`details`、`website`、完整 `attachments` 清單，以及本檔 `index`（0–4）、`data`（base64）；回傳 `{index, uploaded:true}`。 |
 | `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`、`attachments` 清單（無附件為 `[]`）；收件或取回同一回執。 |
-| `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
+| `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（六階段代碼，亦接受舊 `awaiting_payment`）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
 | `auth.start` | 公開 | 64 字元 hex `browserKey`、選填 boolean `popup`；取得 Telegram 授權網址。 |
 | `auth.poll` | 公開 | 原分頁 64 字元 hex `browserKey`；彈出視窗登入回傳 `{ pending: true }`、`{ ticket }` 或驗證錯誤，不回傳工作階段 token。 |
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
@@ -30,7 +30,7 @@
 
 `progress.list` 與 `admin.list` 均接受 `delivery: "active" | "delivered" | "all"`。`active` 排除已交稿，`delivered` 只回傳已交稿；省略時沿用 `all`，相容尚未重新整理的舊前端。舊 `completed` 狀態先對應為 `delivered`，交稿範圍由伺服器在分頁及計算件數前套用。
 
-分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 保留所選交稿範圍中的封存資料，管理畫面只有 `flag=archived` 篩選顯示封存項目；管理清單維持最新加入優先。
+分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的六階段件數）。公開與管理清單先對完整資料篩選，按原始建立時間由舊到新、同時間按編號排序後再分頁；Trello 採原卡片建立時間。封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 保留所選交稿範圍中的封存資料，管理畫面只有 `flag=archived` 篩選顯示封存項目。
 
 兩個看板初次開啟或重新載入時只要求 `delivery: "active"`，完整讀完此範圍所有分頁後才更新畫面。已交稿欄標示「未載入」，欄內提供「載入已交稿」按鈕；選取已交稿篩選本身不觸發下載，仍需按該按鈕。按下後只要求 `delivery: "delivered"`，完成所有分頁才合併到現有快照，按編號去重並使用最新回應。同一頁後續搜尋、類型／階段／旗標篩選沿用已載入快照，不重抓已交稿；重新載入會恢復未交稿範圍。尚未補載時，搜尋提示明確排除已交稿，不將未載入件數顯示為零。管理員將未交稿改為已交稿時，若尚未補載，關閉編輯視窗並移出目前清單。
 
@@ -73,14 +73,13 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 | 通知 | `notificationStatus`、`notificationAttempts`、`notificationError`、`notificationAt`；同日多人通知更新另於第 30 欄加入 `notificationRecipientsJson`。 |
 | 可追溯性 | `lastEditor`、`historyJson` |
 
-新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 與 `isArchived` 為 false。新表單的公開回應包含 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`isArchived`、`publicNote`、`updatedAt`，以及取自暱稱的 `displayTitle`；不含聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
+新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 與 `isArchived` 為 false。新表單的公開回應包含 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`isArchived`、`publicNote`、`createdAt`、`updatedAt`，以及取自暱稱的 `displayTitle`；不含聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
 
 | 工作階段 | 代碼 |
 | --- | --- |
 | 排隊中 | `queued` |
 | 草稿繪製中 | `drafting` |
-| 草稿確認 | `draft_review` |
-| 等待付款 | `awaiting_payment` |
+| 草稿確認/等待付款 | `draft_review` |
 | 完稿中 | `finalizing` |
 | 待付尾款 | `awaiting_balance` |
 | 已交稿 | `delivered` |
@@ -115,7 +114,7 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 
 ### 封存與解除
 
-`isArchived` 是獨立附加狀態，第 32 欄保存 boolean；空白舊列讀取時沿用 `source.archived`，沒有來源則為 false，不批次改寫歷史。明確 false 可解除原 Trello 封存；來源紀錄保持原樣。封存不改工作階段、急件、擱置、報價、附件或收件通知，更新仍核對 revision 並將舊封存值保存於歷史。管理清單的「所有工作」、急件、擱置排除封存；「封存」只顯示封存，可搭配類型、階段、搜尋。
+`isArchived` 是獨立附加狀態，第 32 欄保存 boolean；空白舊列讀取時沿用 `source.archived`，沒有來源則為 false，不批次改寫歷史。明確 false 可解除原 Trello 封存；來源紀錄保持原樣。封存不改工作階段、急件、擱置、報價、附件或收件通知，更新仍核對 revision 並將舊封存值保存於歷史。管理清單的「所有工作」、急件、擱置排除封存；「封存」只顯示封存，可搭配類型與搜尋；管理頁上方不再提供階段篩選。
 
 ## 登入與錯誤
 
@@ -128,3 +127,11 @@ Authorization Code + PKCE S256、單次 state 及 nonce；後端向固定 Telegr
 管理頁在使用者按登入時同步開啟 Telegram 視窗，指定 `popup: true`，原頁以 `auth.poll` 取得綁定結果後沿用 `auth.exchange`。等待期限十分鐘，成功／失敗結果快取兩分鐘；結果以 browserKey 雜湊保存並核對對應 state，另一把 browserKey 不能取得結果。取消或離開原頁停止輪詢，網路錯誤最多連續嘗試三次，逾時及拒絕可重新登入。GAS 成功頁及原頁均嘗試關閉驗證視窗，關閉受阻不影響登入。彈出視窗被阻擋時退回原分頁驗證及手動回程，不要求新增 Telegram 權限。
 
 錯誤代碼：`VALIDATION` 輸入、`VERSION` 表單過期、`AUTH` 登入失效、`FORBIDDEN` 沒有管理權限、`CONFLICT` 版本或冪等衝突、`CLOSED` 停止收件、`RATE_LIMIT` 收件上限、`BUSY` 處理中、`CAPACITY` 欄位容量、`CONFIG` 設定不足、`SERVER` 未預期錯誤。平台原始例外與憑證不回傳給瀏覽器。
+
+### 2026-09-24 合併階段、建立時間排序與拖曳
+
+`draft_review` 改為「草稿確認/等待付款」，舊 `awaiting_payment` 讀取時映射到此階段，不批次重寫 Sheets。舊管理分頁送出的 `awaiting_payment` 更新與公開篩選仍接受，儲存後統一為 `draft_review`，歷史保留修改前原值。
+
+管理與公開 API 均在分頁前按原始建立時間升冪排列，Trello 以 Card ID 換算的建立時間為準，一般委託使用 `createdAt`；同時間以 `orderId` 固定排序。公開投影新增 `createdAt`（Trello 使用原卡片時間），供前端篩選與補載後維持相同排序，不輸出完整來源與私人內容。管理 `createdAt` 仍保留本站建立時間，排序由 `source.createdAt` 優先。
+
+拖曳沿用 `admin.update`，傳送原 `revision`、完整既有需求、旗標及備註，只修改目標階段。後端權限、鎖定、版本衝突、歷史與附件保護均維持；不觸發通知。前端不預先移動卡片，回應不明或衝突後停用拖曳，直到完整重新載入。無新增 Sheets 欄位或草稿版本。前後端應同步發布以取得一致的階段與時間排序。

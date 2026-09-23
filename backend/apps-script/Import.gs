@@ -32,8 +32,9 @@ function importTrelloOrders_(payload) {
       "Trello 來源格式不正確。");
     Core_.requireValue(!unique.has(source.cardId), "批次中包含重複的來源卡片。");
     unique.add(source.cardId);
+    const status = card.status === "awaiting_payment" ? "draft_review" : card.status;
     Core_.requireValue(["animation", "chibi", "stickers"].includes(card.service) &&
-      Object.hasOwn(Core_.ORDER_STATUSES, card.status) &&
+      Object.hasOwn(Core_.ORDER_STATUSES, status) &&
       typeof card.isRush === "boolean" && typeof card.isOnHold === "boolean",
       "匯入工作階段或類型不正確。");
     // 重建白名單，避免把完整匯出檔、附件或其他欄位意外存入訂單。
@@ -56,7 +57,7 @@ function importTrelloOrders_(payload) {
       requestId: "trello:" + source.cardId,
       requestHash: digest_(JSON.stringify(savedSource)),
       createdAt: now, updatedAt: now, revision: 1,
-      status: card.status, progress: "", publicVisible: true,
+      status: status, progress: "", publicVisible: true,
       isRush: card.isRush, isOnHold: card.isOnHold,
       publicNote: "", adminNote: "", lastEditor: "trello-import",
       notificationStatus: "not_required", notificationAttempts: 0,

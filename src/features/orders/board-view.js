@@ -10,6 +10,7 @@ export function boardColumns({
     .filter(([key]) => !stage || key === stage)
     .map(([key, name]) => {
       const column = element("section", undefined, `board-column column-${key}`);
+      column.dataset.status = key;
       const heading = element("h2", name);
       heading.id = `stage-${key}`;
       column.setAttribute("aria-labelledby", heading.id);

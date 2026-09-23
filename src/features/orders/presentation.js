@@ -38,6 +38,8 @@ export function dateLabel(value) {
 export function renderProgress(order) {
   const article = element("article", undefined, "progress-card");
   article.id = order.orderId;
+  article.classList.toggle("is-rush", order.isRush === true);
+  article.classList.toggle("is-on-hold", order.isOnHold === true);
   article.append(element("span", serviceNames[order.service] || "委託", `card-service service-${order.service}`));
   const flags = renderFlags(order);
   if (flags.childElementCount) article.append(flags);

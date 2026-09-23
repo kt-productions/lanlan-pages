@@ -12,6 +12,7 @@ import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/boa
 import { setupAttachments } from "../../features/orders/attachments-view.js";
 import { createLoginPopup } from "../../features/orders/login-popup.js";
 import { createAdminSession } from "../../features/orders/admin-session.js";
+import { setupBoardDrag, statusUpdate } from "../../features/orders/board-drag.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
@@ -45,7 +46,6 @@ const list = document.querySelector("#admin-list");
 const refresh = document.querySelector("#admin-refresh");
 const search = document.querySelector("#admin-search");
 const service = document.querySelector("#admin-service");
-const stage = document.querySelector("#admin-stage");
 const flag = document.querySelector("#admin-flag");
 const summary = document.querySelector("#admin-summary");
 const form = document.querySelector("#admin-edit");
@@ -63,6 +63,7 @@ let hasSnapshot = false;
 let deliveredLoaded = false;
 let dirty = false;
 let busy = false;
+let movementBlocked = false;
 let pendingLogin = null;
 let discardAction = null;
 let returnOrderId = null;
@@ -86,11 +87,10 @@ const popupLogin = createLoginPopup(api, {
   },
 });
 
-for (const [value, label] of Object.entries(ORDER_STATUSES)) {
-  const option = element("option", label);
-  option.value = value;
-  stage.append(option);
-}
+const drag = setupBoardDrag(list, {
+  canDrag: () => Boolean(token) && hasSnapshot && !busy && !movementBlocked && !dialog.open,
+  onMove: moveOrder,
+});
 
 function message(text, focus = false) {
   status.textContent = text;
@@ -145,6 +145,7 @@ function clearPendingLogin() {
   sessionStorage.removeItem(storageKey);
 }
 function clearSession(removeSaved = true) {
+  drag.reset();
   if (removeSaved) savedSession.clear();
   clearTimeout(sessionTimer);
   sessionExpiresAt = 0;
@@ -198,14 +199,13 @@ function selectOrder(order, focus = true) {
 }
 function renderList() {
   const result = filterBoard(orders, {
-    service: service.value, status: stage.value, flag: flag.value, search: search.value,
+    service: service.value, flag: flag.value, search: search.value,
   });
   const scrollPositions = new Map([...list.querySelectorAll(".board-column")]
     .map((column) => [column.className, column.querySelector(".column-cards").scrollTop]));
   list.replaceChildren(...boardColumns({
     orders: result.orders,
     counts: hasSnapshot ? result.stageCounts : null,
-    stage: stage.value,
     deferredStages: deliveredLoaded ? [] : ["delivered"],
     onLoadDeferred: loadDelivered,
     deferredDisabled: busy || !hasSnapshot,
@@ -213,6 +213,8 @@ function renderList() {
     renderCard(order) {
       const title = order.source?.cardName || order.details.nickname;
       const card = renderProgress({ ...order, displayTitle: title });
+      card.dataset.dragOrderId = order.orderId;
+      card.draggable = !busy && !movementBlocked;
       const footer = element("div", undefined, "admin-card-footer");
       const button = element("button", "編輯", "button admin-edit-button");
       button.type = "button";
@@ -233,12 +235,10 @@ function renderList() {
   }
   const scopeTotal = filterBoard(orders, { flag: flag.value === "archived" ? "archived" : "" }).total;
   const scopeLabel = `${flag.value === "archived" ? "封存" : "未封存"}${deliveredLoaded ? "" : "、未交稿"}委託`;
-  summary.textContent = !hasSnapshot ? "" : !deliveredLoaded && stage.value === "delivered"
-    ? "已交稿尚未載入，請按「載入已交稿」。"
-    : result.total
+  summary.textContent = !hasSnapshot ? "" : result.total
     ? `顯示 ${result.total}／${scopeTotal} 件${scopeLabel}`
     : `目前沒有符合條件的委託（共 ${scopeTotal} 件${scopeLabel}）`;
-  if (hasSnapshot && !deliveredLoaded && stage.value !== "delivered") {
+  if (hasSnapshot && !deliveredLoaded) {
     summary.textContent += "；搜尋與篩選暫不含已交稿。";
   }
 }
@@ -289,6 +289,7 @@ async function load(includeDelivered = false) {
     },
   });
   orders = includeDelivered ? mergeDeliveredOrders(orders, snapshot) : snapshot;
+  if (!includeDelivered) movementBlocked = false;
   deliveredLoaded = includeDelivered;
   hasSnapshot = true;
   closeEditor();
@@ -347,10 +348,31 @@ function loadDelivered() {
   });
 }
 search.addEventListener("input", renderList);
-for (const filter of [stage, flag, service]) filter.addEventListener("change", () => {
+for (const filter of [flag, service]) filter.addEventListener("change", () => {
   renderList();
   list.scrollLeft = 0;
 });
+async function moveOrder(orderId, nextStatus) {
+  const current = orders.find((order) => order.orderId === orderId);
+  if (!current || busy || movementBlocked || dialog.open || current.status === nextStatus) return;
+  await work(async () => {
+    message(`正在移至「${ORDER_STATUSES[nextStatus]}」……`);
+    try {
+      const order = await api("admin.update", statusUpdate(current, nextStatus), token);
+      orders = orders.map((item) => item.orderId === order.orderId ? order : item);
+      if (!deliveredLoaded && order.status === "delivered") {
+        orders = orders.filter((item) => item.orderId !== order.orderId);
+        message("已移至「已交稿」；可按「載入已交稿」查看或繼續編輯。");
+      } else {
+        message(`已移至「${ORDER_STATUSES[order.status]}」；卡片仍依建立時間由舊到新排列。`);
+      }
+    } catch (error) {
+      // 回應不明或版本衝突後，先取得最新資料才允許再次拖曳，避免連續誤改。
+      if (["NETWORK", "CONFLICT"].includes(error.code)) movementBlocked = true;
+      throw error;
+    }
+  }, "save");
+}
 form.addEventListener("input", () => {
   dirty = true;
 });

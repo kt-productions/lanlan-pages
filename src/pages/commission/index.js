@@ -130,6 +130,7 @@ function applyService() {
   document.querySelector("#commission-service-name").textContent = details.name;
   populateList("#commission-rules", details.rules);
   populateList("#commission-workflow", details.workflow);
+  document.querySelector("#preparation-motion").hidden = service === "stickers";
   for (const group of form.querySelectorAll("[data-service-fields]")) {
     const active = group.dataset.serviceFields.split(" ").includes(service);
     group.hidden = !active;
@@ -141,6 +142,10 @@ function applyService() {
       });
   }
   reference.accept = details.referenceAccept;
+  document.querySelector("#reference-label-hint").textContent =
+    service === "stickers"
+      ? "一份表單限同一角色，若有多個角色請分開填寫"
+      : "最多 5 個";
   document.querySelector("#reference-hint").textContent =
     service === "stickers"
       ? "最多 5 個圖片，單檔 10 MB、合計 45 MB（PNG、JPEG、GIF、WebP、AVIF）。送出委託時會一併上傳。"
@@ -199,7 +204,7 @@ function updateContactHint() {
     telegram: "請填寫 Telegram ID，例如 @yourname；也可填寫 t.me 個人連結。",
     facebook:
       "請貼上 Facebook 個人頁面連結，例如 https://www.facebook.com/yourname。",
-    discord: "請填寫 Discord 使用者名稱。",
+    discord: "請填寫 Discord 的英文使用者 ID，不是暱稱喔！",
   };
   document.querySelector("#contact-hint").textContent =
     messages[channel.value] || "請填寫可聯絡到你的帳號或個人頁面連結。";
@@ -208,7 +213,7 @@ function updateContactHint() {
       ? "https://www.facebook.com/…"
       : channel.value === "telegram"
         ? "@你的帳號"
-        : "你的使用者名稱";
+        : "你的使用者 ID，是英文 ID，不是暱稱喔！";
   contact.setCustomValidity("");
 }
 channel.addEventListener("change", updateContactHint);

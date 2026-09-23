@@ -22,6 +22,19 @@ function fixture(count = 2) {
 }
 const batch = (count) => prepareTrelloImport([fixture(count)], { includeArchived: true, publishTitle: true });
 
+test("舊匯入批次的等待付款歸入合併階段，來源名稱維持原文", () => {
+  const app = backend();
+  const data = batch();
+  data.cards[0].status = "awaiting_payment";
+  data.cards[0].source.listName = "等待付款";
+  app.context.importTrelloOrders_(data);
+  const order = app.invoke("admin.list", {}, app.session()).data.orders
+    .find(order => order.source.listName === "等待付款");
+  assert.equal(order.status, "draft_review");
+  assert.equal(order.source.listName, "等待付款");
+  assert.equal(app.calls.length, 0);
+});
+
 test("Trello Card ID 換算秒級建立時間；讀取舊匯入補時間但不改寫原資料", () => {
   const id = Math.floor(Date.parse("2025-03-14T01:02:03Z") / 1000).toString(16) + "0".repeat(16);
   assert.equal(trelloCreatedAt(id), "2025-03-14T01:02:03.000Z");
@@ -145,9 +158,11 @@ test("全資料件數、類型篩選及分頁排序；公開保留已核可名�
   assert.equal(page.stageCounts.queued, 203);
   assert.equal(page.stageCounts.delivered, 1);
   assert.equal(page.nextOffset, 200);
-  assert.equal(page.orders[0].service, "animation");
-  assert.equal(page.orders[0].displayTitle, "=虛構同名委託");
-  assert.equal(page.orders[1].displayTitle, undefined);
+  const all = [...page.orders, ...app.invoke("progress.list", { offset: 200, limit: 200 }).data.orders];
+  assert.deepEqual(all.map(order => order.orderId), all.map(order => order.orderId).sort(),
+    "建立時間相同時以委託編號穩定排序，不再採用 Trello 欄位位置");
+  assert.equal(all.find(order => order.service === "animation").displayTitle, "=虛構同名委託");
+  assert.equal(all.filter(order => order.displayTitle === undefined).length, 1);
   assert.equal(page.orders[0].source, undefined);
   assert.ok(!JSON.stringify(page).includes("已收訂金"));
   assert.ok(!JSON.stringify(page).includes("attachments"));

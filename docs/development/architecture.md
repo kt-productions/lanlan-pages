@@ -7,7 +7,7 @@
 | 路徑 | 用途 |
 | --- | --- |
 | `content/integration.json` | 公開的 Apps Script Web App URL，空值表示未啟用，禁止放憑證 |
-| `content/site.json` | 網站資訊、首頁展示價目、原表單來源 URL、社群連結、作品牆精選 ID |
+| `content/site.json` | 網站資訊、首頁展示價目、原表單來源 URL、社群連結、原精選 ID 紀錄（不再決定排序） |
 | `content/works.json` | 原站 94 支影片的資料、來源 URL、來源頁、尺寸、長度、位元組與 SHA-256 |
 | `content/video-assets.json` | 各作品的預覽版／展示版、編碼設定及原始來源對應 |
 | `content/source-assets.json` | 首頁貼圖總覽原圖的來源紀錄 |
@@ -37,7 +37,7 @@
 
 修改首頁價目或聯絡方式：編輯 `content/site.json`；委託規則由 `content/commission.json` 管理，表單介面在 `src/pages/commission/index.js` 與 `src/pages/commission/index.html`。不要另外修改建置 HTML。
 
-增加作品：放入 MP4 與 WebP 縮圖，在 `content/works.json` 新增一筆，沿用既有欄位；ID 必須唯一，category 使用 `animation` 或 `chibi`，尺寸、長度與雜湊必須反映實際檔案。精選順序由 `site.json` 的 `featured` 決定。貼圖總覽目前由建置腳本加入。
+增加作品：放入 MP4 與 WebP 縮圖，在 `content/works.json` 新增一筆，沿用既有欄位；ID 必須唯一，category 使用 `animation` 或 `chibi`，尺寸、長度與雜湊必須反映實際檔案。使用者於 2026-09-24 確認編號越大越新，作品牆按 ID 數字由大到小排列，同號保留來源順序；新增作品須沿用此編號方向。貼圖總覽目前由建置腳本加入。
 
 作品名稱、精選清單與首屏素材的對應見[作品與素材盤點](../reference/assets.md)。修改原表單內容、費率或草稿時，分別參照[表單規格](../reference/commission.md)、[來源存檔](../reference/source-forms.md)及[草稿契約](../reference/draft-schema.md)，保留來源與目前規則的區別。
 

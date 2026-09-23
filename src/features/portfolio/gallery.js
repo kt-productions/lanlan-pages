@@ -6,10 +6,10 @@ export function setupGallery(works, onChange) {
   const count = document.querySelector("#gallery-count");
   const grid = document.querySelector("#art-grid");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  const batchSize = 6;
+  const batchSize = () => activeFilter === "chibi" ? 8 : 6;
   const animations = new Set();
-  let activeFilter = "all";
-  let visibleLimit = batchSize;
+  let activeFilter = "chibi";
+  let visibleLimit = batchSize();
   let filteredWorks = works;
   let revision = 0;
 
@@ -83,9 +83,10 @@ export function setupGallery(works, onChange) {
   }
 
   function applyFilter(focusNew = false) {
-    const oldLimit = visibleLimit - batchSize;
+    const oldLimit = visibleLimit - batchSize();
+    grid.dataset.filter = activeFilter;
     filteredWorks = works.filter(
-      (work) => activeFilter === "all" || work.category === activeFilter,
+      (work) => work.category === activeFilter,
     );
     const visibleIds = new Set(
       filteredWorks.slice(0, visibleLimit).map((work) => work.id),
@@ -105,14 +106,14 @@ export function setupGallery(works, onChange) {
     filter.addEventListener("click", () => {
       if (activeFilter === filter.dataset.filter) return;
       activeFilter = filter.dataset.filter;
-      visibleLimit = batchSize;
+      visibleLimit = batchSize();
       for (const button of filters)
         button.setAttribute("aria-pressed", String(button === filter));
       void transitionGallery({ replace: true });
     });
   }
   more.addEventListener("click", () => {
-    visibleLimit += batchSize;
+    visibleLimit += batchSize();
     void transitionGallery({ focusNew: true });
   });
   reducedMotion.addEventListener("change", () => {

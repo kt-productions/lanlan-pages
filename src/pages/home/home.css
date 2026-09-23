@@ -176,7 +176,14 @@ body.modal-open {
   overflow: hidden;
   border-radius: 12px;
   background: #faf5e4;
-  padding: 10px;
+  padding: 6px;
+}
+/* 依作品類型貼近原始比例，避免正方形被壓矮、橫式動畫上下留白。 */
+.artwork[data-category="chibi"] .art-image {
+  aspect-ratio: 1;
+}
+.artwork[data-category="animation"] .art-image {
+  aspect-ratio: 16 / 9;
 }
 .art-image img,
 .art-image video {
@@ -227,6 +234,12 @@ body.modal-open {
   text-align: center;
   pointer-events: none;
 }
+@media (min-width: 761px) {
+  #art-grid[data-filter="chibi"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .gallery-footer {
   text-align: center;
   border-top: 1px solid var(--line);
@@ -590,7 +603,7 @@ body.modal-open {
     gap: 24px 18px;
   }
   .art-image {
-    padding: 8px;
+    padding: 4px;
   }
   .art-caption {
     gap: 8px;

@@ -271,10 +271,9 @@ function pageOrders_(payload, admin) {
     return (Core_.orderWorkflow(order).status === "delivered") === (delivery === "delivered");
   });
   let stageCounts;
-  if (admin) {
-    orders.reverse();
-  } else {
-    const stage = payload.status === undefined ? "" : payload.status;
+  if (!admin) {
+    const stage = payload.status === undefined ? "" :
+      payload.status === "awaiting_payment" ? "draft_review" : payload.status;
     const flag = payload.flag === undefined ? "" : payload.flag;
     const service = payload.service === undefined ? "" : payload.service;
     Core_.requireValue(["", "animation", "chibi", "stickers"].includes(service),
@@ -298,17 +297,8 @@ function pageOrders_(payload, admin) {
     stageCounts = {};
     Object.keys(Core_.ORDER_STATUSES).forEach(function (key) { stageCounts[key] = 0; });
     orders.forEach(function (order) { stageCounts[Core_.orderWorkflow(order).status] += 1; });
-    orders.sort(function (a, b) {
-      const sa = Core_.orderSource(a);
-      const sb = Core_.orderSource(b);
-      if (sa && sb) return sa.boardOrder - sb.boardOrder ||
-        sa.listPosition - sb.listPosition || sa.cardPosition - sb.cardPosition ||
-        String(a.orderId).localeCompare(String(b.orderId));
-      if (sa || sb) return sa ? -1 : 1;
-      return String(a.createdAt).localeCompare(String(b.createdAt)) ||
-        String(a.orderId).localeCompare(String(b.orderId));
-    });
   }
+  orders.sort(Core_.compareOrderAge);
   const page = orders.slice(offset, offset + limit);
   return {
     orders: page.map(admin ? adminOrder_ : Core_.publicOrder),

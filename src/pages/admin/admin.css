@@ -4,6 +4,20 @@
 .admin-toolbar {
   flex-wrap: wrap;
 }
+.admin-page .progress-card[draggable="true"] {
+  cursor: grab;
+}
+.admin-page .progress-card.is-dragging {
+  opacity: 0.45;
+}
+.admin-page .board-column.is-drop-target {
+  outline: 3px solid var(--brand);
+  outline-offset: -3px;
+  background: #e8ddbd;
+}
+.admin-page .progress-board.is-dragging {
+  scroll-snap-type: none;
+}
 .admin-toolbar .admin-search-label {
   flex: 1.5;
 }

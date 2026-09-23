@@ -46,15 +46,10 @@ const allWorks = [
   })),
   stickers,
 ];
-const featured = site.featured.map((id) => {
-  const work = allWorks.find((item) => item.id === id);
-  if (!work) throw new Error(`找不到精選作品 ${id}`);
-  return work;
-});
-const works = [
-  ...featured,
-  ...allWorks.filter((work) => !site.featured.includes(work.id)),
-];
+// 使用者確認編號越大越新；同號保留來源順序，精選紀錄不再優先插入。
+const works = [...allWorks].sort(
+  (a, b) => Number(b.id.split("-").at(-1)) - Number(a.id.split("-").at(-1)),
+);
 const categories = { animation: "角色動畫", chibi: "小動圖", stickers: "貼圖" };
 const siteUrl = new URL(
   process.env.SITE_URL || "http://127.0.0.1:4173/lanlan-pages/",
@@ -87,7 +82,6 @@ const replacements = {
   HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
   HERO_MAIN_SRC: escape(videoAssets.get("animation-02").preview.src),
   HERO_SIDE_SRC: escape(videoAssets.get("animation-01").preview.src),
-  COUNT_ALL: works.length,
   COUNT_ANIMATION: works.filter((work) => work.category === "animation").length,
   COUNT_CHIBI: works.filter((work) => work.category === "chibi").length,
   COUNT_STICKERS: works.filter((work) => work.category === "stickers").length,

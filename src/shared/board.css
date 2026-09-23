@@ -101,6 +101,17 @@
   margin: 8px 0;
   font-weight: 800;
 }
+.progress-card.is-rush {
+  background: #ffe3e0;
+  border-color: #d78880;
+}
+.progress-card.is-on-hold {
+  background: #e0edff;
+  border-color: #8baad3;
+}
+.progress-card.is-rush.is-on-hold {
+  border-left: 5px solid #c34840;
+}
 .card-service {
   display: inline-block;
   padding: 2px 7px;

@@ -4,8 +4,7 @@ import { ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TOTAL_BYTES, attachmentFileError }
 export const ORDER_STATUSES = {
   queued: "排隊中",
   drafting: "草稿繪製中",
-  draft_review: "草稿確認",
-  awaiting_payment: "等待付款",
+  draft_review: "草稿確認/等待付款",
   finalizing: "完稿中",
   awaiting_balance: "待付尾款",
   delivered: "已交稿",
@@ -13,6 +12,7 @@ export const ORDER_STATUSES = {
 
 // 舊狀態只在讀取時對應，保留 Sheet 原值直到管理員儲存，歷史快照仍記錄原值。
 const LEGACY_STATUSES = {
+  awaiting_payment: "draft_review",
   received: "queued",
   discussing: "queued",
   working: "finalizing",
@@ -214,6 +214,7 @@ export function publicOrder(order) {
     ...orderWorkflow(order),
     // 舊版隱藏列也列出匿名工作狀態，但不順帶公開當時隱藏的說明。
     publicNote: order.publicVisible === false ? "" : order.publicNote,
+    createdAt: source?.createdAt || order.createdAt,
     updatedAt: order.updatedAt,
     ...(!source ? { displayTitle: order.nickname || order.details?.nickname || order.orderId } : {}),
     ...(source?.publishTitle === true
@@ -243,13 +244,27 @@ export function trelloCreatedAt(cardId) {
     : null;
 }
 
+/** 兩個看板共用建立時間排序；匯入日期與後續修改都不改變原委託先後。 */
+export function compareOrderAge(a, b) {
+  const timestamp = (order) => {
+    const value = Date.parse(orderSource(order)?.createdAt || order.trelloCreatedAt || order.createdAt);
+    return Number.isFinite(value) ? value : Infinity;
+  };
+  const first = timestamp(a);
+  const second = timestamp(b);
+  return (first === second ? 0 : first < second ? -1 : 1) ||
+    String(a.orderId).localeCompare(String(b.orderId));
+}
+
 export function validateUpdate(input, current, config) {
   requireValue(
     input.revision === Number(current.revision),
     "這筆委託已被更新，請重新載入後再修改。",
     "CONFLICT",
   );
-  requireValue(Object.hasOwn(ORDER_STATUSES, input.status), "委託狀態不正確。");
+  // 已開啟的舊管理頁仍可能送出等待付款；統一保存為合併後的階段。
+  const status = input.status === "awaiting_payment" ? "draft_review" : input.status;
+  requireValue(Object.hasOwn(ORDER_STATUSES, status), "委託狀態不正確。");
   requireValue(typeof input.isRush === "boolean", "請選擇是否標記急件。");
   requireValue(typeof input.isOnHold === "boolean", "請選擇是否標記擱置。");
   requireValue(input.isArchived === undefined || typeof input.isArchived === "boolean", "封存狀態不正確。");
@@ -262,7 +277,7 @@ export function validateUpdate(input, current, config) {
   return {
     // 歷史訂單沒有完整表單資料；以伺服器保存的內容為準，不接受客戶端補造報價或授權。
     details,
-    status: input.status,
+    status,
     isRush: input.isRush,
     isOnHold: input.isOnHold,
     // 舊管理分頁未傳新欄位時保留目前值，避免編輯其他內容意外解除封存。
