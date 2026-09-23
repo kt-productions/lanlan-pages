@@ -158,3 +158,5 @@
 - **2026-09-23 影片分級壓縮**：依使用者要求保留原始 MP4，另以 `scripts/optimize-videos.mjs` 產生長邊最多 640px 的預覽版及 1280px 的展示版，來源與衍生雜湊記於 `content/video-assets.json`。首頁影片可見時載入預覽，檢視器開啟時才載入展示版；縮圖另延遲載入。`scripts/lib/video-assets.mjs` 由建置與檢查共用，現已核對全部影片原始及衍生雜湊；不代表核對首頁原始圖片。規格及維護見 `docs/development/video-optimization.md`。
 
 - **2026-09-23 管理看板與編輯視窗**：依使用者需求，公開進度移除「訂單資訊」展開區；`board-view.js` 與 `shared/board.css` 共用七欄外觀，管理頁卡片另有編輯按鈕。`admin-data.js` 讀完並核對所有分頁後才呈現完整看板；`src/pages/admin/` 以 HTML dialog 提供既有編輯功能及放棄修改確認，保留焦點、行動版捲動與錯誤處理。未改後端契約、GAS 設定或登入權限。
+
+- **2026-09-23 收件啟用**：依使用者明確指示開啟收件，既有 GAS 專案的 `ACCEPTING_ORDERS` 已由 `false` 改為 `true` 並重新讀取確認。沿用第 6 版部署及原通知／管理設定，沒有新增測試訂單或發送通知；本段更新前文歷史收件狀態。詳見 `docs/records/receiving-2026-09-23.md`。

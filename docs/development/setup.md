@@ -48,4 +48,4 @@ npm run preview
 
 部署狀態與失敗原因可從倉庫 Actions 的「部署 GitHub Pages」查看。修正後推送，或對相同提交重新執行 workflow；需要回退時以新的 revert 提交還原至確認過的內容，不直接手改 `dist/`。
 
-GAS Web App 獨立部署，Pages 發布不會上傳 GAS 程式或修改 Script Properties；維持暫停收件。登入及通知仍須依[委託服務設定](order-service.md)完成驗收。網站資料公開前的界線見[公開倉庫與私人資料](publication.md)。
+GAS Web App 獨立部署，Pages 發布不會上傳 GAS 程式或修改 Script Properties。2026-09-23 已完成登入及通知驗收，並依使用者要求開啟收件；目前狀態及維護方式見[委託服務設定](order-service.md)。網站資料公開前的界線見[公開倉庫與私人資料](publication.md)。

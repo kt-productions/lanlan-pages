@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 6 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。`ACCEPTING_ORDERS=false`。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 6 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
@@ -61,7 +61,7 @@ npm exec --yes --package @google/clasp@3.4.1 -- clasp --auth "$env:LANLAN_CLASP_
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-先保持 `ACCEPTING_ORDERS=false`。在 Apps Script 編輯器選取 `Orders.gs`，從函式清單執行 `setupOrders`，由資源擁有者核准權限；它會建立空白表頭或追加已知舊版缺少的旗標與通知欄位，不清空資料。未知表頭或待追加欄位已有資料／公式時停止，不可直接覆寫。
+首次初始化時先保持 `ACCEPTING_ORDERS=false`；既有正式環境目前已啟用，本次開啟收件不需重新執行初始化。在 Apps Script 編輯器選取 `Orders.gs`，從函式清單執行 `setupOrders`，由資源擁有者核准權限；它會建立空白表頭或追加已知舊版缺少的旗標與通知欄位，不清空資料。未知表頭或待追加欄位已有資料／公式時停止，不可直接覆寫。
 
 底線結尾的 `setupOrders_` 不會出現在編輯器函式清單，故由 `setupOrders` 作為手動入口。入口透過 [Session 介面](https://developers.google.com/apps-script/reference/base/session)核對 Google 活躍使用者與實際授權使用者，拒絕匿名或身分不符的呼叫，也沒有加入 HTTP API action。manifest 所需權限為 Sheets 讀寫、對外連線及 `userinfo.email`（僅初始化身分檢查），與 clasp 管理專案的 OAuth 授權分開。程式不記錄或回傳 Google 電子郵件地址。
 
