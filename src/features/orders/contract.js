@@ -43,6 +43,10 @@ export function orderWorkflow(order) {
     isOnHold: typeof order.isOnHold === "boolean"
       ? order.isOnHold
       : order.status === "cancelled",
+    // 未設定本站封存狀態的舊列沿用 Trello；明確解除封存後不再被來源值覆蓋。
+    isArchived: typeof order.isArchived === "boolean"
+      ? order.isArchived
+      : orderSource(order)?.archived === true,
   };
 }
 
@@ -211,6 +215,7 @@ export function publicOrder(order) {
     // 舊版隱藏列也列出匿名工作狀態，但不順帶公開當時隱藏的說明。
     publicNote: order.publicVisible === false ? "" : order.publicNote,
     updatedAt: order.updatedAt,
+    ...(!source ? { displayTitle: order.nickname || order.details?.nickname || order.orderId } : {}),
     ...(source?.publishTitle === true
       ? {
           displayTitle: source.cardName,
@@ -247,6 +252,7 @@ export function validateUpdate(input, current, config) {
   requireValue(Object.hasOwn(ORDER_STATUSES, input.status), "委託狀態不正確。");
   requireValue(typeof input.isRush === "boolean", "請選擇是否標記急件。");
   requireValue(typeof input.isOnHold === "boolean", "請選擇是否標記擱置。");
+  requireValue(input.isArchived === undefined || typeof input.isArchived === "boolean", "封存狀態不正確。");
   const currentDetails = current.details || JSON.parse(current.detailsJson);
   const details = orderSource(current) ? currentDetails : validateSubmission(input.details, config, {
     hasAttachments: Boolean(currentDetails.attachments?.length), allowPreviousVersion: true,
@@ -259,6 +265,8 @@ export function validateUpdate(input, current, config) {
     status: input.status,
     isRush: input.isRush,
     isOnHold: input.isOnHold,
+    // 舊管理分頁未傳新欄位時保留目前值，避免編輯其他內容意外解除封存。
+    isArchived: input.isArchived === undefined ? orderWorkflow(current).isArchived : input.isArchived,
     publicNote: textField(input.publicNote, "公開進度說明", 500, false),
     adminNote: textField(input.adminNote, "內部備註", 4000, false),
   };

@@ -30,6 +30,7 @@ const ORDER_HEADERS_ = [
   "isOnHold",
   "notificationRecipientsJson",
   "sourceJson",
+  "isArchived",
 ];
 
 function orderSheet_() {
@@ -66,7 +67,7 @@ function setupOrders() {
   setupOrders_();
 }
 
-/** 保留既有訂單；27／29／30 欄舊表只在新增欄位完全空白時追加表頭。 */
+/** 保留既有訂單；27／29／30／31 欄舊表只在新增欄位完全空白時追加表頭。 */
 function setupOrders_() {
   lock_(function () {
     const book = SpreadsheetApp.openById(setting_("SPREADSHEET_ID"));
@@ -82,7 +83,7 @@ function setupOrders_() {
       const width = Math.min(sheet.getMaxColumns(), ORDER_HEADERS_.length);
       const header = sheet.getRange(1, 1, 1, width).getValues()[0];
       if (JSON.stringify(header) !== JSON.stringify(ORDER_HEADERS_)) {
-        const oldWidth = [30, 29, 27].find(function (count) {
+        const oldWidth = [31, 30, 29, 27].find(function (count) {
           return JSON.stringify(header.slice(0, count)) ===
             JSON.stringify(ORDER_HEADERS_.slice(0, count));
         });
@@ -223,6 +224,7 @@ function submitOrder_(payload) {
       publicVisible: true,
       isRush: details.rush === true,
       isOnHold: false,
+      isArchived: false,
       publicNote: "",
       adminNote: "",
       lastEditor: "customer",
@@ -279,10 +281,10 @@ function pageOrders_(payload, admin) {
       ["", "rush", "on_hold"].includes(flag),
       "附加狀態篩選不正確。",
     );
-    // 所有工作都可瀏覽；先在完整資料篩選再分頁，避免只搜尋已載入的前 30 筆。
+    // 封存工作不得出現在公開 API；先對完整資料篩選再分頁與計算件數。
     orders = orders.filter(function (order) {
       const flow = Core_.orderWorkflow(order);
-      return (!stage || flow.status === stage) &&
+      return !flow.isArchived && (!stage || flow.status === stage) &&
         (!service || order.service === service) &&
         (!flag || (flag === "rush" ? flow.isRush : flow.isOnHold));
     });
@@ -346,6 +348,7 @@ function updateOrder_(payload, actor) {
         adminNote: current.adminNote,
         isRush: Core_.orderWorkflow(current).isRush,
         isOnHold: Core_.orderWorkflow(current).isOnHold,
+        isArchived: Core_.orderWorkflow(current).isArchived,
       },
     });
     const next = Object.assign({}, current, detailColumns_(update.details), {
@@ -354,6 +357,7 @@ function updateOrder_(payload, actor) {
       publicVisible: true,
       isRush: update.isRush,
       isOnHold: update.isOnHold,
+      isArchived: update.isArchived,
       publicNote: update.publicNote,
       adminNote: update.adminNote,
       updatedAt: now,

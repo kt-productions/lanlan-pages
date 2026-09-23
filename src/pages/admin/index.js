@@ -164,9 +164,7 @@ function renderList() {
     message: busy ? "讀取中……" : "尚未取得委託",
     renderCard(order) {
       const title = order.source?.cardName || order.details.nickname;
-      const card = renderProgress({
-        ...order, displayTitle: title, sourceArchived: Boolean(order.source?.archived),
-      });
+      const card = renderProgress({ ...order, displayTitle: title });
       const footer = element("div", undefined, "admin-card-footer");
       const button = element("button", "編輯", "button admin-edit-button");
       button.type = "button";
@@ -185,9 +183,11 @@ function renderList() {
   for (const column of list.querySelectorAll(".board-column")) {
     column.querySelector(".column-cards").scrollTop = scrollPositions.get(column.className) || 0;
   }
+  const scopeTotal = filterBoard(orders, { flag: flag.value === "archived" ? "archived" : "" }).total;
+  const scopeLabel = flag.value === "archived" ? "封存委託" : "未封存委託";
   summary.textContent = !hasSnapshot ? "" : result.total
-    ? `顯示 ${result.total}／${orders.length} 件委託`
-    : `目前沒有符合條件的委託（共 ${orders.length} 件）。`;
+    ? `顯示 ${result.total}／${scopeTotal} 件${scopeLabel}`
+    : `目前沒有符合條件的委託（共 ${scopeTotal} 件${scopeLabel}）。`;
 }
 async function work(task, operation = "load") {
   if (busy) return;
@@ -305,8 +305,15 @@ form.addEventListener("submit", (event) => {
     orders = orders.map((item) =>
       item.orderId === order.orderId ? order : item,
     );
-    selectOrder(order, false);
-    message("已儲存變更；看板已更新，公開進度會於訪客下次讀取時更新。");
+    if (order.isArchived !== (flag.value === "archived")) {
+      closeEditor();
+      message(order.isArchived
+        ? "已封存；可從附加狀態選擇「封存」查看或解除封存。"
+        : "已解除封存；可從附加狀態選擇「所有工作」查看。");
+    } else {
+      selectOrder(order, false);
+      message("已儲存變更；看板已更新，公開進度會於訪客下次讀取時更新。");
+    }
   }, "save");
 });
 retry.addEventListener("click", () => {

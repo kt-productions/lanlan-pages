@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 8 版、31 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 9 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
 
 ## 請求與回應
 
@@ -23,11 +23,11 @@
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`；取得完整訂單、通知狀態與歷史。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
-| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
+| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
 
-分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。已交稿、擱置與匯入封存卡片仍列出。管理清單維持最新加入優先；前端依序讀完所有分頁，按編號去重並核對總數後才更新看板，編號／暱稱搜尋與類型／階段／旗標篩選涵蓋完整資料。分頁失敗或讀取期間總數變動時保留先前完整快照，提示重新載入。offset 不是伺服器固定快照，同時更新但筆數不變時仍應重新載入確認。
+分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的七階段件數）。公開清單先對完整資料篩選；歷史訂單依看板、欄位、卡片位置排序，再接新表單的收件時間及編號，最後分頁。已交稿與擱置仍列出；封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 因需支援封存切換，仍向已登入管理員提供完整資料；管理畫面預設排除封存，只有 `flag=archived` 篩選顯示封存項目。管理清單維持最新加入優先；前端依序讀完所有分頁，按編號去重並核對總數後才更新看板，編號／暱稱搜尋與類型／階段／旗標篩選涵蓋完整資料。分頁失敗或讀取期間總數變動時保留先前完整快照，提示重新載入。offset 不是伺服器固定快照，同時更新但筆數不變時仍應重新載入確認。
 
 管理 token 每次重新核對工作階段、到期與最新白名單，不能把前端顯示條件當成權限控制。
 
@@ -58,15 +58,15 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 | 分組 | 欄位 |
 | --- | --- |
 | 識別與時間 | `orderId`、`requestId`、`requestHash`、`createdAt`、`updatedAt`、`revision` |
-| 工作進度 | `status`、`publicNote`；尾端第 28／29 欄追加 `isRush`、`isOnHold` |
+| 工作進度 | `status`、`publicNote`；尾端第 28／29 欄追加 `isRush`、`isOnHold`，第 32 欄為 `isArchived` |
 | 舊版相容欄 | `progress`、`publicVisible` 留在原位置，不刪除；不再以百分比或可見性篩選工作。 |
-| 私人委託資料 | `service`、`nickname`、`contactChannel`、`contactValue`、`referenceUrl`、`notes`、`adminNote` |
+| 委託資料（暱稱供公開顯示） | `service`、`nickname`、`contactChannel`、`contactValue`、`referenceUrl`、`notes`、`adminNote` |
 | 計價與內容 | `estimateMin`、`estimateMax`、`currency`、`detailsJson` |
 | 匯入來源 | 第 31 欄 `sourceJson`；Trello 卡片與看板／欄位識別、順序、原名稱、標籤、封存、名稱公開選項、最後活動、匯入時間與附件連結。只在管理回應的 `source` 中完整提供。 |
 | 通知 | `notificationStatus`、`notificationAttempts`、`notificationError`、`notificationAt`；同日多人通知更新另於第 30 欄加入 `notificationRecipientsJson`。 |
 | 可追溯性 | `lastEditor`、`historyJson` |
 
-新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 為 false。新表單的公開回應只有 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`publicNote`、`updatedAt`，不含暱稱、聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
+新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 與 `isArchived` 為 false。新表單的公開回應包含 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`isArchived`、`publicNote`、`updatedAt`，以及取自暱稱的 `displayTitle`；不含聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
 
 | 工作階段 | 代碼 |
 | --- | --- |
@@ -82,10 +82,10 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 
 ### 2026-09-23 舊資料相容方式
 
-- `setupOrders()` 核對已知的 27／29／30 欄舊版表頭，只在待追加欄位的表頭與整欄均空白、無公式時才追加；欄數不足時擴充。第 28／29 欄為工作旗標，同日多人通知更新另加入第 30 欄，Trello 匯入再追加第 31 欄。任何未知表頭或占用欄位均停止，不自動覆蓋。既有資料列、revision、歷史均保留，再次執行不重複寫入。一般 API 要求與 `ORDER_HEADERS_` 完整一致，未升級時拒絕操作。
+- `setupOrders()` 核對已知的 27／29／30／31 欄舊版表頭，只在待追加欄位的表頭與整欄均空白、無公式時才追加；欄數不足時擴充。第 28／29 欄為工作旗標，同日多人通知更新另加入第 30 欄，Trello 匯入再追加第 31 欄，封存功能追加第 32 欄。任何未知表頭或占用欄位均停止，不自動覆蓋。既有資料列、revision、歷史均保留，再次執行不重複寫入。一般 API 要求與 `ORDER_HEADERS_` 完整一致，未升級時拒絕操作。
 - 舊狀態僅在讀取時對應：`received`／`discussing`／舊 `queued` → `queued`，`working` → `finalizing`，`reviewing` → `draft_review`，`completed` → `delivered`。`cancelled` → `queued` 並預設擱置；不因此清除取消歷史或認定重新承接。這是舊概略狀態的相容對應，管理員應依實際工作調整，未知代碼回傳 `CONFIG`。
 - 舊列旗標空白時，急件沿用 `detailsJson.rush`，擱置依上述取消對應；讀取不回寫。第一次管理儲存才寫入明確 boolean，之後不再隨報價需求變動。`historyJson.before` 保存舊狀態、百分比、可見性及修改前旗標。
-- 舊 `publicVisible: false` 的工作會顯示匿名階段與旗標，但其 `publicNote` 輸出空字串。後台仍可讀取原說明；管理員依「儲存後會公開」提示儲存後，`publicVisible` 設 true 並公開確認後的文字。新工作一律出現在看板。
+- 舊 `publicVisible: false` 的工作未封存時會顯示暱稱、階段與旗標，但其 `publicNote` 輸出空字串。後台仍可讀取原說明；管理員依「儲存後會公開」提示儲存後，`publicVisible` 設 true 並公開確認後的文字。新工作預設未封存；封存後由公開 API 排除。
 - `progress` 原值保留不再更新，新列填 0 僅供舊欄相容；前台與後台皆移除百分比。前後端須一起更新，舊版管理介面缺少旗標會被拒絕，不能混用部署。
 
 管理修改在 ScriptLock 內核對 `revision`，保存舊內容及操作者 Telegram ID，再一次寫入新內容、版本與歷史；不提供刪單 API。字串寫入 Sheet 前做公式跳脫，畫面以 `textContent` 呈現。
@@ -97,6 +97,10 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 整筆 `sent` 代表所有對象成功；尚有傳送中者為 `sending`，全部嘗試結束後只要有不明結果即為 `unknown`，其他失敗為 `failed`。部分已送達時 `notificationError` 為 `PARTIAL_DELIVERY`，實際逐位代碼留在紀錄中，不保存 Telegram 原始回應或例外。無管理網址時省略通知中的後台連結。通知名單、結果 JSON 均不進入公開進度回應。
 
 兩至五張 PNG／JPEG／WebP 透過 Telegram `sendMediaGroup` 合併成相簿，只有首張附委託編號、類型、數量與後台入口。單張使用 `sendPhoto`，單檔 GIF 使用 `sendAnimation`，其他檔案使用 `sendDocument`；多個其他格式合併為文件群組，與圖片分組。圖片受到 Telegram 限制而明確回覆 400 才整組改送文件；網路結果不明不自動改送。每位收件人的 `parts` 逐檔保存狀態、嘗試次數、成功的 Telegram `file_id` 及相簿 `groupId`，供同 bot 重用傳送，重試只補未成功部分或收件人；不明結果仍可能重複。相簿成功回應必須包含完整訊息陣列，缺項視為不明。每輪約 80 秒後停止開始新群組，剩餘標示 `pending`，由後台重試接續。只有素材連結時使用文字通知並附上連結。舊版已成功的通知不自動補寄圖片。
+
+### 封存與解除
+
+`isArchived` 是獨立附加狀態，第 32 欄保存 boolean；空白舊列讀取時沿用 `source.archived`，沒有來源則為 false，不批次改寫歷史。明確 false 可解除原 Trello 封存；來源紀錄保持原樣。封存不改工作階段、急件、擱置、報價、附件或收件通知，更新仍核對 revision 並將舊封存值保存於歷史。管理清單的「所有工作」、急件、擱置排除封存；「封存」只顯示封存，可搭配類型、階段、搜尋。
 
 ## 登入與錯誤
 

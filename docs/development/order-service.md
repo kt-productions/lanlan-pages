@@ -1,10 +1,10 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 8 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 9 版與 32 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
-進度頁是七欄卡片看板，附加急件／擱置旗標。`setupOrders()` 只追加已知舊表缺少的欄位：第 28／29 欄工作旗標、第 30 欄通知名單、第 31 欄 `sourceJson`。不刪除原欄位、訂單或歷史。相容映射見[服務契約](../reference/order-api.md)，歷史資料操作見[Trello 匯入維護](trello-import.md)。
+進度頁是七欄卡片看板，附加急件／擱置旗標。`setupOrders()` 只追加已知舊表缺少的欄位：第 28／29 欄工作旗標、第 30 欄通知名單、第 31 欄 `sourceJson`、第 32 欄 `isArchived`。不刪除原欄位、訂單或歷史。相容映射見[服務契約](../reference/order-api.md)，歷史資料操作見[Trello 匯入維護](trello-import.md)。
 
 靜態網站提供首頁、委託表單、進度頁與管理頁。Google Apps Script Web App 負責驗證、重新計價、Sheets 讀寫、Telegram OIDC 登入及收件通知；Google Sheets 的 `Orders` 保存委託、通知狀態與修改歷史。試算表不要公開分享。
 
@@ -68,7 +68,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 ## 部署與登入設定
 
-1. Apps Script 建立 Web App 部署，執行身分為部署者，存取範圍允許未登入 Google 的訪客。這讓前台能收件與讀取匿名進度；管理操作仍由 Telegram 驗證保護。Workspace 若禁止此設定，先處理帳號政策，不能關閉管理驗證。
+1. Apps Script 建立 Web App 部署，執行身分為部署者，存取範圍允許未登入 Google 的訪客。這讓前台能收件與讀取公開進度；管理操作仍由 Telegram 驗證保護。Workspace 若禁止此設定，先處理帳號政策，不能關閉管理驗證。
 2. 將正式 `/exec` URL 填入 `WEB_APP_URL`。更新時優先更新既有 deployment 的版本；若網址改變，同步 BotFather 與前端設定。
 3. BotFather mini app → bot → Login Widget → Allowed URLs，登記**與 `WEB_APP_URL` 完全一致的回呼網址**；Advanced 維持 **RS256**。本站採 OIDC 重新導向，沒有在各靜態頁嵌入 widget，因此 Telegram 回呼在 Apps Script；多站共用 bot 時，各部署回呼均須登記。
 4. `ADMIN_URL` 指向正式管理頁。管理員先到 Telegram 驗證，再於 Apps Script 回程頁點選「返回管理後台」，回到原分頁。回程票證不能交給另一個瀏覽器或分頁使用。
@@ -112,7 +112,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 - 用後台修改訂單，避免直接改 Sheet 繞過版本與歷史。Telegram 白名單不授予直接開表的 Google 權限。
 - `revision` 保護編輯；舊內容留在 `historyJson`，與新內容同列一次寫入。文字欄位達 45,000 字元上限時拒絕寫入，應規劃可追溯封存，不可清空歷史。
-- 通知只提醒指定使用者收件，不自動通知委託者進度；不含暱稱、聯絡方式、素材或需求全文。管理頁網址空白時只送編號與委託類型，完成 Pages 後才附後台連結。
+- 通知只提醒指定使用者收件，不自動通知委託者進度；不含暱稱、聯絡方式或需求全文，附件依[附件維護](reference-attachments.md)傳送。管理頁網址空白時只送編號與委託類型，完成 Pages 後才附後台連結。
 - 管理 token 最多一小時，只放頁面記憶體；OAuth 綁定值暫放 sessionStorage，兌換成功或明確驗證失敗時刪除。交換回應遺失時，可用「重試完成登入」在原票證的兩分鐘期限內重取同一結果，不延長期限；Cache 提早失效或票證到期則須重新登入。
 - 管理 API 每頁 30 筆，管理頁依序讀完全部分頁後呈現七欄看板；編號／暱稱搜尋及類型／階段／旗標篩選涵蓋全部已取得資料，點卡片「編輯」開啟編輯視窗。公開看板每次最多 200 筆，回傳各階段總數，類型／階段／旗標篩選涵蓋所有工作，包含已交稿。直接掃描 Orders 適合小型工作室，不適合大量訂單。
 - 收件上限與誘捕欄位僅提供基本濫用限制，沒有驗證碼或邊緣流量防護，仍受 Apps Script、UrlFetch 與 Sheets 配額限制。

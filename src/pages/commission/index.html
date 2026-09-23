@@ -414,8 +414,10 @@
                       type="text"
                       maxlength="80"
                       autocomplete="nickname"
+                      aria-describedby="nickname-hint"
                       required
                     />
+                    <p id="nickname-hint" class="field-hint">此暱稱會顯示於公開委託進度，請使用你希望公開的名稱。</p>
                   </div>
                   <div class="form-field">
                     <label for="commission-channel"
@@ -546,7 +548,7 @@
                 </p>
                 <dl id="commission-review" class="review-list"></dl>
                 <p class="field-hint">
-                  送出後將保存委託內容，並通知繪師。所有工作的編號、類型、工作階段、急件／擱置標記與公開說明皆可在進度頁瀏覽，不公開暱稱、聯絡方式或參考素材。送出前資料只保留於此頁；下載草稿不代表送件。
+                  送出後將保存委託內容，並通知繪師。未封存委託的暱稱、類型、工作階段、急件／擱置標記與公開說明可在進度頁瀏覽，不公開聯絡方式或參考素材。送出前資料只保留於此頁；下載草稿不代表送件。
                 </p>
                 <p id="download-status" role="status"></p>
                 <p id="submit-status" role="status" tabindex="-1"></p>

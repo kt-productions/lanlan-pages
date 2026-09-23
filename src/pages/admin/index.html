@@ -60,6 +60,7 @@
               <option value="">所有工作</option>
               <option value="rush">急件</option>
               <option value="on_hold">擱置</option>
+              <option value="archived">封存</option>
             </select>
           </label>
           <button id="admin-refresh" class="button" type="button">
@@ -67,7 +68,7 @@
           </button>
         </div>
         <p id="admin-summary"></p>
-        <p id="admin-board-hint" class="board-hint">左右捲動查看各階段，欄內可上下捲動。點選「編輯」查看與更新委託。</p>
+        <p id="admin-board-hint" class="board-hint">左右捲動查看各階段，欄內可上下捲動。點選「編輯」查看與更新委託；封存委託只在附加狀態選擇「封存」時顯示。</p>
         <div id="admin-list" class="progress-board" role="region" tabindex="0" aria-label="委託管理看板" aria-describedby="admin-board-hint"></div>
       </section>
       <dialog id="admin-editor-dialog" class="admin-dialog" aria-labelledby="edit-heading">
@@ -94,9 +95,10 @@
               <div class="edit-flags" role="group" aria-label="附加狀態">
                 <label><input type="checkbox" name="isRush" />急件</label>
                 <label><input type="checkbox" name="isOnHold" />擱置</label>
+                <label><input type="checkbox" name="isArchived" />封存</label>
               </div>
               <p class="field-hint">
-                附加狀態可同時勾選；擱置會保留目前階段，取消勾選即可繼續。這裡的急件標記不會修改報價。
+                附加狀態可同時勾選；擱置與封存保留目前階段。封存後不顯示於公開進度，後台須選「封存」才可查看及解除。這裡的急件標記不會修改報價。
               </p>
               <label
                 >公開進度說明<textarea
@@ -106,7 +108,7 @@
                 ></textarea>
               </label>
               <p class="field-hint">
-                所有工作的階段與附加狀態都會出現在公開進度頁；儲存後，此說明也會公開，請勿填入暱稱、聯絡方式或參考素材連結。
+                未封存委託的暱稱、階段與急件／擱置標記會出現在公開進度頁；此說明也會公開，請勿填入聯絡方式或參考素材連結。
               </p>
             </fieldset>
             <section id="edit-source" class="import-source" aria-label="Trello 來源紀錄" hidden></section>

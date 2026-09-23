@@ -95,7 +95,7 @@ test("公開投影不含聯絡資訊、參考素材、內部備註與通知資�
     progress: 50,
     publicNote: "草圖處理中",
     updatedAt: "2026-09-22T00:00:00Z",
-    nickname: "private",
+    nickname: "公開測試暱稱",
     contactValue: "private",
     referenceUrl: "private",
     detailsJson: '{"nickname":"private"}',
@@ -108,10 +108,13 @@ test("公開投影不含聯絡資訊、參考素材、內部備註與通知資�
     "status",
     "isRush",
     "isOnHold",
+    "isArchived",
     "publicNote",
     "updatedAt",
+    "displayTitle",
   ]);
   assert.ok(!JSON.stringify(projected).includes("private"));
+  assert.equal(projected.displayTitle, "公開測試暱稱");
 });
 
 test("成功先寫入 Sheets 再通知；重送同一內容只有一筆訂單與一次通知", () => {
@@ -263,7 +266,7 @@ test("29 欄舊表只追加通知欄，已有尾端資料或公式時停止", ()
   app.context.setupOrders();
   assert.deepEqual(app.rows.map(row => row.slice(0, 29)), before);
   assert.equal(app.rows[0][29], "notificationRecipientsJson");
-  assert.equal(app.faults.maxColumns, 31);
+  assert.equal(app.faults.maxColumns, 32);
   const calls = app.calls.length;
   app.invoke("admin.retryNotification", { orderId: app.rows[1][0] }, app.session());
   assert.equal(app.calls.length, calls);
@@ -502,8 +505,8 @@ test("舊表升級只追加旗標表頭，保留全部訂單；讀取不改寫�
   app.rows[1][columns.indexOf("publicNote")] = "舊版隱藏說明";
   const before = structuredClone(app.rows);
   app.context.setupOrders();
-  assert.equal(app.faults.maxColumns, 31);
-  assert.deepEqual(app.rows[0].slice(27), ["isRush", "isOnHold", "notificationRecipientsJson", "sourceJson"]);
+  assert.equal(app.faults.maxColumns, 32);
+  assert.deepEqual(app.rows[0].slice(27), ["isRush", "isOnHold", "notificationRecipientsJson", "sourceJson", "isArchived"]);
   assert.deepEqual(app.rows.map((row) => row.slice(0, 27)), before);
   const writeCount = app.writes.length;
   const visible = app.invoke("progress.list").data;
@@ -588,7 +591,7 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
   assert.equal(held.orders[0].orderId, "LL-0000000000000032");
   assert.equal(held.orders[0].publicNote, "");
   assert.deepEqual(Object.keys(held.orders[0]), [
-    "orderId", "service", "status", "isRush", "isOnHold", "publicNote", "updatedAt",
+    "orderId", "service", "status", "isRush", "isOnHold", "isArchived", "publicNote", "updatedAt", "displayTitle",
   ]);
   assert.equal(app.invoke("progress.list", { status: "drafting", flag: "on_hold", offset: 1 }).data.orders.length, 0);
   assert.equal(app.invoke("progress.list", { status: "awaiting_payment" }).data.total, 0);

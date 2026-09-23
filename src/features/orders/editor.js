@@ -59,6 +59,7 @@ export function setupEditor(form, config) {
       fields[key].value = order[key];
     fields.isRush.checked = order.isRush;
     fields.isOnHold.checked = order.isOnHold;
+    fields.isArchived.checked = order.isArchived;
     const content = form.querySelector("#edit-content");
     content.hidden = content.disabled = imported;
     const sourcePanel = form.querySelector("#edit-source");
@@ -185,6 +186,7 @@ export function setupEditor(form, config) {
       status: fields.status.value,
       isRush: fields.isRush.checked,
       isOnHold: fields.isOnHold.checked,
+      isArchived: fields.isArchived.checked,
       publicNote: fields.publicNote.value,
       adminNote: fields.adminNote.value,
     };

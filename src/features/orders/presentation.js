@@ -40,7 +40,6 @@ export function renderProgress(order) {
   article.id = order.orderId;
   article.append(element("span", serviceNames[order.service] || "委託", `card-service service-${order.service}`));
   const flags = renderFlags(order);
-  if (order.sourceArchived) flags.append(element("span", "Trello 封存", "order-flag flag-hold"));
   if (flags.childElementCount) article.append(flags);
   article.append(element("h3", order.displayTitle || order.orderId));
   if (order.publicNote) article.append(element("p", order.publicNote, "card-note"));
@@ -53,5 +52,7 @@ export function renderFlags(order) {
     flags.append(element("span", "急件", "order-flag flag-rush"));
   if (order.isOnHold)
     flags.append(element("span", "擱置", "order-flag flag-hold"));
+  if (order.isArchived)
+    flags.append(element("span", "封存", "order-flag flag-hold"));
   return flags;
 }

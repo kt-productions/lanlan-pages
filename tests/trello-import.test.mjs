@@ -132,7 +132,7 @@ test("匯入權限、整批驗證與失敗後重跑保護", () => {
   assert.equal(app.rows.length, 3);
 });
 
-test("全資料件數、類型篩選及分頁排序；公開只增加已核可名稱與封存標記", () => {
+test("全資料件數、類型篩選及分頁排序；公開保留已核可名稱並排除來源封存卡片", () => {
   const app = backend();
   const data = batch(205);
   data.cards[0].service = "animation";
@@ -140,9 +140,9 @@ test("全資料件數、類型篩選及分頁排序；公開只增加已核可�
   data.cards[1].source.publishTitle = false;
   app.context.importTrelloOrders_(data);
   const page = app.invoke("progress.list", { limit: 200 }).data;
-  assert.equal(page.total, 205);
+  assert.equal(page.total, 204);
   assert.equal(page.orders.length, 200);
-  assert.equal(page.stageCounts.queued, 204);
+  assert.equal(page.stageCounts.queued, 203);
   assert.equal(page.stageCounts.delivered, 1);
   assert.equal(page.nextOffset, 200);
   assert.equal(page.orders[0].service, "animation");
@@ -156,7 +156,7 @@ test("全資料件數、類型篩選及分頁排序；公開只增加已核可�
   assert.equal(filtered.stageCounts.queued, 0);
   assert.equal(app.invoke("progress.list", { limit: 201 }).ok, false);
   assert.equal(app.invoke("progress.list", { service: "invalid" }).ok, false);
-  assert.equal(app.invoke("progress.list", { offset: 200, limit: 200 }).data.orders.length, 5);
+  assert.equal(app.invoke("progress.list", { offset: 200, limit: 200 }).data.orders.length, 4);
   // 匯入時間不是新收件時間，歷史資料不占用今日的新單額度。
   assert.equal(app.invoke("orders.submit", { requestId: randomUUID(), details: submission() }).ok, true);
 });
