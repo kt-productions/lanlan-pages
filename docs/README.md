@@ -8,6 +8,8 @@
 
 ## 開發與維護 · development
 
+- [參考附件](development/reference-attachments.md)：五檔上傳、私人 Drive 儲存、後台預覽及 Telegram 圖片通知。
+
 - [影片壓縮與延遲載入](development/video-optimization.md)：預覽版、展示版、原始檔保存，以及新增作品後的壓縮與驗證指令。
 - [開發指南](development/setup.md)：環境需求、預覽方式、環境變數與發布狀態。
 - [架構與內容維護](development/architecture.md)：目錄職責、建置流程、頁面依賴，以及修改內容與新增作品的位置。
@@ -19,7 +21,7 @@
 ## 規格與來源 · reference
 
 - [委託表單與計價](reference/commission.md)：目前欄位、檔案限制、費率、折扣順序、首頁價目及已確認／未確認差異。
-- [JSON 草稿契約](reference/draft-schema.md)：第 3 版草稿的完整欄位、型別、空值與狀態。
+- [JSON 草稿契約](reference/draft-schema.md)：第 4 版草稿的完整欄位、型別、空值與狀態。
 - [委託服務契約](reference/order-api.md)：收件、進度、管理 API、Sheet 欄位與登入邊界。
 - [作品與素材盤點](reference/assets.md)：原站來源、作品 ID、顯示名稱、精選排序及素材保存位置。
 - [原始表單與交付條款](reference/source-forms.md)：原表單存檔、原始交付格式與製作條件；與本站現行規則分開保存。

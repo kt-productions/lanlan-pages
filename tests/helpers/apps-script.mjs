@@ -11,7 +11,7 @@ import { readCommission } from "../../scripts/lib/content.mjs";
 
 export const config = await readCommission();
 const source = await Promise.all(
-  ["Forge.gs", "Core.gs", "Config.gs", "Auth.gs", "Orders.gs", "Import.gs", "Bridge.gs", "Web.gs"].map(
+  ["Forge.gs", "Core.gs", "Config.gs", "Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "Import.gs", "Bridge.gs", "Web.gs"].map(
     async (name) => [
       name,
       await readFile(
@@ -98,9 +98,12 @@ export function backend() {
       ADMIN_URL: "https://example.com/lanlan-pages/admin/",
       TELEGRAM_BOT_TOKEN: "fixture-bot-token",
       TELEGRAM_CHAT_ID: "987654",
+      REFERENCE_FOLDER_ID: "fixture-folder",
     }),
   );
   const calls = [];
+  const files = new Map([["fixture-folder", { id: "fixture-folder", mimeType: "application/vnd.google-apps.folder",
+    appProperties: { lanlanReferenceStorage: "1" } }]]);
   const writes = [];
   const faults = { telegram: false, lock: false, write: false, token: null, maxColumns: 26 };
   const sheet = {
@@ -149,16 +152,20 @@ export function backend() {
       base64Encode: (value) => Buffer.from(value).toString("base64"),
       base64EncodeWebSafe: (value) => Buffer.from(value).toString("base64url"),
       base64DecodeWebSafe: (value) => [...Buffer.from(value, "base64url")],
-      computeDigest: (_, text) => [
-        ...createHash("sha256").update(text).digest(),
+      base64Decode: (value) => [...Buffer.from(value, "base64")],
+      computeDigest: (algorithm, text) => [
+        ...createHash(algorithm).update(typeof text === "string" ? text : Buffer.from(text)).digest(),
       ],
       computeHmacSha256Signature: (text, key) => [
         ...createHmac("sha256", key).update(text).digest(),
       ],
-      DigestAlgorithm: { SHA_256: "sha256" },
+      DigestAlgorithm: { SHA_256: "sha256", MD5: "md5" },
       Charset: { UTF_8: "utf8" },
-      newBlob: (value) => ({
+      newBlob: (value, type, name) => ({
         getDataAsString: () => Buffer.from(value).toString("utf8"),
+        getBytes: () => [...Buffer.from(value)],
+        getContentType: () => type,
+        getName: () => name,
       }),
     },
     CacheService: {
@@ -175,6 +182,9 @@ export function backend() {
     PropertiesService: {
       getScriptProperties: () => ({
         getProperty: (key) => properties.get(key) || null,
+        getProperties: () => Object.fromEntries(properties),
+        setProperty: (key, value) => properties.set(key, value),
+        deleteProperty: (key) => properties.delete(key),
       }),
     },
     LockService: {
@@ -195,24 +205,49 @@ export function backend() {
     UrlFetchApp: {
       fetch(url, options) {
         calls.push({ url, options });
-        if (url.endsWith("/sendMessage") && faults.onTelegram)
+        if (url.startsWith("https://www.googleapis.com/drive/v3/files/")) {
+          const parsed = new URL(url);
+          const file = files.get(parsed.pathname.split("/").at(-1));
+          return { getResponseCode: () => file ? 200 : 404,
+            getContentText: () => JSON.stringify(file || {}),
+            getBlob: () => context.Utilities.newBlob(file.bytes, file.mimeType, file.name) };
+        }
+        const telegram = /\/send(Message|Photo|Animation|Document|MediaGroup)$/.test(url);
+        if (telegram && faults.onTelegram)
           faults.onTelegram();
-        if (url.endsWith("/sendMessage") && faults.telegram)
+        if (telegram && faults.telegram)
           throw new Error("模擬網路錯誤，不得回傳憑證");
-        if (url.endsWith("/sendMessage") && faults.telegramResult) {
-          return faults.telegramResult(JSON.parse(options.payload).chat_id);
+        if (telegram && faults.telegramResult) {
+          return faults.telegramResult(typeof options.payload === "string" ? JSON.parse(options.payload).chat_id : options.payload.chat_id, url, options);
         }
         const body = url.endsWith("jwks.json")
           ? { keys: [jwk] }
           : url.endsWith("/token")
             ? { id_token: faults.token || jwt() }
-            : { ok: true };
+            : { ok: true, result: url.endsWith("/sendMediaGroup") ? JSON.parse(options.payload.media).map((item,index)=>({
+                media_group_id: "fixture-group", [item.type]: item.type === "photo" ? [{file_id:"fixture-photo-"+index}] : {file_id:"fixture-document-"+index}
+              })) : url.endsWith("/sendPhoto") ? { photo: [{ file_id: "fixture-photo" }] } :
+                url.endsWith("/sendAnimation") ? { animation: { file_id: "fixture-animation" } } :
+                { document: { file_id: "fixture-document" } } };
         return {
           getResponseCode: () => 200,
           getContentText: () => JSON.stringify(body),
         };
       },
     },
+    ScriptApp: { getOAuthToken: () => "fixture-drive-token" },
+    Drive: { Files: {
+      generateIds: () => ({ ids: [randomUUID()] }),
+      create(metadata, blob) {
+        if (faults.drive) throw new Error("模擬 Drive 失敗");
+        const bytes = blob?.getBytes();
+        const file = { ...metadata, id: metadata.id || randomUUID(),
+          ...(bytes ? { size: String(bytes.length), bytes, md5Checksum: createHash("md5").update(Buffer.from(bytes)).digest("hex") } : {}) };
+        files.set(file.id, file);
+        if (faults.driveResponse) throw new Error("模擬 Drive 寫入後回應中斷");
+        return file;
+      },
+    } },
     ContentService: {
       MimeType: { JSON: "json" },
       createTextOutput: (value) => ({
@@ -250,6 +285,7 @@ export function backend() {
     cache,
     properties,
     calls,
+    files,
     writes,
     faults,
     invoke,

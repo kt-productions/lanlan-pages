@@ -95,7 +95,9 @@ export function setupEditor(form, config) {
       fields.contactChannel.value = details.contact.channel;
       fields.contact.value = details.contact.value;
       fields.referenceUrl.value = details.referenceUrl;
+      fields.referenceUrl.required = !details.attachments?.length;
       form.querySelector("#edit-reference").href = details.referenceUrl;
+      form.querySelector("#edit-reference").hidden = !details.referenceUrl;
       fields.notes.value = details.notes || "";
       fields.notes.disabled = details.notes === null;
       form.querySelector("#edit-notes-label").hidden = details.notes === null;

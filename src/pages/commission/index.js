@@ -142,12 +142,8 @@ function applyService() {
   reference.accept = details.referenceAccept;
   document.querySelector("#reference-hint").textContent =
     service === "stickers"
-      ? "單一圖片，上限 " +
-        details.referenceLimitMB +
-        " MB。這裡只預覽，不會上傳檔案。"
-      : "單一檔案，上限 " +
-        details.referenceLimitMB +
-        " MB；多張設定圖可先壓縮成 ZIP。這裡只預覽，不會上傳檔案。";
+      ? "最多 5 個圖片，單檔 10 MB、合計 45 MB（PNG、JPEG、GIF、WebP、AVIF）。送出委託時會一併上傳。"
+      : "最多 5 個檔案，單檔 10 MB、合計 45 MB。送出委託時會一併上傳；較大檔案可改用下方素材連結。";
   document.querySelector("#commercial-hint").textContent =
     service === "stickers"
       ? "先扣除數量與款式折扣，再將折扣後總價 ×" +
@@ -265,7 +261,7 @@ function advance() {
       config,
       service,
       new FormData(form),
-      reference.files[0],
+      [...reference.files],
       document.querySelector("#commission-read").checked,
     );
     renderReview(config, snapshot);

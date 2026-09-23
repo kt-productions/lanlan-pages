@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 6 版、31 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 8 版、31 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
 
 ## 請求與回應
 
@@ -16,11 +16,13 @@
 
 | action | 權限 | 輸入／用途 |
 | --- | --- | --- |
-| `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`；收件或取回同一回執。 |
+| `orders.upload` | 公開 | 與送件相同的 `requestId`、`details`、`website`、完整 `attachments` 清單，以及本檔 `index`（0–4）、`data`（base64）；回傳 `{index, uploaded:true}`。 |
+| `orders.submit` | 公開 | `requestId` UUID、`details`、選填誘捕欄位 `website`、`attachments` 清單（無附件為 `[]`）；收件或取回同一回執。 |
 | `progress.list` | 公開 | 非負整數 `offset`，預設 0；選填 `status`（七階段代碼）、`flag`（`rush`／`on_hold`）、`service`（`chibi`／`animation`／`stickers`），空字串表示不篩選；`limit` 為 1–200，預設 30。不需編號或登入。 |
 | `auth.start` | 公開 | 64 字元 hex `browserKey`；取得 Telegram 授權網址。 |
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`；取得完整訂單、通知狀態與歷史。 |
+| `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
@@ -33,11 +35,17 @@
 
 伺服器重建白名單：`schemaVersion`、`service`、`nickname`、`contact`、`referenceUrl`、`stickerIds`、`chibiPlan`、`characterCount`、`transition`、`commercial`、`background`、`rush`、`payment`、`allowLivestream`、`allowPortfolio`、`notes`、`rulesReviewed`。
 
-長度上限：暱稱 80、聯絡方式 300、HTTPS 素材連結 2,000、特殊需求 4,000 字元。授權須明確 boolean，款式只能 01–48 且不可重複。不適用欄位重新設為 null 或空陣列，檔案本體與中繼資料不進入訂單。
+長度上限：暱稱 80、聯絡方式 300、選填 HTTPS 素材連結 2,000、特殊需求 4,000 字元。授權須明確 boolean，款式只能 01–48 且不可重複。不適用欄位重新設為 null 或空陣列。素材連結與附件至少提供一項；檔案本體不進入 Sheets，伺服器建立的附件中繼資料存於 `detailsJson.attachments`。
 
-依部署時設定重新計算 `estimatedPrice`，保持 `confirmed: false`、`priceConfirmed: false`，忽略前端報價、狀態或管理權限。草稿版本不符以 `VERSION` 拒絕。
+`attachments` 請求清單最多 5 項、合計最多 45 MiB，每項包含 `name`（最多 150 字元，不得含路徑／控制字元）、`type`、`size`（1–10 MiB）、`sha256`（64 位 hex）。上傳每次只帶一個檔案，伺服器核對 base64、實際長度、檔案標頭及 SHA-256，先驗證收件內容與配額，再寫入 Drive。貼圖只收 PNG／JPEG／GIF／WebP／AVIF；其他類型的非圖片作為文件保存。只有 `orders.upload` 可超過 40,000 字元，上限為一個 10 MiB 檔案的 base64 加 40,000 字元；其他命令維持原上限。
 
-`requestId` 對應正規化內容 SHA-256：同碼同內容回傳既有訂單，同碼不同內容回傳 `CONFLICT`。頁面重試保留識別碼，重新整理則不保留，不能把重新填單當成冪等重試。
+Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡方式雜湊、預留時間及最多五個檔案 ID／完成資料。Drive 建立前先保存 ID，回應中斷後核對原檔，不再次建立；只有全部上傳完成才寫入訂單。未完成預留與已收訂單共用 24 小時每日配額及每小時同聯絡方式三筆限制。Sheet 寫入成功後清除預留，但不刪除檔案；中途中止的私人檔案由維護者人工檢視，沒有自動刪除。儲存位置與維護見[附件維護](../development/reference-attachments.md)。
+
+管理員讀取附件會重新驗證工作階段、資料夾、大小、類型及內容雜湊。後台按「載入預覽／下載」才讀取本體，關閉視窗、切換訂單、登出及離開頁面會撤銷 Object URL；非圖片不內嵌執行。管理更新只保留伺服器原附件，忽略客戶端偽造的附件 ID；公開進度不輸出附件或素材連結。
+
+依部署時設定重新計算 `estimatedPrice`，保持 `confirmed: false`、`priceConfirmed: false`，忽略前端報價、狀態或管理權限。不支援的草稿版本以 `VERSION` 拒絕；第三版舊分頁仍接受原有連結收件並保留舊內容雜湊，附件上傳要求第四版。
+
+`requestId` 對應正規化內容與附件清單的 SHA-256：同碼同內容回傳既有訂單，同碼不同內容回傳 `CONFLICT`。頁面重試保留識別碼及逐檔進度，重新整理則不保留，不能把重新填單當成冪等重試。
 
 網路中斷、`SERVER` 與其他結果不明的錯誤都保留原快照、識別碼並鎖住編輯，因為 Sheet 可能已寫入。只有明確拒收的輸入、版本、停止收件、配額或尚未設定錯誤才恢復編輯；不能僅因收到錯誤回應就假設沒有訂單。
 
@@ -70,7 +78,7 @@
 | 待付尾款 | `awaiting_balance` |
 | 已交稿 | `delivered` |
 
-管理員可前進、退回或跳至適用階段；狀態只是工作紀錄，不代表已串接付款。`isRush`（急件）、`isOnHold`（擱置）可各自開關及並存，擱置不取代階段，解除後保持原階段。兩個旗標適用所有工作，與收件的 `details.rush` 分開；後台的「急件需求（影響報價）」才參與原本計價。表單仍維持第 3 版，草稿／收件內容未改。
+管理員可前進、退回或跳至適用階段；狀態只是工作紀錄，不代表已串接付款。`isRush`（急件）、`isOnHold`（擱置）可各自開關及並存，擱置不取代階段，解除後保持原階段。兩個旗標適用所有工作，與收件的 `details.rush` 分開；後台的「急件需求（影響報價）」才參與原本計價。表單第 4 版另支援多檔附件，工作階段與計價規則保持相同。
 
 ### 2026-09-23 舊資料相容方式
 
@@ -87,6 +95,8 @@
 `TELEGRAM_NOTIFY_USER_IDS` 支援 1–20 位正整數使用者 ID，去重後逐位傳送；未設定時相容舊 `TELEGRAM_CHAT_ID`。第 30 欄 `notificationRecipientsJson` 保存第一次通知的固定名單，每位含 `id`、`status`、`attempts`、`at`、`error`。逐位保存成功結果，重試不再傳給已送達者；後續名單設定只影響新單。舊版已標記 `sent` 的單不補發。每輪仍更新 `notificationAttempts`，以該輪識別防止過期回應覆寫較新的重試；每位開始與完成時更新 `notificationAt`。
 
 整筆 `sent` 代表所有對象成功；尚有傳送中者為 `sending`，全部嘗試結束後只要有不明結果即為 `unknown`，其他失敗為 `failed`。部分已送達時 `notificationError` 為 `PARTIAL_DELIVERY`，實際逐位代碼留在紀錄中，不保存 Telegram 原始回應或例外。無管理網址時省略通知中的後台連結。通知名單、結果 JSON 均不進入公開進度回應。
+
+兩至五張 PNG／JPEG／WebP 透過 Telegram `sendMediaGroup` 合併成相簿，只有首張附委託編號、類型、數量與後台入口。單張使用 `sendPhoto`，單檔 GIF 使用 `sendAnimation`，其他檔案使用 `sendDocument`；多個其他格式合併為文件群組，與圖片分組。圖片受到 Telegram 限制而明確回覆 400 才整組改送文件；網路結果不明不自動改送。每位收件人的 `parts` 逐檔保存狀態、嘗試次數、成功的 Telegram `file_id` 及相簿 `groupId`，供同 bot 重用傳送，重試只補未成功部分或收件人；不明結果仍可能重複。相簿成功回應必須包含完整訊息陣列，缺項視為不明。每輪約 80 秒後停止開始新群組，剩餘標示 `pending`，由後台重試接續。只有素材連結時使用文字通知並附上連結。舊版已成功的通知不自動補寄圖片。
 
 ## 登入與錯誤
 

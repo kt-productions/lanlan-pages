@@ -1,4 +1,5 @@
 import { estimateCommission } from "../commission/pricing.js";
+import { ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TOTAL_BYTES, attachmentFileError } from "./attachment-contract.js";
 
 export const ORDER_STATUSES = {
   queued: "排隊中",
@@ -83,13 +84,13 @@ export function httpsReference(value) {
 }
 
 /** 從不信任的 JSON 重建白名單欄位；前端金額、訂單狀態與授權身分一律不採用。 */
-export function validateSubmission(input, config) {
+export function validateSubmission(input, config, { hasAttachments = false, allowPreviousVersion = false } = {}) {
   requireValue(
     input && typeof input === "object" && !Array.isArray(input),
     "委託內容格式不正確。",
   );
   requireValue(
-    input.schemaVersion === config.version,
+    input.schemaVersion === config.version || (allowPreviousVersion && input.schemaVersion === 3),
     "表單版本已更新，請重新整理後填寫。",
     "VERSION",
   );
@@ -118,7 +119,7 @@ export function validateSubmission(input, config) {
       channel: input.contact?.channel,
       value: textField(input.contact?.value, "聯絡方式", 300),
     },
-    referenceUrl: httpsReference(input.referenceUrl),
+    referenceUrl: input.referenceUrl ? httpsReference(input.referenceUrl) : "",
     stickerIds: [],
     chibiPlan: null,
     characterCount: null,
@@ -133,6 +134,7 @@ export function validateSubmission(input, config) {
     rulesReviewed: input.rulesReviewed,
     priceConfirmed: false,
   };
+  requireValue(Boolean(details.referenceUrl) || hasAttachments, "請上傳至少一個參考檔案，或提供參考素材連結。");
   requireValue(
     ["telegram", "facebook", "discord"].includes(details.contact.channel),
     "聯絡平台不正確。",
@@ -245,15 +247,36 @@ export function validateUpdate(input, current, config) {
   requireValue(Object.hasOwn(ORDER_STATUSES, input.status), "委託狀態不正確。");
   requireValue(typeof input.isRush === "boolean", "請選擇是否標記急件。");
   requireValue(typeof input.isOnHold === "boolean", "請選擇是否標記擱置。");
+  const currentDetails = current.details || JSON.parse(current.detailsJson);
+  const details = orderSource(current) ? currentDetails : validateSubmission(input.details, config, {
+    hasAttachments: Boolean(currentDetails.attachments?.length), allowPreviousVersion: true,
+  });
+  // 附件只能由上傳流程建立；管理欄位更新保留伺服器既有附件，拒絕客戶端換入其他 Drive ID。
+  if (currentDetails.attachments) details.attachments = currentDetails.attachments;
   return {
     // 歷史訂單沒有完整表單資料；以伺服器保存的內容為準，不接受客戶端補造報價或授權。
-    details: orderSource(current)
-      ? current.details || JSON.parse(current.detailsJson)
-      : validateSubmission(input.details, config),
+    details,
     status: input.status,
     isRush: input.isRush,
     isOnHold: input.isOnHold,
     publicNote: textField(input.publicNote, "公開進度說明", 500, false),
     adminNote: textField(input.adminNote, "內部備註", 4000, false),
   };
+}
+
+export function attachmentManifest(input = []) {
+  requireValue(Array.isArray(input) && input.length <= ATTACHMENT_MAX_FILES, "最多可上傳 5 個參考檔案。");
+  const files = input.map((file) => {
+    const error = attachmentFileError(file);
+    requireValue(!error, error);
+    const name = textField(file.name, "檔名", 150);
+    requireValue(!/[\\/\x7f]/.test(name), "檔名不可包含路徑。");
+    requireValue(typeof file.type === "string" && /^[a-z0-9.+-]+\/[a-z0-9.+-]+$/i.test(file.type) && file.type.length <= 100,
+      "檔案類型不正確。");
+    requireValue(typeof file.sha256 === "string" && /^[a-f0-9]{64}$/.test(file.sha256), "檔案識別不正確。");
+    return { name, type: file.type.toLowerCase(), size: file.size, sha256: file.sha256 };
+  });
+  requireValue(files.reduce((sum, file) => sum + file.size, 0) <= ATTACHMENT_MAX_TOTAL_BYTES,
+    "參考檔案合計最多 45 MB；較大素材請改用連結。");
+  return files;
 }

@@ -1,4 +1,14 @@
 import { createApi, integrationConfig } from "../orders/api.js";
+import { attachmentManifest } from "../orders/contract.js";
+
+function encodedFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.slice(reader.result.indexOf(",") + 1));
+    reader.onerror = () => reject(new Error("無法讀取參考檔案，請保留此頁並重試。"));
+    reader.readAsDataURL(file);
+  });
+}
 
 /** 未確認的送件保留同一份快照與識別碼；逾時後只重試，不讓編輯內容造成第二筆訂單。 */
 export function setupSubmission(app, form, getSnapshot, showError, clearError) {
@@ -12,7 +22,9 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
   let pending = null;
   let accepted = false;
   let sending = false;
-  referenceUrl.required = Boolean(apiUrl);
+  let files = [];
+  let uploaded = 0;
+  referenceUrl.required = false;
   document.querySelector("#submission-mode").textContent = apiUrl
     ? "填寫需求・確認後送出"
     : "服務尚未開放・可先下載草稿";
@@ -35,16 +47,33 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
   button.addEventListener("click", async () => {
     if (sending || accepted || !getSnapshot()) return;
     clearError();
-    pending ||= {
-      requestId: crypto.randomUUID(),
-      details: getSnapshot(),
-      website: new FormData(form).get("website") || "",
-    };
+    if (!pending) {
+      files = [...document.querySelector("#commission-reference").files];
+      uploaded = 0;
+      pending = { requestId: crypto.randomUUID(), details: getSnapshot(),
+        website: new FormData(form).get("website") || "" };
+    }
     freeze();
     sending = true;
     button.disabled = true;
     status.textContent = "正在送出，請保留此頁……";
     try {
+      if (!pending.attachments) {
+        const manifest = [];
+        for (const file of files) {
+          status.textContent = `正在準備參考檔案 ${manifest.length + 1}／${files.length}……`;
+          const hash = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+          manifest.push({ name: file.name, type: file.type || "application/octet-stream", size: file.size,
+            sha256: [...new Uint8Array(hash)].map((value) => value.toString(16).padStart(2, "0")).join("") });
+        }
+        pending.attachments = attachmentManifest(manifest);
+      }
+      for (; uploaded < files.length; uploaded += 1) {
+        status.textContent = `正在上傳參考檔案 ${uploaded + 1}／${files.length}，請保留此頁……`;
+        const result = await request("orders.upload", { ...pending, index: uploaded, data: await encodedFile(files[uploaded]) });
+        if (result?.index !== uploaded || result.uploaded !== true) throw new Error("無法確認附件上傳結果，請重試送出。");
+      }
+      status.textContent = "檔案已準備完成，正在建立委託與傳送通知……";
       const receipt = await request("orders.submit", pending);
       if (!/^LL-[A-F0-9]{16}$/.test(receipt?.orderId))
         throw new Error("收件回執格式不正確。");

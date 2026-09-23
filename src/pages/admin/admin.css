@@ -215,6 +215,10 @@ body.admin-modal-open {
   margin: 0;
   accent-color: var(--brand);
 }
+#edit-attachments { margin-block: 20px; }
+.attachment-item { padding-block: 12px; border-bottom: 1px solid var(--line, #dfd4c1); }
+.attachment-item p { overflow-wrap: anywhere; }
+.attachment-item img { display: block; max-width: 100%; max-height: 420px; object-fit: contain; margin-block: 12px; }
 #edit-reference {
   display: inline-block;
   margin-bottom: 22px;

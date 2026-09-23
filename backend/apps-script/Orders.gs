@@ -189,16 +189,9 @@ function receipt_(order) {
 }
 
 function submitOrder_(payload) {
-  Core_.requireValue(
-    typeof payload.requestId === "string" &&
-      /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
-        payload.requestId,
-      ),
-    "送件識別碼不正確。",
-  );
-  Core_.requireValue(!payload.website, "無法受理這份委託。");
-  const details = Core_.validateSubmission(payload.details, COMMISSION_CONFIG_);
-  const requestHash = digest_(JSON.stringify(details));
+  const input = submissionInput_(payload);
+  const details = input.details;
+  const requestHash = input.hash;
   const result = lock_(function () {
     const sheet = orderSheet_();
     const orders = readOrders_(sheet);
@@ -213,35 +206,9 @@ function submitOrder_(payload) {
       );
       return { order: existing, created: false };
     }
-    Core_.requireValue(
-      setting_("ACCEPTING_ORDERS", true) === "true",
-      "目前暫停收件，請先聯絡繪師。",
-      "CLOSED",
-    );
+    checkSubmissionCapacity_(orders, details, payload.requestId);
+    if (input.manifest.length) details.attachments = completedReferences_(payload.requestId, input);
     const now = new Date().toISOString();
-    const recent = orders.filter(function (order) {
-      return !Core_.orderSource(order) && Date.parse(order.createdAt) > Date.now() - 86400000;
-    });
-    const dailyLimit = Number(setting_("DAILY_ORDER_LIMIT", true) || 50);
-    Core_.requireValue(
-      Number.isInteger(dailyLimit) &&
-        dailyLimit > 0 &&
-        recent.length < dailyLimit,
-      "今日收件已達上限，請稍後再試或聯絡繪師。",
-      "RATE_LIMIT",
-    );
-    const sameContact = recent.filter(function (order) {
-      return (
-        Date.parse(order.createdAt) > Date.now() - 3600000 &&
-        order.contactChannel === details.contact.channel &&
-        order.contactValue === details.contact.value
-      );
-    });
-    Core_.requireValue(
-      sameContact.length < 3,
-      "這個聯絡方式短時間內送件較多，請稍後再試。",
-      "RATE_LIMIT",
-    );
     const order = Object.assign(detailColumns_(details), {
       orderId:
         "LL-" +
@@ -271,6 +238,8 @@ function submitOrder_(payload) {
     writeOrder_(sheet, order);
     return { order: order, created: true };
   });
+  // Sheet 回執寫入成功後才釋放上傳預留；重試已成立的訂單也可清掉遺留預留。
+  if (input.manifest.length) PropertiesService.getScriptProperties().deleteProperty("REFERENCE_UPLOAD_" + payload.requestId);
   // 訂單已提交後，通知失敗也不得回滾訂單或向前端回報收件失敗。
   if (result.created) {
     try {
@@ -472,6 +441,7 @@ function notifyOrder_(id, retry) {
     return { order: order, recipients: recipients };
   });
   if (claim.done) return { status: claim.status };
+  if (JSON.parse(claim.order.detailsJson).attachments?.length) return notifyAttachmentOrder_(id, claim);
   for (const recipient of claim.recipients) {
     if (recipient.status === "sent") continue;
     const prepared = lock_(function () {
@@ -493,22 +463,7 @@ function notifyOrder_(id, retry) {
     let status = "unknown";
     let errorCode = "DELIVERY_UNKNOWN";
     try {
-      const response = UrlFetchApp.fetch(
-        "https://api.telegram.org/bot" + setting_("TELEGRAM_BOT_TOKEN") + "/sendMessage",
-        {
-          method: "post",
-          contentType: "application/json",
-          muteHttpExceptions: true,
-          followRedirects: false,
-          payload: JSON.stringify({
-            chat_id: recipient.id,
-            text: "收到新的委託\n編號：" + claim.order.orderId +
-              "\n類型：" + COMMISSION_CONFIG_.services[claim.order.service].name +
-              (setting_("ADMIN_URL", true) ? "\n請至管理後台查看：" + adminUrl_() : ""),
-            disable_web_page_preview: true,
-          }),
-        },
-      );
+      const response = sendOrderNotification_(claim.order, recipient);
       const body = JSON.parse(response.getContentText());
       status = response.getResponseCode() === 200 && body.ok === true ? "sent" : "failed";
       errorCode = status === "sent" ? "" : "TELEGRAM_REJECTED";

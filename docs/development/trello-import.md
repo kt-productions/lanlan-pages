@@ -12,7 +12,7 @@
 - 封存卡片依原工作階段列出，保留「Trello 封存」註記，不把封存推定成取消或擱置。
 - 「加急／急單／急件」映射急件，「擱置」映射擱置。其他原標籤只放後台來源紀錄；收款標籤不推定金額、付款方式或本站已確認付款。
 - PNG 附件只保存原 Trello 連結於後台，沒有複製檔案或公開展示授權；原附件的存取仍取決於 Trello。
-- `details.recordType: "trello-import"` 表示歷史資料，與第 3 版表單草稿分開。只保留類型、原名稱及未知的 `contact`／`referenceUrl`／`notes`／`estimatedPrice`（null）；不套用現行價格，不補造方案、授權或原始收件日期。
+- `details.recordType: "trello-import"` 表示歷史資料，與表單草稿分開。只保留類型、原名稱及未知的 `contact`／`referenceUrl`／`notes`／`estimatedPrice`（null）；不套用現行價格，不補造方案、授權或原始收件日期。
 - `createdAt`、`updatedAt` 初值是匯入時間，來源最後活動另存 `source.lastActivity`，建立時間由 Card ID 換算為 `source.createdAt`；不把 Trello 活動時間冒充收件日期。
 
 ## 執行與核對

@@ -1,18 +1,9 @@
+import { attachmentFileError } from "../orders/attachment-contract.js";
+
 /** @param {{size: number, type: string}|undefined} file */
 export function referenceError(details, file) {
   if (!file) return "請選擇角色設定檔。";
-  if (file.size === 0) return "請選擇有內容的檔案。";
-  if (file.size > details.referenceLimitMB * 1024 * 1024) {
-    return `檔案超過 ${details.referenceLimitMB} MB，請重新選擇。`;
-  }
-  // MIME 僅供本機表單檢查；未來後端仍須自行檢查檔案內容。
-  if (
-    details.referenceAccept === "image/*" &&
-    !file.type.startsWith("image/")
-  ) {
-    return "貼圖包的設定圖必須是圖片。";
-  }
-  return "";
+  return attachmentFileError(file, details.referenceAccept === "image/*");
 }
 
 export function contactError(channel, value) {

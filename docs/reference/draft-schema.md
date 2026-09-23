@@ -10,21 +10,21 @@
 
 送出前的表單只保存在目前頁面記憶體，重新整理即清除，沒有 localStorage、自動儲存、草稿匯入或跨裝置同步。下載檔只含文字及檔案中繼資料，無圖片或其他檔案本體。
 
-## 第 3 版草稿契約
+## 第 4 版草稿契約
 
-`schemaVersion` 取自 `content/commission.json` 的 `version`，目前為 3。下表列出確認快照的完整頂層欄位；只描述有效填答後的正常輸出，不是後端驗證器。
+`schemaVersion` 取自 `content/commission.json` 的 `version`，目前為 4。下表列出確認快照的完整頂層欄位；只描述有效填答後的正常輸出，不是後端驗證器。
 
 | 欄位 | 型別與目前輸出規則 |
 | --- | --- |
-| `schemaVersion` | number，目前為 `3`。 |
+| `schemaVersion` | number，目前為 `4`。 |
 | `mode` | string，固定 `"local-preview"`。 |
 | `submitted` | boolean，固定 `false`。 |
 | `service` | string：`stickers`、`animation`、`chibi`。 |
 | `sourceForm` | string：目前類型在設定中的原始 Google 表單 URL，供來源追溯，不會向該 URL 送件。 |
 | `nickname` | string：去除首尾空白的暱稱。 |
 | `contact` | object：`channel` 為 `telegram`、`facebook`、`discord`；`value` 為去除首尾空白的聯絡文字。 |
-| `referenceUrl` | string：去除首尾空白的 HTTPS 素材連結；正式送件必填，本機草稿可為空。 |
-| `reference` | object 或 null：未選本機檔案為 null；有檔案時 `name` 為檔名、`size` 為 bytes、`type` 為 MIME（未知時使用 `application/octet-stream`）、`uploaded` 固定 `false`。 |
+| `referenceUrl` | string：選填，去除首尾空白的 HTTPS 素材連結，可為空字串；與參考檔案至少提供一項。 |
+| `references` | object 陣列，最多 5 個，沒有檔案時為 `[]`；每個含 `name` 檔名、`size` bytes、`type` MIME（未知時使用 `application/octet-stream`）、`uploaded` 固定 `false`。不包含檔案本體或 Drive ID。 |
 | `stickerIds` | number 陣列：貼圖為所選編號，其他類型為 `[]`；有效填答至少一款。 |
 | `chibiPlan` | 小動圖為 `"illustration"` 或 `"animated"`，其他類型為 `null`。 |
 | `characterCount` | 角色動畫及小動圖為數字 `1` 或 `2`，貼圖為 `null`。 |
@@ -51,7 +51,7 @@
 
 草稿沒有訂單編號、送件時間或通知狀態；正式收件回執使用獨立[服務契約](order-api.md)。下載草稿即使在送件後仍保留未送件旗標，不可當作回執。
 
-第 3 版新增 referenceUrl，reference 可為 null；第 2 版檔案中繼資料格式保留於歷史紀錄，不自動匯入或送出舊草稿。
+第 4 版將單一 `reference` 改為 `references` 陣列，並讓素材連結選填；最多五檔、每檔 10 MiB、合計 45 MiB。第 3 版新增 `referenceUrl`、`reference` 可為 null。舊草稿不自動匯入或送出；既有第 3 版訂單仍可於後台編輯，保存時轉為目前欄位契約並保留歷史。
 
 ## 計價來源與契約變更
 

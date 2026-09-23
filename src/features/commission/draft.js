@@ -17,8 +17,8 @@ export function selectionFromData(service, data) {
 
 // 僅在必填驗證通過後建立快照。隱藏欄位依類型明確輸出 null／空陣列，避免前次選擇滲入草稿。
 // 下載仍是本機草稿；正式收件回執使用獨立契約，不能因下載成功改動未送件旗標。
-/** @param {FormData} data @param {{name: string, size: number, type: string}|undefined} file */
-export function createDraft(config, service, data, file, rulesReviewed) {
+/** @param {FormData} data @param {File[]} files */
+export function createDraft(config, service, data, files = [], rulesReviewed) {
   const selection = selectionFromData(service, data);
   const ids = new Set(selection.stickerIds.map(Number));
   return {
@@ -33,14 +33,12 @@ export function createDraft(config, service, data, file, rulesReviewed) {
       value: data.get("contact").trim(),
     },
     referenceUrl: (data.get("referenceUrl") || "").trim(),
-    reference: file
-      ? {
-          name: file.name,
-          size: file.size,
-          type: file.type || "application/octet-stream",
-          uploaded: false,
-        }
-      : null,
+    references: files.map((file) => ({
+      name: file.name,
+      size: file.size,
+      type: file.type || "application/octet-stream",
+      uploaded: false,
+    })),
     stickerIds:
       service === "stickers"
         ? config.stickerOptions

@@ -34,7 +34,7 @@ export function createApi(apiUrl, fetcher = fetch) {
           body: JSON.stringify({ action, payload, token }),
           credentials: "omit",
           redirect: "follow",
-          signal: AbortSignal.timeout(45000),
+          signal: AbortSignal.timeout(["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(action) ? 120000 : 45000),
         });
         if (!response.ok) throw new Error("無法讀取回應");
         result = await response.json();

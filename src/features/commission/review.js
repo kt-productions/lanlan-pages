@@ -24,9 +24,9 @@ export function renderReview(config, snapshot) {
     ],
     ["參考素材連結", snapshot.referenceUrl || "尚未填寫"],
     [
-      "本機參考檔",
-      snapshot.reference
-        ? snapshot.reference.name + "（只供本機預覽）"
+      "參考檔案",
+      snapshot.references.length
+        ? snapshot.references.map((file) => file.name).join("\n") + "\n（送出時上傳）"
         : "未選擇",
     ],
   ];

@@ -27,7 +27,7 @@ function doPost(event) {
 function callApi(text) {
   return apiResult_(function () {
     Core_.requireValue(
-      typeof text === "string" && text.length <= 40000,
+      typeof text === "string" && text.length <= Core_.API_MAX_REQUEST_CHARS,
       "請求內容過大或格式不正確。",
     );
     let request;
@@ -41,7 +41,10 @@ function callApi(text) {
       "請求格式不正確。",
     );
     const payload = request.payload || {};
+    Core_.requireValue(request.action === "orders.upload" || text.length <= 40000, "請求內容過大。");
     switch (request.action) {
+      case "orders.upload":
+        return uploadOrderReference_(payload);
       case "orders.submit":
         return submitOrder_(payload);
       case "progress.list":
@@ -57,6 +60,8 @@ function callApi(text) {
             return pageOrders_(payload, true);
           case "admin.update":
             return updateOrder_(payload, actor);
+          case "admin.attachment":
+            return adminReference_(payload);
           case "admin.retryNotification":
             return notifyOrder_(payload.orderId, true);
           case "auth.logout":

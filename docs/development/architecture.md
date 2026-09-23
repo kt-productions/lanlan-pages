@@ -49,7 +49,7 @@
 
 四頁先載入共用 `src/shared/styles.css`，再載入各頁 CSS 與 `index.js`。首頁入口串接分類、背景播放及檢視器；委託頁入口管理類型、步驟、條件欄位及下載。四頁都匯入共用導覽，首頁不載入委託欄位資料或委託模組，委託頁也不載入首頁樣式及影片控制。
 
-委託功能分工：`pricing.js` 是與 DOM 無關的純計價，`draft.js` 把 FormData 整理成計價輸入及第 3 版快照，`validation.js` 提供檔案／聯絡檢查與繁中欄位提示。`reference.js` 管理本機 Object URL，`stickers.js` 管理款式分頁與選取，`estimate.js` 更新桌機／手機預估，`review.js` 呈現確認快照。所有金額仍由 `estimateCommission()` 計算，沒有第二套公式。
+委託功能分工：`pricing.js` 是與 DOM 無關的純計價，`draft.js` 把 FormData 整理成計價輸入及第 4 版快照，`validation.js` 提供檔案／聯絡檢查與繁中欄位提示。`reference.js` 管理本機 Object URL，`stickers.js` 管理款式分頁與選取，`estimate.js` 更新桌機／手機預估，`review.js` 呈現確認快照。所有金額仍由 `estimateCommission()` 計算，沒有第二套公式。
 
 委託看板分工：`orders/board-view.js` 與 `shared/board.css` 共用公開／管理欄位及卡片外觀，`board.js` 對完整快照篩選；`admin-data.js` 依序取得管理分頁並核對完整件數，失敗不取代先前完整快照。管理頁入口協調登入、看板、編輯 dialog、放棄修改確認及焦點還原；`editor.js` 保留各類型編輯與來源呈現，API 契約及後端權限不因介面改版而變更。
 

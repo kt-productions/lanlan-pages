@@ -1,6 +1,6 @@
 # 委託服務設定與維護
 
-2026-09-23 已完成 GAS 第 6 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
+2026-09-23 已完成 GAS 第 8 版與 31 欄 Orders 升級，Telegram 憑證、單一收件者與管理員設定已驗證，正式管理頁為 `https://kt-productions.github.io/lanlan-pages/admin/`。同日已依使用者要求設為 `ACCEPTING_ORDERS=true` 開啟收件，驗證見[收件啟用紀錄](../records/receiving-2026-09-23.md)。同日匯入 174 筆 Trello 歷史訂單，保留原測試單與歷史；匯入不通知。正式網頁改用 Html Service 通訊，排除已觀察到的 Content Service 回應傳遞阻礙；結果不明的修改仍須先重新讀取，不能自動重送。現行結果見[後台驗收](../records/admin-2026-09-23.md)及[Trello 看板驗收](../records/trello-2026-09-23.md)，早期設定保留於[歷史紀錄](../records/service-setup-2026-09-23.md)。
 
 ## 服務組成
 
@@ -8,7 +8,7 @@
 
 靜態網站提供首頁、委託表單、進度頁與管理頁。Google Apps Script Web App 負責驗證、重新計價、Sheets 讀寫、Telegram OIDC 登入及收件通知；Google Sheets 的 `Orders` 保存委託、通知狀態與修改歷史。試算表不要公開分享。
 
-Telegram 同一個 bot 可兼任登入與通知。登入只要求 `openid profile`，不要求電話或透過登入授予私訊權限；通知分別發給 `TELEGRAM_NOTIFY_USER_IDS` 指定的一位或多位使用者，每位必須先對 bot 按 Start。通知名單與管理員白名單分開。參考素材採 HTTPS 連結，本站不接收檔案本體，也不變更 Drive 分享權限。
+Telegram 同一個 bot 可兼任登入與通知。登入只要求 `openid profile`，不要求電話或透過登入授予私訊權限；通知分別發給 `TELEGRAM_NOTIFY_USER_IDS` 指定的一位或多位使用者，每位必須先對 bot 按 Start。通知名單與管理員白名單分開。參考素材可上傳最多五檔或提供 HTTPS 連結；附件保存在程式建立的私人 Drive 資料夾，不變更分享權限。新增授權與維護見[參考附件](reference-attachments.md)。
 
 ## 產生部署程式
 
@@ -20,7 +20,7 @@ npm run build:backend
 npm test
 ```
 
-`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 8 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
+`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Attachments.gs`、`AttachmentNotifications.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 10 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
 
 部署工具使用鎖定的 `@google/clasp@3.4.1`。各維護者使用自己的授權，將專案外憑證檔路徑及登入設定名稱分別提供給 `LANLAN_CLASP_AUTH`、`LANLAN_CLASP_USER` 環境變數；實際值不寫入文件，不複製其他人的憑證：
 
@@ -43,6 +43,7 @@ npm exec --yes --package @google/clasp@3.4.1 -- clasp --auth "$env:LANLAN_CLASP_
 | 屬性 | 內容 |
 | --- | --- |
 | `SPREADSHEET_ID` | 專用 Google Sheets ID；部署帳號需有編輯權限。 |
+| `REFERENCE_FOLDER_ID` | 執行 `setupReferenceStorage` 自動建立的私人附件資料夾；不要手動換成別的資料夾。 |
 | `TELEGRAM_BOT_TOKEN` | 通知用 bot 的 Token。 |
 | `TELEGRAM_NOTIFY_USER_IDS` | 1–20 位收件者的正整數 Telegram 使用者 ID，以半形逗號分隔，例如虛構的 `123456789,987654321`；重複 ID 只送一次。不是 username，不必都是管理員。 |
 | `TELEGRAM_CHAT_ID` | 舊版相容：只有 `TELEGRAM_NOTIFY_USER_IDS` 空白時才使用。新設定請用上一列，不必填此項。 |
@@ -63,7 +64,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 
 首次初始化時先保持 `ACCEPTING_ORDERS=false`；既有正式環境目前已啟用，本次開啟收件不需重新執行初始化。在 Apps Script 編輯器選取 `Orders.gs`，從函式清單執行 `setupOrders`，由資源擁有者核准權限；它會建立空白表頭或追加已知舊版缺少的旗標與通知欄位，不清空資料。未知表頭或待追加欄位已有資料／公式時停止，不可直接覆寫。
 
-底線結尾的 `setupOrders_` 不會出現在編輯器函式清單，故由 `setupOrders` 作為手動入口。入口透過 [Session 介面](https://developers.google.com/apps-script/reference/base/session)核對 Google 活躍使用者與實際授權使用者，拒絕匿名或身分不符的呼叫，也沒有加入 HTTP API action。manifest 所需權限為 Sheets 讀寫、對外連線及 `userinfo.email`（僅初始化身分檢查），與 clasp 管理專案的 OAuth 授權分開。程式不記錄或回傳 Google 電子郵件地址。
+底線結尾的 `setupOrders_` 不會出現在編輯器函式清單，故由 `setupOrders` 作為手動入口。入口透過 [Session 介面](https://developers.google.com/apps-script/reference/base/session)核對 Google 活躍使用者與實際授權使用者，拒絕匿名或身分不符的呼叫，也沒有加入 HTTP API action。manifest 所需權限為 `drive.file`、Sheets 讀寫、對外連線及 `userinfo.email`（僅初始化身分檢查），與 clasp 管理專案的 OAuth 授權分開。程式不記錄或回傳 Google 電子郵件地址。
 
 ## 部署與登入設定
 

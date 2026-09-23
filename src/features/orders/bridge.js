@@ -1,3 +1,5 @@
+import { API_MAX_REQUEST_CHARS } from "./attachment-contract.js";
+
 /** 核對 Html Service 的來源與 iframe 關係，不接受其他分頁偽造的完成訊息。 */
 export function isBridgePeer(event, frameWindow, channel) {
   if (!/^https:\/\/[a-z0-9-]+-script\.googleusercontent\.com$/.test(event.origin) ||
@@ -69,14 +71,14 @@ export function createBridge(apiUrl, host = window, doc = document) {
   return async request => {
     const { peer, peerOrigin, channel } = await connect();
     const text = JSON.stringify(request);
-    if (text.length > 40000) throw new Error("請求內容過大");
+    if (text.length > (request.action === "orders.upload" ? API_MAX_REQUEST_CHARS : 40000)) throw new Error("請求內容過大");
     return new Promise((resolve, reject) => {
       const id = host.crypto.randomUUID();
       const timer = host.setTimeout(() => {
         pending.delete(id);
         // 已送出的修改可能已生效；不可自動換用另一通道重送。
         reject(new Error("服務回應逾時"));
-      }, 45000);
+      }, ["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(request.action) ? 120000 : 45000);
       pending.set(id, { resolve, reject, timer });
       peer.postMessage({ type: "lanlan:request", channel, id, request: text }, peerOrigin);
     });

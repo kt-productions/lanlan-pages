@@ -9,6 +9,7 @@ import { setupEditor } from "../../features/orders/editor.js";
 import { boardColumns } from "../../features/orders/board-view.js";
 import { filterBoard } from "../../features/orders/board.js";
 import { loadAdminOrders } from "../../features/orders/admin-data.js";
+import { setupAttachments } from "../../features/orders/attachments-view.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
@@ -44,6 +45,7 @@ let pendingLogin = null;
 let discardAction = null;
 let returnOrderId = null;
 const storageKey = "lanlan-admin-login-binding";
+const attachments = setupAttachments(document.querySelector("#edit-attachments"), api, () => token, report);
 
 for (const [value, label] of Object.entries(ORDER_STATUSES)) {
   const option = element("option", label);
@@ -58,6 +60,7 @@ function message(text, focus = false) {
 }
 
 function closeEditor() {
+  attachments.clear();
   if (dialog.open) dialog.close();
   selected = null;
   dirty = false;
@@ -136,6 +139,7 @@ function selectOrder(order, focus = true) {
   selected = order;
   dirty = false;
   editor.fill(order);
+  attachments.show(order);
   const opening = !dialog.open;
   if (!dialog.open) {
     returnOrderId = order.orderId;

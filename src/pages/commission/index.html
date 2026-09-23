@@ -449,25 +449,26 @@
                 </div>
                 <div class="form-field">
                   <label for="commission-reference"
-                    >本機參考檔預覽 <span class="field-hint">選填</span></label
+                    >參考檔案 <span class="field-hint">最多 5 個</span></label
                   ><input
                     id="commission-reference"
                     name="reference"
                     type="file"
+                    multiple
                     aria-describedby="reference-hint"
                   />
                   <p id="reference-hint" class="field-hint"></p>
                   <p id="reference-info" class="field-hint" role="status"></p>
-                  <img
+                  <div
                     id="reference-preview"
                     class="reference-preview"
-                    alt="你選擇的角色設定圖預覽"
+                    aria-label="已選取的參考檔案"
                     hidden
-                  />
+                  ></div>
                 </div>
                 <div class="form-field">
                   <label for="commission-reference-url"
-                    >參考素材連結 <span class="required">送件必填</span></label
+                    >參考素材連結 <span class="field-hint">選填</span></label
                   >
                   <input
                     id="commission-reference-url"
@@ -479,7 +480,7 @@
                   />
                   <p class="field-hint" id="reference-url-hint">
                     請提供可供繪師查看的 HTTPS
-                    連結，並確認分享權限。本機選檔不會上傳，連結僅供繪師於後台查看。
+                    連結，並確認分享權限。參考檔案與連結至少提供一項，素材僅供繪師查看。
                   </p>
                 </div>
                 <div class="submission-trap" aria-hidden="true">

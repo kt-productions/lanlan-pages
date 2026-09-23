@@ -15,7 +15,7 @@ function bridgePage_(channel) {
         if (event.source !== window.top || event.origin !== origin ||
             !message || message.channel !== channel || message.type !== "lanlan:request" ||
             typeof message.id !== "string" || !/^[a-f0-9-]{36}$/.test(message.id) ||
-            typeof message.request !== "string" || message.request.length > 40000) return;
+            typeof message.request !== "string" || message.request.length > ${Core_.API_MAX_REQUEST_CHARS}) return;
         const reply = function (result) {
           window.top.postMessage({type:"lanlan:response",channel:channel,id:message.id,result:result}, origin);
         };
