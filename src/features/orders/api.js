@@ -43,7 +43,7 @@ export function createApi(apiUrl, fetcher = fetch) {
           body: JSON.stringify({ action, payload, token }),
           credentials: "omit",
           redirect: "follow",
-          signal: AbortSignal.timeout(["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(action) ? 120000 : 45000),
+          signal: AbortSignal.timeout(action.startsWith("admin.artworks.") || ["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(action) ? 120000 : 45000),
         });
         if (!response.ok) throw new Error("無法讀取回應");
         result = await response.json();
@@ -59,7 +59,9 @@ export function createApi(apiUrl, fetcher = fetch) {
       if (error instanceof ApiError) throw error;
       throw new ApiError(
         "NETWORK",
-        "無法確認伺服器回應，請保留此頁後重試。重試同一份內容不會重複建立委託。",
+        action.startsWith("admin.artworks.")
+          ? "無法確認作品操作結果，請保留此頁並更新狀態，或重試同一份內容。"
+          : "無法確認伺服器回應，請保留此頁後重試。重試同一份內容不會重複建立委託。",
       );
     }
   };

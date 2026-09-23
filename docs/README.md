@@ -8,6 +8,7 @@
 
 ## 開發與維護 · development
 
+- [作品管理與發布](development/artwork-service.md)：作品草稿、Drive 暫存、GitHub App、main 保存核對及 production 部署；正式啟用步驟與限制。
 - [參考附件](development/reference-attachments.md)：五檔上傳、私人 Drive 儲存、後台預覽及 Telegram 圖片通知。
 
 - [影片壓縮與延遲載入](development/video-optimization.md)：預覽版、展示版、原始檔保存，以及新增作品後的壓縮與驗證指令。
@@ -28,10 +29,12 @@
 
 ## 未來規劃 · plans
 
+- [繪師作品上傳與資源管理](plans/artwork-upload.md)：多站 Drive 暫存、main 保存與 production 發布的原始設計及取捨；實作與啟用另見維護文件。
 - [正式收件串接](plans/form-integration.md)：目前串接狀態與尚未實作功能。
 
 ## 歷史紀錄 · records
 
+- [2026-09-24 作品管理本機驗收](records/artworks-2026-09-24.md)：上傳／草稿／發布、清理及 Git 重試、四種媒體處理、桌機手機與正式串接限制。
 - [2026-09-23 完整 Telegram 通知](records/notification-text-2026-09-23.md)：完整欄位、長文分段、相簿及逐段重試與正式傳送驗證。
 
 - [2026-09-23 暱稱與封存](records/archive-2026-09-23.md)：公開暱稱、封存篩選與解除、32 欄升級及資料保留驗證。

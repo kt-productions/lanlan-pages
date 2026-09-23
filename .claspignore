@@ -11,3 +11,8 @@
 !Attachments.gs
 !AttachmentNotifications.gs
 !NotificationText.gs
+!ArtworkCore.gs
+!ArtworkBase.gs
+!Artworks.gs
+!ArtworkGitHub.gs
+!ArtworkWorker.gs

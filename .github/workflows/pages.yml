@@ -2,7 +2,7 @@ name: 部署 GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [production]
   workflow_dispatch:
 
 permissions:
@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/production'
     name: 建置與驗證
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -21,6 +22,7 @@ jobs:
       - name: 取得原始碼
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
       - name: 設定 Node.js
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -51,12 +53,38 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: 取得部署核對腳本
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: 設定 Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+      - name: 排除已被取代的發布版本
+        id: version
+        run: node scripts/artwork-deployment.mjs check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: 部署 GitHub Pages
+        if: steps.version.outputs.current == 'true'
         id: deployment
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+      - name: 核對上線版本並回報作品狀態
+        if: steps.version.outputs.current == 'true'
+        run: node scripts/artwork-deployment.mjs report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          ARTWORKS_ENABLED: ${{ vars.ARTWORKS_ENABLED }}
+          ARTWORK_API_URL: ${{ secrets.ARTWORK_API_URL }}
+          ARTWORK_SITE_ID: ${{ vars.ARTWORK_SITE_ID }}
+          ARTWORK_WORKER_SECRET: ${{ secrets.ARTWORK_WORKER_SECRET }}

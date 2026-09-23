@@ -4,6 +4,9 @@ export function setupLightbox(getWorks, motion) {
   const dialog = document.querySelector("#lightbox");
   const mediaHost = document.querySelector("#lightbox-media");
   const mediaError = document.querySelector("#media-error");
+  const description = document.createElement("p");
+  description.className = "lightbox-description";
+  document.querySelector("#lightbox-category").after(description);
   let selectedIndex = 0;
   let trigger = null;
   let dialogWasPlaying = false;
@@ -35,6 +38,8 @@ export function setupLightbox(getWorks, motion) {
     clearMedia();
     mediaError.hidden = true;
     document.querySelector("#lightbox-title").textContent = work.title;
+    description.textContent = work.description || "";
+    description.hidden = !work.description;
     document.querySelector("#lightbox-category").textContent =
       labels[work.category];
     document.querySelector("#lightbox-count").textContent =
@@ -59,7 +64,7 @@ export function setupLightbox(getWorks, motion) {
       mediaError.textContent = "作品暫時無法播放，請稍後重試。";
       mediaError.hidden = false;
     });
-    media.src = "./" + (work.playbackSrc || work.src);
+    media.src = "./" + (work.animated && !motion.isEnabled() ? work.poster : work.playbackSrc || work.src);
     mediaHost.append(media);
     if (work.type === "video" && motion.isEnabled() && !document.hidden)
       playDialog(media);
@@ -145,6 +150,9 @@ export function setupLightbox(getWorks, motion) {
 
   return {
     syncMotion() {
+      const work = getWorks()[selectedIndex];
+      const image = mediaHost.querySelector("img");
+      if (dialog.open && work?.animated && image) image.src = "./" + (motion.isEnabled() ? work.playbackSrc || work.src : work.poster);
       const video = mediaHost.querySelector("video");
       if (!video) return;
       if (motion.isEnabled() && !document.hidden) playDialog(video);

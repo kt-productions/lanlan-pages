@@ -6,9 +6,9 @@ function apiResult_(task) {
     result = {
       ok: false,
       error: {
-        code: error instanceof Core_.OrderError ? error.code : "SERVER",
+        code: error instanceof Core_.OrderError ? error.code : error.name === "ArtworkValidationError" ? "VALIDATION" : "SERVER",
         message:
-          error instanceof Core_.OrderError
+          error instanceof Core_.OrderError || error.name === "ArtworkValidationError"
             ? error.message
             : "服務暫時無法完成操作，請稍後重試。",
       },
@@ -41,8 +41,10 @@ function callApi(text) {
       "請求格式不正確。",
     );
     const payload = request.payload || {};
-    Core_.requireValue(request.action === "orders.upload" || text.length <= 40000, "請求內容過大。");
+    Core_.requireValue(["orders.upload", "admin.artworks.upload"].includes(request.action) || text.length <= 40000, "請求內容過大。");
     switch (request.action) {
+      case "artworks.worker":
+        return artworkWorker_(payload);
       case "orders.upload":
         return uploadOrderReference_(payload);
       case "orders.submit":
@@ -58,6 +60,13 @@ function callApi(text) {
       default: {
         const actor = requireAdmin_(request.token);
         switch (request.action) {
+          case "admin.artworks.list": return listArtworks_();
+          case "admin.artworks.save": return saveArtwork_(payload);
+          case "admin.artworks.upload": return uploadArtwork_(payload);
+          case "admin.artworks.publish": return publishArtwork_(payload);
+          case "admin.artworks.preview": return previewArtwork_(payload);
+          case "admin.artworks.cancel": return cancelArtwork_(payload);
+          case "admin.artworks.cleanup": return cleanupArtwork_(payload);
           case "auth.session":
             return { authenticated: true, expiresAt: actor.expiresAt };
           case "admin.list":

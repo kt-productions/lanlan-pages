@@ -24,7 +24,7 @@ npm run build:backend
 npm test
 ```
 
-`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Attachments.gs`、`AttachmentNotifications.gs`、`NotificationText.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`、`appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 11 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。
+`build/apps-script/` 包含 `Auth.gs`、`Bridge.gs`、`Orders.gs`、`Attachments.gs`、`AttachmentNotifications.gs`、`NotificationText.gs`、`Import.gs`、`Web.gs`、`Core.gs`、`Config.gs`、`Forge.gs`，以及作品服務的 `ArtworkCore.gs`、`ArtworkBase.gs`、`Artworks.gs`、`ArtworkGitHub.gs`、`ArtworkWorker.gs`，另有 `appsscript.json` 與第三方授權文字。既有雲端專案以本機 `.clasp.json` 的 `scriptId` 連結，`rootDir` 為 `build/apps-script`；`.claspignore` 僅允許上述 16 個 `.gs` 與 manifest 上傳。不要重複建立雲端專案。授權文字保存在部署副本，不是 Apps Script 程式檔。作品服務的獨立設定與啟用順序見[作品管理與發布](artwork-service.md)，未啟用時不影響原委託收件。
 
 部署工具使用鎖定的 `@google/clasp@3.4.1`。各維護者使用自己的授權，將專案外憑證檔路徑及登入設定名稱分別提供給 `LANLAN_CLASP_AUTH`、`LANLAN_CLASP_USER` 環境變數；實際值不寫入文件，不複製其他人的憑證：
 

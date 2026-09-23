@@ -1,0 +1,114 @@
+.artwork-sections {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+.artwork-sections [aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.artwork-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.artwork-admin-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+.artwork-admin-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #f5edc5;
+}
+.artwork-admin-card strong,
+.artwork-admin-card span {
+  overflow-wrap: anywhere;
+}
+.artwork-admin-card:hover,
+.artwork-admin-card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.artwork-jobs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.artwork-job {
+  text-align: left;
+  white-space: normal;
+}
+.artwork-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.artwork-preview {
+  align-self: start;
+  min-width: 0;
+}
+#artwork-preview-media {
+  min-height: 200px;
+  display: grid;
+  place-items: center;
+  background: #f5edc5;
+  border-radius: 14px;
+  padding: 12px;
+}
+#artwork-preview-media img,
+#artwork-preview-media video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+}
+#artwork-confirmations label {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  margin: 12px 0;
+  line-height: 1.7;
+}
+#artwork-confirmations input {
+  flex: 0 0 auto;
+  width: auto;
+  margin-top: 7px;
+}
+.artwork-dialog fieldset {
+  min-width: 0;
+}
+.artwork-dialog input[type="file"] {
+  max-width: 100%;
+}
+#artwork-discard-confirm {
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+}
+@media (max-width: 900px) {
+  .artwork-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .artwork-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .artwork-editor-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { root, output, resolveWithin } from "./lib/paths.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
 import { readVideoAssets, readHeroVideo } from "./lib/video-assets.mjs";
+import { readArtworkCatalog } from "./lib/artworks.mjs";
 const assetRoot = path.join(output, "assets/site", await siteAssetVersion(path.join(root, "src")));
 const works = JSON.parse(
   await readFile(path.join(root, "content/works.json"), "utf8"),
@@ -13,6 +14,13 @@ const site = JSON.parse(
   await readFile(path.join(root, "content/site.json"), "utf8"),
 );
 const videoAssets = await readVideoAssets(works);
+const { works: catalogWorks, manifest: artworkManifest } = await readArtworkCatalog(works, videoAssets);
+for (const item of artworkManifest.items) {
+  for (const asset of item.media?.assets || []) {
+    const bytes = await readFile(resolveWithin(output, asset.path));
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), asset.sha256, "作品素材未正確輸出");
+  }
+}
 const heroVideo = await readHeroVideo();
 for (const kind of ["video", "poster"]) {
   const bytes = await readFile(resolveWithin(output, heroVideo[kind].src));
@@ -132,10 +140,10 @@ assert.ok(
   !(await readFile(path.join(output, "sitemap.xml"), "utf8")).includes(".html"),
   "sitemap 不應列出舊 HTML 網址",
 );
-assert.equal([...html.matchAll(/class="artwork"/g)].length, works.length + 1);
+assert.equal([...html.matchAll(/class="artwork"/g)].length, catalogWorks.length);
 assert.equal(
   [...html.matchAll(/<video\b/g)].length,
-  works.length + 3,
+  catalogWorks.filter(work => work.type === "video").length + 3,
   "所有影片作品與首屏三件作品皆應使用影片元素",
 );
 for (const [video] of html.matchAll(/<video\b[^>]*>/g)) {
@@ -147,14 +155,15 @@ for (const [video] of html.matchAll(/<video\b[^>]*>/g)) {
     );
   assert.ok(!/\ssrc=|\sautoplay(?:\s|>)/.test(video), "背景影片必須由可見性控制載入與播放");
   assert.ok(video.includes('preload="none"'), "背景影片不可預載");
-  assert.ok(video.includes("assets/videos/optimized/"), "背景影片必須使用壓縮版");
+  assert.ok(video.includes("assets/videos/optimized/") || video.includes("/preview.mp4"), "背景影片必須使用壓縮版");
   if (video.includes("data-poster="))
     assert.ok(!/\sposter=/.test(video), "作品縮圖必須延遲載入");
 }
 const portfolio = JSON.parse(html.match(/<script id="portfolio-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
 for (const work of portfolio.works.filter((item) => item.type === "video"))
-  assert.equal(work.playbackSrc, videoAssets.get(work.id).display.src, "檢視器必須使用壓縮版");
+  assert.equal(work.playbackSrc, catalogWorks.find(item => item.id === work.id).playbackSrc, "檢視器必須使用壓縮版");
 const previewSources = new Set([...videoAssets.values()].map((item) => `./${item.preview.src}`));
+for (const work of catalogWorks.filter(item => item.type === "video")) previewSources.add(`./${work.previewSrc}`);
 previewSources.add(`./${heroVideo.video.src}`);
 for (const [, source] of html.matchAll(/<video\b[^>]*data-src="([^"]+)"/g))
   assert.ok(previewSources.has(source), "背景影片不可使用展示版或原始檔");
@@ -226,6 +235,15 @@ async function checkModules(directory) {
   }
 }
 await checkModules(assetRoot);
+async function artifactBytes(directory) {
+  let total = 0;
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const file = path.join(directory, entry.name);
+    total += entry.isDirectory() ? await artifactBytes(file) : (await stat(file)).size;
+  }
+  return total;
+}
+assert.ok(await artifactBytes(output) <= 900 * 1024 * 1024, "網站產物超過 900 MiB 預留上限，請先處理容量再發布");
 console.log(
   `驗證通過：${works.length} 支影片、${formAssets.length} 筆表單素材來源、${commission.stickerOptions.length} 款選項、靜態資源、模組依賴、產物一致性、分類與站內錨點。`,
 );

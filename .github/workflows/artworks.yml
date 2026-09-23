@@ -1,0 +1,50 @@
+name: 更新作品
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+
+permissions:
+  contents: write
+
+# GAS 保有完整工作佇列；排程補接 dispatch 中斷或被 GitHub 合併的待處理執行。
+concurrency:
+  group: artwork-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main' && vars.ARTWORKS_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: 取得主分支
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 設定 Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+          cache: npm
+      - name: 安裝依賴與媒體工具
+        run: |
+          npm ci
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+      - name: 驗證媒體處理
+        run: npm run test:media
+      - name: 處理佇列、核對原檔並發布
+        run: node scripts/artwork-worker.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ARTWORK_API_URL: ${{ secrets.ARTWORK_API_URL }}
+          ARTWORK_SITE_ID: ${{ vars.ARTWORK_SITE_ID }}
+          ARTWORK_WORKER_SECRET: ${{ secrets.ARTWORK_WORKER_SECRET }}
+          ARTWORK_APP_ID: ${{ vars.ARTWORK_APP_ID }}
+          ARTWORK_INSTALLATION_ID: ${{ vars.ARTWORK_INSTALLATION_ID }}
+          ARTWORK_APP_PRIVATE_KEY: ${{ secrets.ARTWORK_APP_PRIVATE_KEY }}
+          SITE_URL: ${{ vars.ARTWORK_SITE_URL }}

@@ -1,7 +1,8 @@
 import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
 import path from "node:path";
 import { root } from "./lib/paths.mjs";
-import { readCommission } from "./lib/content.mjs";
+import { readCommission, readContent } from "./lib/content.mjs";
+import { stickerWork } from "./lib/artworks.mjs";
 
 // 後端產物獨立於 dist，避免把程式或未來設定一起發布到 Pages。
 const out = path.join(root, "build/apps-script");
@@ -17,6 +18,9 @@ const contract = (await read("src/features/orders/contract.js"))
 const attachments = (await read("src/features/orders/attachment-contract.js")).replace(/^export /gm, "");
 const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareOrderAge, attachmentManifest, attachmentFileError, formatPriceRange, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
 await writeFile(path.join(out, "Core.gs"), core);
+const artworks = (await read("src/features/artworks/contract.js")).replace(/^export /gm, "");
+await writeFile(path.join(out, "ArtworkCore.gs"), `var ArtworkCore_ = (() => {\n${artworks}\nreturn { ARTWORK_TYPES, ARTWORK_MAX_BYTES, artworkFields, artworkFile, artworkMime, artworkOperation, mergeArtworks };\n})();\n`);
+await writeFile(path.join(out, "ArtworkBase.gs"), `const ARTWORK_BASE_ = ${JSON.stringify([...(await readContent("works.json")), stickerWork])};\n`);
 await writeFile(
   path.join(out, "Config.gs"),
   `const COMMISSION_CONFIG_ = ${JSON.stringify(await readCommission())};\n`,
@@ -30,7 +34,7 @@ await copyFile(
   path.join(root, "node_modules/node-forge/LICENSE"),
   path.join(out, "THIRD_PARTY_LICENSE.txt"),
 );
-for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "appsscript.json"]) {
+for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "appsscript.json"]) {
   await copyFile(
     path.join(root, "backend/apps-script", file),
     path.join(out, file),

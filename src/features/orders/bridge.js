@@ -71,14 +71,14 @@ export function createBridge(apiUrl, host = window, doc = document) {
   return async request => {
     const { peer, peerOrigin, channel } = await connect();
     const text = JSON.stringify(request);
-    if (text.length > (request.action === "orders.upload" ? API_MAX_REQUEST_CHARS : 40000)) throw new Error("請求內容過大");
+    if (text.length > (["orders.upload", "admin.artworks.upload"].includes(request.action) ? API_MAX_REQUEST_CHARS : 40000)) throw new Error("請求內容過大");
     return new Promise((resolve, reject) => {
       const id = host.crypto.randomUUID();
       const timer = host.setTimeout(() => {
         pending.delete(id);
         // 已送出的修改可能已生效；不可自動換用另一通道重送。
         reject(new Error("服務回應逾時"));
-      }, ["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(request.action) ? 120000 : 45000);
+      }, request.action.startsWith("admin.artworks.") || ["orders.upload", "orders.submit", "admin.attachment", "admin.retryNotification"].includes(request.action) ? 120000 : 45000);
       pending.set(id, { resolve, reject, timer });
       peer.postMessage({ type: "lanlan:request", channel, id, request: text }, peerOrigin);
     });

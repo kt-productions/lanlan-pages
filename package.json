@@ -13,6 +13,7 @@
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
     "test": "node scripts/build-backend.mjs && node --test tests/*.test.mjs",
+    "test:media": "node --test tests/artwork-media.integration.mjs",
     "dev": "node scripts/serve.mjs",
     "preview": "node scripts/serve.mjs --dist",
     "build:backend": "node scripts/build-backend.mjs"

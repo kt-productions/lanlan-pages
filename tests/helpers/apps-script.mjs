@@ -11,7 +11,7 @@ import { readCommission } from "../../scripts/lib/content.mjs";
 
 export const config = await readCommission();
 const source = await Promise.all(
-  ["Forge.gs", "Core.gs", "Config.gs", "Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs"].map(
+  ["Forge.gs", "Core.gs", "Config.gs", "ArtworkCore.gs", "ArtworkBase.gs", "Auth.gs", "Orders.gs", "Attachments.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "Web.gs"].map(
     async (name) => [
       name,
       await readFile(

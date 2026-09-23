@@ -11,6 +11,8 @@ import { createLoginPopup } from "../../features/orders/login-popup.js";
 import { createAdminSession } from "../../features/orders/admin-session.js";
 import { setupBoardDrag, statusUpdate } from "../../features/orders/board-drag.js";
 
+import { setupArtworkAdmin } from "../../features/artworks/admin.js";
+
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
 );
@@ -92,6 +94,8 @@ const drag = setupBoardDrag(list, {
   onMove: moveOrder,
 });
 
+const artworks = setupArtworkAdmin({ api, getToken: () => token, report, beforeSwitch: afterDiscard });
+
 function message(text, focus = false) {
   status.textContent = text;
   if (dialog.open) editStatus.textContent = text;
@@ -145,6 +149,7 @@ function clearPendingLogin() {
   sessionStorage.removeItem(storageKey);
 }
 function clearSession(removeSaved = true) {
+  artworks.clear();
   clearAdminNavigation();
   drag.reset();
   if (removeSaved) savedSession.clear();
@@ -250,6 +255,7 @@ async function work(task, operation = "load") {
   if (busy) return;
   busy = true;
   const controls = [
+    ...document.querySelectorAll("#admin-sections button"),
     ...workspace.querySelectorAll("button,input,select,textarea"),
     ...dialog.querySelectorAll("button,input,select,textarea"),
     logout,
@@ -475,6 +481,7 @@ function activateSession(session) {
   sessionTimer = setTimeout(checkSessionExpiry, Math.max(0, sessionExpiresAt - Date.now()));
   loginPanel.hidden = true;
   workspace.hidden = logout.hidden = false;
+  artworks.activate();
 }
 function checkSessionExpiry() {
   if (token && sessionExpiresAt <= Date.now()) {

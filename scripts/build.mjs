@@ -4,6 +4,7 @@ import { root, output as out } from "./lib/paths.mjs";
 import { readContent, readCommission } from "./lib/content.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
 import { readVideoAssets, readHeroVideo } from "./lib/video-assets.mjs";
+import { readArtworkCatalog } from "./lib/artworks.mjs";
 import {
   escapeHtml as escape,
   inlineJson,
@@ -28,29 +29,7 @@ if (
     "integration.json 的 apiUrl 必須是 Apps Script 正式 Web App 網址。",
   );
 }
-const stickers = {
-  id: "stickers-01",
-  category: "stickers",
-  title: "48 種小表情",
-  type: "image",
-  src: "assets/originals/stickers.png",
-  poster: "assets/posters/stickers.webp",
-  width: 5761,
-  height: 4320,
-  alt: "爛爛的 48 款貼圖示例，包含開心、疑惑、愛心、哭泣與日常表情。",
-};
-const allWorks = [
-  ...rawWorks.map((work) => ({
-    ...work,
-    previewSrc: videoAssets.get(work.id).preview.src,
-    playbackSrc: videoAssets.get(work.id).display.src,
-  })),
-  stickers,
-];
-// 使用者確認編號越大越新；同號保留來源順序，精選紀錄不再優先插入。
-const works = [...allWorks].sort(
-  (a, b) => Number(b.id.split("-").at(-1)) - Number(a.id.split("-").at(-1)),
-);
+const { works, manifest: artworkManifest } = await readArtworkCatalog(rawWorks, videoAssets);
 const categories = { animation: "角色動畫", chibi: "小動圖", stickers: "貼圖" };
 const siteUrl = new URL(
   process.env.SITE_URL || "http://127.0.0.1:4173/lanlan-pages/",
@@ -80,6 +59,7 @@ const replacements = {
   ),
   INTEGRATION_DATA: inlineJson({ apiUrl: integration.apiUrl || "" }),
   WORKS: htmlWorks,
+  ARTWORK_PANEL: await readFile(path.join(root, "src/features/artworks/panel.html"), "utf8"),
   HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
   HERO_MAIN_SRC: escape(heroVideo.video.src),
   HERO_MAIN_POSTER: escape(heroVideo.poster.src),
@@ -103,7 +83,7 @@ const replacements = {
     )
     .join("\n"),
   DATA: inlineJson({
-    works: works.map(({ id, category, title, type, src, playbackSrc, poster, alt }) => ({
+    works: works.map(({ id, category, title, type, src, playbackSrc, poster, alt, animated, description }) => ({
       id,
       category,
       title,
@@ -112,6 +92,8 @@ const replacements = {
       playbackSrc,
       poster,
       alt,
+      animated,
+      description,
     })),
     services: site.services,
   }),
@@ -148,9 +130,10 @@ const pages = [
 ];
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
+const allowedGifs = new Set(artworkManifest.items.flatMap(item => item.media?.assets.map(asset => asset.path) || []).filter(file => file.endsWith(".gif")));
 await cp(path.join(root, "public"), out, {
   recursive: true,
-  filter: (source) => !source.endsWith(".gif"),
+  filter: (source) => !source.endsWith(".gif") || allowedGifs.has(path.relative(path.join(root, "public"), source).split(path.sep).join("/")),
 });
 // 保留來源模組相對位置；只複製 JS／CSS，不讓模板與開發文件進入網站。
 const assetVersion = await siteAssetVersion(path.join(root, "src"));
@@ -221,6 +204,7 @@ for (const page of pages) {
   }
 }
 await writeFile(path.join(out, ".nojekyll"), "");
+await writeFile(path.join(out, "release.json"), JSON.stringify({ commitSha: /^[a-f0-9]{40}$/.test(process.env.GITHUB_SHA || "") ? process.env.GITHUB_SHA : null }) + "\n");
 await writeFile(
   path.join(out, "robots.txt"),
   `User-agent: *\nAllow: /\nSitemap: ${siteUrl.href}sitemap.xml\n`,

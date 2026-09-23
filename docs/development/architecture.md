@@ -9,6 +9,7 @@
 | `content/integration.json` | 公開的 Apps Script Web App URL，空值表示未啟用，禁止放憑證 |
 | `content/site.json` | 網站資訊、首頁展示價目、原表單來源 URL、社群連結、原精選 ID 紀錄（不再決定排序） |
 | `content/works.json` | 原站 94 支影片的資料、來源 URL、來源頁、尺寸、長度、位元組與 SHA-256 |
+| `content/artworks.json` | 後台發布的文字／媒體覆寫及下架紀錄；保留穩定 ID、revision、操作 ID 與來源雜湊 |
 | `content/video-assets.json` | 各作品的預覽版／展示版、編碼設定及原始來源對應 |
 | `content/source-assets.json` | 首頁貼圖總覽原圖的來源紀錄 |
 | `content/commission.json` | 站內表單規則、計價、草稿版本、來源、檔案限制、已確認更新與待確認差異 |
@@ -19,10 +20,12 @@
 | `public/assets/videos/optimized/` | 兩種壓縮版，檔名含內容雜湊；不覆蓋原始影片 |
 | `public/assets/posters/` | 網頁縮圖；保留角色完整比例 |
 | `public/assets/originals/` | 首頁貼圖總覽 PNG，保留下載原檔 |
+| `public/assets/artworks/` | 以作品 ID／來源雜湊分隔的新增原檔與衍生檔，由作品工作管理 |
 | `src/pages/home/` | 首頁 `index.html` 模板、`index.js` 入口與 `home.css` 專用樣式 |
 | `src/pages/commission/` | 委託頁 `index.html` 模板、`index.js` 流程入口與 `commission.css` |
 | `src/pages/progress/`、`src/pages/admin/` | 公開進度、管理員登入及訂單編輯介面 |
 | `src/features/orders/` | API 傳輸、共用驗證與公開投影、進度呈現及後台編輯 |
+| `src/features/artworks/` | 作品契約、後台清單與草稿編輯、預覽、發布及清理狀態 |
 | `backend/apps-script/` | OIDC 驗證、Sheets 讀寫、版本控制、通知與 API 入口 |
 | `build/apps-script/` | 獨立後端打包產物，不進入網站 dist |
 | `src/features/portfolio/` | `gallery.js` 分類／分批、`playback.js` 背景播放、`lightbox.js` 檢視器 |
@@ -37,7 +40,9 @@
 
 修改首頁價目或聯絡方式：編輯 `content/site.json`；委託規則由 `content/commission.json` 管理，表單介面在 `src/pages/commission/index.js` 與 `src/pages/commission/index.html`。不要另外修改建置 HTML。
 
-增加作品：放入 MP4 與 WebP 縮圖，在 `content/works.json` 新增一筆，沿用既有欄位；ID 必須唯一，category 使用 `animation` 或 `chibi`，尺寸、長度與雜湊必須反映實際檔案。使用者於 2026-09-24 確認編號越大越新，作品牆按 ID 數字由大到小排列，同號保留來源順序；新增作品須沿用此編號方向。貼圖總覽目前由建置腳本加入。
+作品管理啟用後，繪師由後台新增、修改或下架，GAS 保存私人草稿與 Drive 暫存，Actions 處理 PNG／JPG／GIF／MP4 並更新 `content/artworks.json`。`scripts/lib/artworks.mjs` 將覆寫清單合併原站作品與貼圖總覽，核對全部受管素材的大小及 SHA-256。原 `content/works.json` 保留來源用途；發布與設定見[作品管理與發布](artwork-service.md)。
+
+維護既有原站影片時，沿用 `content/works.json` 與影片壓縮工具，尺寸、長度與雜湊必須反映實際原檔。使用者於 2026-09-24 確認編號越大越新，作品牆按 ID 數字由大到小排列，同號保留來源順序；後台配號沿用此方向。貼圖總覽的共用基底由 `scripts/lib/artworks.mjs` 定義，不改動委託表單款式。
 
 作品名稱、精選清單與首屏素材的對應見[作品與素材盤點](../reference/assets.md)。修改原表單內容、費率或草稿時，分別參照[表單規格](../reference/commission.md)、[來源存檔](../reference/source-forms.md)及[草稿契約](../reference/draft-schema.md)，保留來源與目前規則的區別。
 
@@ -61,7 +66,7 @@
 
 例如首頁腳本網址為 `assets/site/<內容版本>/pages/home/index.js`，其中的 `../../shared/navigation.js` 由模組檔案所在位置解析；作品 `./assets/videos/...` 則由 HTML 頁面位置解析。來源移入 `pages/` 不代表網站網址也多了一層。`npm run check` 會檢查模組匯入及 JS／CSS 產物與來源是否一致。
 
-`public/` 會複製到產物，既有建置仍排除 `.gif`；`docs/` 不打包。2026-09-23 依使用者要求移除未開放及未使用素材，原始副本移至專案外；網站動畫使用 MP4。不要把私人來源副本放回 `public/`。
+`public/` 會複製到產物；既有首頁來源 GIF 仍排除，只有 `content/artworks.json` 明確引用的受管 GIF 會加入網站。`docs/` 不打包。2026-09-23 依使用者要求移除未開放及未使用素材，原始副本移至專案外；不要把私人來源副本放回 `public/`。
 
 ## 執行與資料邊界
 
