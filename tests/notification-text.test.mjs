@@ -1,12 +1,34 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
+import vm from "node:vm";
 import { backend, submission, config } from "./helpers/apps-script.mjs";
 import { formatPriceRange } from "../src/features/commission/pricing.js";
 
 const response = (code = 200) => ({ getResponseCode: () => code, getContentText: () => JSON.stringify({ ok: code === 200 }) });
 const texts = (app) => app.calls.filter(call => call.url.endsWith("/sendMessage")).map(call => JSON.parse(call.options.payload));
 const saved = (app) => Object.fromEntries(app.rows[0].map((key, index) => [key, app.rows[1][index]]));
+
+test("動畫確認幣別後仍可重取舊回執及接續上傳，歷史金額不被改寫", () => {
+  const app = backend();
+  vm.runInContext('COMMISSION_CONFIG_.services.animation.pricing.currency = null', app.context);
+  const previous = submit(app);
+  const originalRow = structuredClone(app.rows[1]);
+  const notifications = texts(app).length;
+  const bytes = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7WQAAAAASUVORK5CYII=", "base64");
+  const pending = { requestId: randomUUID(), details: submission({ referenceUrl: "" }),
+    attachments: [{ name: "虛構參考圖.png", type: "image/png", size: bytes.length,
+      sha256: createHash("sha256").update(bytes).digest("hex") }] };
+  assert.equal(app.invoke("orders.upload", { ...pending, index: 0, data: bytes.toString("base64") }).ok, true);
+  vm.runInContext('COMMISSION_CONFIG_.services.animation.pricing.currency = "TWD"', app.context);
+  assert.equal(app.invoke("orders.submit", previous.input).data.orderId, previous.orderId);
+  assert.deepEqual(app.rows[1], originalRow);
+  assert.equal(texts(app).length, notifications);
+  assert.equal(app.invoke("orders.submit", pending).ok, true);
+  const details = JSON.parse(app.rows[2][app.rows[0].indexOf("detailsJson")]);
+  assert.equal(details.estimatedPrice.currency, "TWD");
+  assert.deepEqual([details.estimatedPrice.min, details.estimatedPrice.max], [4500, 6500]);
+});
 function submit(app, details = submission()) {
   const input = { requestId: randomUUID(), details };
   const result = app.invoke("orders.submit", input);
@@ -23,6 +45,7 @@ test("三類委託完整投影適用欄位，否與未詢問不同；預估沿�
     submit(app, details);
     const message = texts(app)[0];
     const clean = JSON.parse(saved(app).detailsJson);
+    assert.equal(clean.estimatedPrice.currency, "TWD");
     for (const part of [config.services[service].name, "暱稱：虛構委託者", "聯絡平台：Telegram",
       "聯絡方式：@fictional_test", "參考連結：https://example.com/reference", "可否當作品範例：是",
       "付款方式：PayPal", "已閱讀委託說明與製作流程：是", "計價明細：", "管理後台：https://example.com/lanlan-pages/admin/",
@@ -49,7 +72,7 @@ test("三類委託完整投影適用欄位，否與未詢問不同；預估沿�
     if (service === "animation") {
       assert.match(message.text, /循環動畫加購轉場：加購/);
       assert.match(message.text, /背景與特效：單色／無背景/);
-      assert.doesNotMatch(message.text, /NT\$/);
+      assert.match(message.text, /NT\$ 10,500 ~ 15,225/);
     }
     assert.equal(message.parse_mode, undefined);
     assert.equal(message.disable_web_page_preview, true);

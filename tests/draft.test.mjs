@@ -56,6 +56,7 @@ test("第 4 版草稿保留五個參考檔的中繼資料，下載不會變成�
     "estimatedPrice",
   ]);
   assert.equal(result.schemaVersion, 4);
+  assert.equal(result.estimatedPrice.currency, "TWD");
   assert.equal(result.referenceUrl, "");
   assert.equal(result.mode, "local-preview");
   assert.equal(result.nickname, "測試委託者");

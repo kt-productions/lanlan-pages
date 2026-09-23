@@ -12,7 +12,7 @@ export function renderEstimate(config, service, selection, estimate) {
     "#estimate-breakdown",
     estimate.items.map((item) => [
       item.label,
-      formatPriceRange(item.min, item.max),
+      formatPriceRange(item.min, item.max, estimate.currency),
     ]),
   );
   populateList("#estimate-notes", estimate.notes);
@@ -24,7 +24,7 @@ export function renderEstimate(config, service, selection, estimate) {
       ? Array.from(
           { length: characterCount },
           (_, index) =>
-            `角色 ${index + 1}：+${formatPriceRange(complexity.min, complexity.max)}`,
+            `角色 ${index + 1}：+${formatPriceRange(complexity.min, complexity.max, estimate.currency)}`,
         )
       : [],
   );

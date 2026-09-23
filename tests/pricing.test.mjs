@@ -18,6 +18,7 @@ const quote = (service, values = {}) =>
 const amounts = (estimate) => [estimate.min, estimate.max];
 
 test("動畫加價、折抵與付款切換使用同一組合計", () => {
+  assert.equal(quote("animation").currency, "TWD");
   assert.deepEqual(amounts(quote("animation")), [4500, 6500]);
   assert.deepEqual(
     amounts(quote("animation", { background: "no" })),

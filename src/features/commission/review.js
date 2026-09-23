@@ -59,7 +59,7 @@ export function renderReview(config, snapshot) {
   rows.push([
     "計價明細",
     snapshot.estimatedPrice.items
-      .map((item) => item.label + "：" + formatPriceRange(item.min, item.max))
+      .map((item) => item.label + "：" + formatPriceRange(item.min, item.max, snapshot.estimatedPrice.currency))
       .join("\n"),
   ]);
   rows.push(["報價說明", snapshot.estimatedPrice.notes.join("\n")]);

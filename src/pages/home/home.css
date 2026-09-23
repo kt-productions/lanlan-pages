@@ -274,7 +274,7 @@ body.modal-open {
 }
 .price-row {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) 240px;
+  grid-template-columns: 62px minmax(0, 1fr) minmax(280px, max-content);
   align-items: center;
   gap: 30px;
   padding-block: 22px;
@@ -305,7 +305,7 @@ body.modal-open {
 }
 .price-amount small {
   font-size: 22px;
-  margin-left: 8px;
+  letter-spacing: normal;
 }
 .pricing-notes {
   margin-block: 24px;
@@ -479,7 +479,7 @@ body.modal-open {
     gap: 24px;
   }
   .price-row {
-    grid-template-columns: 48px minmax(0, 1fr) 180px;
+    grid-template-columns: 48px minmax(0, 1fr) minmax(250px, max-content);
     gap: 20px;
   }
   .price-amount {

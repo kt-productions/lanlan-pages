@@ -92,8 +92,12 @@ function submissionInput_(payload) {
     const error = Core_.attachmentFileError(file, details.service === "stickers");
     Core_.requireValue(!error, error);
   });
+  // 動畫原先以未知幣別建立重試識別；確認為 TWD 後保留相同雜湊，讓舊回執及上傳可接續。
+  const hashDetails = details.service === "animation" && details.estimatedPrice.currency === "TWD"
+    ? Object.assign({}, details, { estimatedPrice: Object.assign({}, details.estimatedPrice, { currency: null }) })
+    : details;
   return { details: details, manifest: manifest,
-    hash: digest_(JSON.stringify(manifest.length ? { details: details, attachments: manifest } : details)) };
+    hash: digest_(JSON.stringify(manifest.length ? { details: hashDetails, attachments: manifest } : hashDetails)) };
 }
 
 function checkSubmissionCapacity_(orders, details, requestId) {

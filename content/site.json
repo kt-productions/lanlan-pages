@@ -18,8 +18,9 @@
       "id": "stickers",
       "name": "貼圖包",
       "description": "48 種貼圖可以選擇，把小表情帶進聊天裡。",
-      "price": "50–250",
-      "suffix": "",
+      "price": "50 ~ 250",
+      "prefix": "NT$",
+      "suffix": "起",
       "form": "https://forms.gle/TwkPZQmLTaff1xSQ7"
     },
     {
@@ -27,6 +28,7 @@
       "name": "角色動畫",
       "description": "完全客製化，也可製作直播轉場。",
       "price": "4,500",
+      "prefix": "NT$",
       "suffix": "起",
       "form": "https://forms.gle/ZTmeUY84JrfVygXQ9"
     },
@@ -35,6 +37,7 @@
       "name": "小動圖",
       "description": "可愛的 Q 版小動畫，也可以只委託插圖。",
       "price": "1,200",
+      "prefix": "NT$",
       "suffix": "起",
       "form": "https://forms.gle/gTDc4FxyWY1nMrMM9"
     }

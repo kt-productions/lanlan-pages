@@ -37,7 +37,6 @@ const nickname = document.querySelector("#commission-nickname");
 let service = "animation";
 let step = 0;
 let snapshot = null;
-const formatMoney = (value) => new Intl.NumberFormat("zh-TW").format(value);
 const submission = setupSubmission(
   app,
   form,
@@ -152,12 +151,12 @@ function applyService() {
         details.pricing.commercialMultiplier +
         "。"
       : service === "animation"
-        ? "商業用途加收 " + formatPriceRange(details.pricing.commercial) + "。"
+        ? "商業用途加收 " + formatPriceRange(details.pricing.commercial, undefined, details.pricing.currency) + "。"
         : "";
   if (service !== "stickers") {
     document.querySelector("#second-character-label").textContent =
       service === "animation"
-        ? `雙人（+${formatMoney(details.pricing.secondCharacter)}）`
+        ? `雙人（+${formatPriceRange(details.pricing.secondCharacter, undefined, details.pricing.currency)}）`
         : `雙人（+${details.pricing.secondCharacterPercent}%）`;
     document.querySelector("#character-count-hint").textContent =
       service === "animation"
@@ -169,7 +168,7 @@ function applyService() {
   const rush = details.pricing.rush;
   document.querySelector("#rush-hint").textContent = rush
     ? "急件加收 " +
-      formatPriceRange(rush.min, rush.max) +
+      formatPriceRange(rush.min, rush.max, details.pricing.currency) +
       "，需先聯絡確認是否能安排。"
     : "";
   const paypalRate = details.pricing.paypalPercent;

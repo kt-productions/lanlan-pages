@@ -94,7 +94,7 @@ const replacements = {
   SERVICES: site.services
     .map(
       (s, i) =>
-        `<article class="price-row"><span class="price-number">0${i + 1}</span><div><h3>${escape(s.name)}</h3><p>${escape(s.description)}</p></div><div class="price-amount">${escape(s.price)}${s.suffix ? `<small>${escape(s.suffix)}</small>` : ""}</div></article>`,
+        `<article class="price-row"><span class="price-number">0${i + 1}</span><div><h3>${escape(s.name)}</h3><p>${escape(s.description)}</p></div><div class="price-amount">${s.prefix ? `<small class="price-prefix">${escape(s.prefix)}</small> ` : ""}${escape(s.price)}${s.suffix ? ` <small>${escape(s.suffix)}</small>` : ""}</div></article>`,
     )
     .join("\n"),
   SOCIALS: site.socials

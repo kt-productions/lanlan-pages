@@ -155,6 +155,6 @@ export function formatPriceRange(min, max = min, currency = null) {
   const amount =
     min === max
       ? number.format(min)
-      : `${number.format(min)}–${number.format(max)}`;
-  return currency === "TWD" ? "NT$" + amount : amount + " 元";
+      : `${number.format(min)} ~ ${number.format(max)}`;
+  return currency === "TWD" ? "NT$ " + amount : amount + " 元";
 }
