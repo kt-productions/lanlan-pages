@@ -84,7 +84,7 @@ export function artworkBackend() {
   const machine = (action, payload = {}, envelopeChange = {}) => {
     const body = JSON.stringify({ siteId: "fixture", action, ...payload });
     const timestamp = Date.now();
-    const nonce = randomUUID();
+    const nonce = envelopeChange.nonce || randomUUID();
     const signature = createHmac("sha256", properties.get("ARTWORK_WORKER_SECRET")).update(`${timestamp}.${nonce}.${body}`).digest("hex");
     return service.invoke("artworks.worker", { body, timestamp, nonce, signature, ...envelopeChange });
   };

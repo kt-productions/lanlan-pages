@@ -106,6 +106,30 @@ test("遠端原檔雜湊不符時不保存也不清理；成功後清理不必�
   assert.ok(service.files.has("fixture-folder"));
   assert.equal(service.machine("cleanup", auth).data.cleanup, "cleaned");
 });
+
+test("領取及結束租約的回應遺失後，同一簽章請求可取回結果且不影響新租約", () => {
+  const service = artworkBackend();
+  const { job, auth } = prepared(service);
+  const lease = JSON.parse(service.properties.get("ARTWORK_LEASE"));
+  const replay = service.machine("claim", { owner: "123:1" }, { nonce: lease.claimNonce });
+  assert.equal(replay.data.leaseId, auth.leaseId);
+  assert.equal(replay.data.job.operationId, job.operationId);
+  assert.equal(service.machine("claim", { owner: "123:1" }).data.busy, true);
+  const nonce = randomUUID();
+  assert.equal(service.machine("failed", auth, { nonce }).data.state, "failed");
+  service.admin("publish", { operationId: job.operationId });
+  const next = service.machine("claim", { owner: "124:1" }).data;
+  assert.equal(service.machine("failed", auth, { nonce }).data.state, "processing");
+  assert.equal(JSON.parse(service.properties.get("ARTWORK_LEASE")).leaseId, next.leaseId);
+  assert.equal(service.machine("cleanup", auth, { nonce }).error.code, "CONFLICT");
+  const sha = service.commit(next.job);
+  service.machine("stored", { operationId: job.operationId, leaseId: next.leaseId, commitSha: sha });
+  service.remote.production = sha;
+  const promotedNonce = randomUUID();
+  const promoted = { operationId: job.operationId, leaseId: next.leaseId };
+  assert.equal(service.machine("promoted", promoted, { nonce: promotedNonce }).data.state, "promoted");
+  assert.equal(service.machine("promoted", promoted, { nonce: promotedNonce }).data.state, "promoted");
+});
 test("Drive 刪除回報中斷、清理後發布失敗均可重試，且不要求重傳", () => {
   const service = artworkBackend();
   const { job, auth } = prepared(service);

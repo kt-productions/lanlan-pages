@@ -18,12 +18,20 @@ function artworkWorker_(envelope) {
     const lease = JSON.parse(props.getProperty("ARTWORK_LEASE") || "null");
     if (request.action === "claim") {
       Core_.requireValue(typeof request.owner === "string" && /^\d+:\d+$/.test(request.owner), "工作執行識別不正確。");
-      if (lease && lease.until > Date.now()) return { job: null, busy: true };
+      if (lease && lease.until > Date.now()) {
+        // Google 的一次性結果網址可能失效；同一請求重送時取回原租約，不再領取另一份工作。
+        if (lease.owner === request.owner && lease.claimNonce === envelope.nonce) {
+          const saved = artworkJob_(lease.operationId);
+          return { job: Object.assign(artworkPublicJob_(saved), { siteId: saved.siteId, publicConfirmed: saved.publicConfirmed,
+            backupConfirmed: saved.backupConfirmed }), leaseId: lease.leaseId };
+        }
+        return { job: null, busy: true };
+      }
       const job = artworkJobs_().find(function (item) {
         return item.siteId === config.site && (["queued", "processing", "stored"].includes(item.state) || item.retryRequested);
       });
       if (!job) return { job: null };
-      const next = { operationId: job.operationId, leaseId: randomKey_(), owner: request.owner, until: Date.now() + 600000 };
+      const next = { operationId: job.operationId, leaseId: randomKey_(), owner: request.owner, claimNonce: envelope.nonce, until: Date.now() + 600000 };
       props.setProperty("ARTWORK_LEASE", JSON.stringify(next));
       job.state = job.commitSha ? "stored" : "processing";
       job.retryRequested = false;
@@ -47,6 +55,19 @@ function artworkWorker_(envelope) {
       });
       props.setProperty("ARTWORK_LAST_DEPLOYED_SHA", request.commitSha);
       return { published: true };
+    }
+    // 結束租約的回應也可能遺失。只保存短期收據，不保存檔案內容；重送不得再次修改狀態。
+    const receipts = JSON.parse(props.getProperty("ARTWORK_RECEIPTS") || "[]").filter(function (item) { return item.until > Date.now(); });
+    const receipt = receipts.find(function (item) { return item.nonce === envelope.nonce && item.bodyHash === digest_(envelope.body); });
+    if (receipt) {
+      if (lease && equal_(lease.leaseId, receipt.leaseId)) props.deleteProperty("ARTWORK_LEASE");
+      return artworkPublicJob_(artworkJob_(receipt.operationId));
+    }
+    function finishLease() {
+      receipts.push({ nonce: envelope.nonce, bodyHash: digest_(envelope.body), leaseId: lease.leaseId,
+        operationId: job.operationId, until: Date.now() + 300000 });
+      props.setProperty("ARTWORK_RECEIPTS", JSON.stringify(receipts.slice(-20)));
+      props.deleteProperty("ARTWORK_LEASE");
     }
     Core_.requireValue(lease && lease.until > Date.now() && lease.operationId === request.operationId &&
       equal_(lease.leaseId, request.leaseId), "工作租約已失效，請由新的工作接續。", "CONFLICT");
@@ -82,7 +103,7 @@ function artworkWorker_(envelope) {
           job.state = manifest.items.some(function (item) { return item.operationId === job.operationId; }) ? "published" : "superseded";
         }
         writeArtworkJob_(job);
-        props.deleteProperty("ARTWORK_LEASE");
+        finishLease();
         return artworkPublicJob_(job);
       }
       case "failed":
@@ -90,7 +111,7 @@ function artworkWorker_(envelope) {
         // 不把 runner 例外、網址或憑證回寫到可見訊息。
         job.error = "作品更新未完成，請檢查 Actions 執行結果後重試。";
         writeArtworkJob_(job);
-        props.deleteProperty("ARTWORK_LEASE");
+        finishLease();
         return artworkPublicJob_(job);
       default: throw new Core_.OrderError("NOT_FOUND", "不支援這個作品工作操作。");
     }
