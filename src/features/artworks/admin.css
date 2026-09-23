@@ -87,8 +87,19 @@
   width: auto;
   margin-top: 7px;
 }
+/* 標題與操作列留在視窗內，只有內容區捲動，避免長表單把按鈕推出畫面。 */
+.artwork-dialog > form {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 50px);
+}
 .artwork-dialog fieldset {
   min-width: 0;
+}
+@media (max-width: 760px) {
+  .artwork-dialog > form {
+    max-height: calc(100dvh - 22px);
+  }
 }
 .artwork-dialog input[type="file"] {
   max-width: 100%;
