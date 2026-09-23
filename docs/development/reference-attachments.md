@@ -7,7 +7,8 @@
 1. 備份既有 GAS 來源、部署設定及 Orders；核對雲端沒有其他修改。
 2. 執行 `npm test`、`npm run build`、`npm run check`，推送 `build/apps-script` 到既有專案。新增 `Attachments.gs`、`AttachmentNotifications.gs`，manifest 啟用 Advanced Drive v3 及 `https://www.googleapis.com/auth/drive.file`。
 3. 由原部署帳號在 Apps Script 選 `Attachments.gs`、執行 `setupReferenceStorage`，親自審閱 Google 新增權限。此入口核對執行身分，建立「爛爛 LANLAN｜委託附件」私人資料夾並保存 `REFERENCE_FOLDER_ID`；再次執行只核對資料夾，不重複建立。不可將別的資料夾 ID 隨意填入。
-4. 權限完成後再次執行並確認成功，再建立新版本更新既有 Web App 部署。同步發布第 4 版前端，第三版舊分頁仍可使用原有連結收件，重新整理後才會提供新版附件功能；更舊版本收到 `VERSION` 時須重新整理。保留目前收件狀態與所有訂單。
+4. 初始化完成後，在 Drive 將同一個「爛爛 LANLAN｜委託附件」資料夾移到 `乾太工作室 KT Productions/LanLan Pages/`，保持私人存取及原 `REFERENCE_FOLDER_ID`；不要建立替代資料夾或擴大 Drive 權限。現行初始化先建立在根目錄，搬移由資源擁有者的 Drive 介面完成；既有設定再次執行只核對，不會重新建在根目錄。
+5. 權限完成後再次執行並確認成功，再建立新版本更新既有 Web App 部署。同步發布第 4 版前端，第三版舊分頁仍可使用原有連結收件，重新整理後才會提供新版附件功能；更舊版本收到 `VERSION` 時須重新整理。保留目前收件狀態與所有訂單。
 
 `drive.file` 僅允許應用程式建立或獲授權的檔案，沒有要求整個 Drive 的讀寫權限；資料夾不公開分享。Advanced Service 使用預設 Google Cloud 專案時會自動啟用 API；若專案改用自訂 Cloud 專案，需由維護者啟用 Drive API。參考 [Drive 權限](https://developers.google.com/workspace/drive/api/guides/api-specific-auth)及 [Apps Script 進階服務](https://developers.google.com/apps-script/guides/services/advanced#enable_advanced_services)。
 
