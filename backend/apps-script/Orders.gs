@@ -329,6 +329,16 @@ function updateOrder_(payload, actor) {
     const current = findOrder_(sheet, payload.orderId);
     const update = Core_.validateUpdate(payload, current, COMMISSION_CONFIG_);
     const now = new Date().toISOString();
+    // 新交稿自動記錄台灣日期；離開已交稿清掉舊日期，重新交稿不能誤用上次日期。
+    const wasDelivered = Core_.orderWorkflow(current).status === "delivered";
+    if (update.status === "delivered" && !wasDelivered) {
+      update.details.revenue = Object.assign({ depositAmount: 0, depositReceivedOn: null,
+        expectedDeliveryOn: null }, update.details.revenue || {}, {
+        deliveredOn: update.details.revenue?.deliveredOn || Core_.taipeiDate(now),
+      });
+    } else if (update.status !== "delivered" && update.details.revenue) {
+      update.details.revenue.deliveredOn = null;
+    }
     const history = JSON.parse(current.historyJson);
     // 舊內容保存在同一列的歷史欄位，與新狀態一次寫入，避免跨工作表寫入一半。
     history.push({
@@ -365,6 +375,13 @@ function updateOrder_(payload, actor) {
     writeOrder_(sheet, next);
     return adminOrder_(next);
   });
+}
+
+function revenueReport_(payload) {
+  const now = new Date().toISOString();
+  const year = payload.year === undefined ? Number(Core_.taipeiDate(now).slice(0, 4)) : payload.year;
+  // 一次讀完整 Orders 快照，避免看板的未交稿延遲載入或分頁遺漏收益。
+  return Core_.buildRevenueReport(readOrders_(orderSheet_()), year, now);
 }
 
 function notificationRecipients_() {

@@ -1,5 +1,6 @@
 @import url("../../shared/orders.css");
 @import url("../../shared/board.css");
+@import url("../../features/orders/revenue.css");
 
 .admin-toolbar {
   flex-wrap: wrap;

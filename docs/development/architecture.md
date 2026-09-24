@@ -25,7 +25,7 @@
 | `src/pages/commission/` | 委託頁 `index.html` 模板、`index.js` 流程入口與 `commission.css` |
 | `src/pages/progress/`、`src/pages/admin/` | 公開進度、管理員登入及訂單編輯介面 |
 | `src/pages/artworks/` | 獨立作品管理頁，沿用管理登入，只載入作品及發布工作 |
-| `src/features/orders/` | API 傳輸、共用驗證與公開投影、進度呈現及後台編輯 |
+| `src/features/orders/` | API 傳輸、共用驗證與公開投影、進度呈現、後台編輯與收益計算／報表；收益規則見[收益報表](../reference/revenue-report.md) |
 | `src/features/artworks/` | 作品契約、後台清單與草稿編輯、預覽、發布及清理狀態 |
 | `backend/apps-script/` | OIDC 驗證、Sheets 讀寫、版本控制、通知與 API 入口 |
 | `build/apps-script/` | 獨立後端打包產物，不進入網站 dist |

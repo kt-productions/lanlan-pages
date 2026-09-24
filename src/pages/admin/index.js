@@ -11,6 +11,7 @@ import { createLoginPopup } from "../../features/orders/login-popup.js";
 import { createAdminSession } from "../../features/orders/admin-session.js";
 import { createLoginDestination } from "../../features/orders/login-destination.js";
 import { setupBoardDrag, statusUpdate } from "../../features/orders/board-drag.js";
+import { setupRevenueReport } from "../../features/orders/revenue-view.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
@@ -93,6 +94,17 @@ const drag = setupBoardDrag(list, {
   canDrag: () => Boolean(token) && hasSnapshot && !busy && !movementBlocked && !dialog.open,
   onMove: moveOrder,
 });
+const revenue = setupRevenueReport({
+  api, getToken: () => token, report, beforeSwitch: afterDiscard,
+  openOrder(orderId) {
+    afterDiscard(async () => {
+      let order;
+      await work(async () => { order = await api("admin.get", { orderId }, token); });
+      // 等工作鎖還原控制項後才填入新訂單，避免覆蓋金額／日期欄位的停用條件。
+      if (order && token) selectOrder(order);
+    });
+  },
+});
 
 function message(text, focus = false) {
   status.textContent = text;
@@ -122,6 +134,7 @@ dialog.addEventListener("cancel", (event) => {
 });
 dialog.addEventListener("close", () => {
   document.body.classList.remove("admin-modal-open");
+  if (revenue.visible()) { revenue.focus(); return; }
   const trigger = [...list.querySelectorAll("[data-order-id]")]
     .find((card) => card.dataset.orderId === returnOrderId);
   (workspace.hidden ? login : trigger || list).focus({ preventScroll: true });
@@ -148,6 +161,7 @@ function clearPendingLogin() {
 }
 function clearSession(removeSaved = true) {
   loginDestination.clear();
+  revenue.clear();
   clearAdminNavigation();
   drag.reset();
   if (removeSaved) savedSession.clear();
@@ -253,6 +267,7 @@ async function work(task, operation = "load") {
   if (busy) return;
   busy = true;
   const controls = [
+    document.querySelector("#revenue-back"),
     ...workspace.querySelectorAll("button,input,select,textarea"),
     ...dialog.querySelectorAll("button,input,select,textarea"),
     logout,
@@ -291,6 +306,7 @@ async function work(task, operation = "load") {
   }
 }
 async function load(includeDelivered = false) {
+  revenue.invalidate();
   const label = includeDelivered ? "已交稿" : "未交稿";
   message(`正在讀取${label}委託……`);
   renderList();
@@ -374,6 +390,7 @@ async function moveOrder(orderId, nextStatus) {
     message(`正在移至「${ORDER_STATUSES[nextStatus]}」……`);
     try {
       const order = await api("admin.update", statusUpdate(current, nextStatus), token);
+      revenue.invalidate();
       orders = orders.map((item) => item.orderId === order.orderId ? order : item);
       if (!deliveredLoaded && order.status === "delivered") {
         orders = orders.filter((item) => item.orderId !== order.orderId);
@@ -418,10 +435,14 @@ form.addEventListener("submit", (event) => {
   work(async () => {
     message("正在儲存變更……");
     const order = await api("admin.update", payload, token);
-    orders = orders.map((item) =>
-      item.orderId === order.orderId ? order : item,
-    );
-    if (!deliveredLoaded && order.status === "delivered") {
+    revenue.invalidate();
+    // 報表可開啟看板尚未載入的訂單；退回製作後也要加入目前未交稿快照。
+    orders = orders.filter((item) => item.orderId !== order.orderId);
+    if (deliveredLoaded || order.status !== "delivered") orders.push(order);
+    if (revenue.visible()) {
+      selectOrder(order, false);
+      message("已儲存收益資料。");
+    } else if (!deliveredLoaded && order.status === "delivered") {
       orders = orders.filter((item) => item.orderId !== order.orderId);
       closeEditor();
       message("已儲存為已交稿；可按「載入已交稿」查看或繼續編輯。");

@@ -71,6 +71,10 @@ function callApi(text) {
             return { authenticated: true, expiresAt: actor.expiresAt };
           case "admin.list":
             return pageOrders_(payload, true);
+          case "admin.revenue":
+            return revenueReport_(payload);
+          case "admin.get":
+            return adminOrder_(findOrder_(orderSheet_(), payload.orderId));
           case "admin.update":
             return updateOrder_(payload, actor);
           case "admin.attachment":
