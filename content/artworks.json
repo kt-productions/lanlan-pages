@@ -30,6 +30,54 @@
       "revision": 1,
       "operationId": "c1559ab3-fd1c-488e-97d4-c7f425c75c12",
       "deleted": false
+    },
+    {
+      "id": "chibi-60",
+      "category": "chibi",
+      "title": "Seli",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "9906ec82-4715-4ed1-95a3-5b9477c996d7",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/original.mp4",
+        "poster": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/poster.png",
+        "playbackSrc": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/display.mp4",
+        "previewSrc": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/original.mp4",
+          "bytes": 2654200,
+          "sha256": "d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/original.mp4",
+            "bytes": 2654200,
+            "sha256": "d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402"
+          },
+          {
+            "path": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/poster.png",
+            "bytes": 215279,
+            "sha256": "c24f977d1c0bd7731d2b1d655174426786a213a22c14e0a2dd70c210a85c2e04"
+          },
+          {
+            "path": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/preview.mp4",
+            "bytes": 127457,
+            "sha256": "8c1242feac79b3346035b66641c67f5eecbf7cf9129c1be1ffc2601931bf22c8"
+          },
+          {
+            "path": "assets/artworks/chibi-60/d126f8548c406066800260a5fbf2d7d8a9a995feadf5366c8e2fac76d56e8402/display.mp4",
+            "bytes": 333579,
+            "sha256": "18de251e4319e60ae4b8e3b73205557de80f33b4ce1d448b6bec6b3d3ce82bb3"
+          }
+        ]
+      }
     }
   ]
 }
