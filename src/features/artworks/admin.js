@@ -1,4 +1,10 @@
-import { ARTWORK_CATEGORIES, ARTWORK_STATES, artworkFields, artworkFile } from "./contract.js";
+import {
+  ARTWORK_CATEGORIES,
+  ARTWORK_STATES,
+  artworkFields,
+  artworkFile,
+  compareArtworkOrder,
+} from "./contract.js";
 
 export function setupArtworkAdmin({ api, getToken, report }) {
   const $ = (id) => document.getElementById(id);
@@ -132,7 +138,8 @@ export function setupArtworkAdmin({ api, getToken, report }) {
     const epoch = generation;
     const data = await request("list");
     if (epoch !== generation) return;
-    works = data.works;
+    // 舊版 GAS 也會帶回覆寫欄位；在此套用共用排序，與公開放映室保持一致。
+    works = data.works.slice().sort(compareArtworkOrder);
     previewBase = data.previewBase || "../";
     jobs = data.jobs;
     $("artwork-new").disabled = false;

@@ -1,7 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { verify, randomUUID } from "node:crypto";
-import { artworkFile, artworkMime, mergeArtworks } from "../src/features/artworks/contract.js";
+import {
+  artworkFile,
+  artworkMime,
+  compareArtworkOrder,
+  mergeArtworks,
+} from "../src/features/artworks/contract.js";
 import { applyArtworkJob, managedPath } from "../scripts/lib/artworks.mjs";
 import { signingKeys } from "./helpers/apps-script.mjs";
 import { artworkBackend, artworkPayload, artworkPng } from "./helpers/artworks.mjs";
@@ -270,6 +275,68 @@ test("文字修改及下架不重傳媒體；覆寫清單保留舊來源與排�
   assert.equal(mergeArtworks(base, removed).length, 0);
   assert.equal(base[0].title, "舊作品");
   assert.throws(() => managedPath("assets/artworks/../../private/file.png"));
+});
+
+test("顯示順序可獨立於編號，未設定者沿用編號，同順位穩定且下架不顯示", () => {
+  const base = [
+    { id: "chibi-01", category: "chibi", title: "甲" },
+    { id: "chibi-02", category: "chibi", title: "乙" },
+    { id: "animation-02", category: "animation", title: "動畫" },
+    { id: "chibi-09", category: "chibi", title: "下架" },
+    { id: "chibi-10", category: "chibi", title: "新增" },
+  ];
+  const manifest = {
+    version: 1,
+    items: [
+      { id: "chibi-01", revision: 1, sortOrder: 8, title: "改名" },
+      { id: "chibi-09", revision: 1, sortOrder: 9, deleted: true },
+    ],
+  };
+  const expected = ["chibi-10", "chibi-01", "chibi-02", "animation-02"];
+  assert.deepEqual(mergeArtworks(base, manifest).map((work) => work.id), expected);
+  // 模擬舊版 GAS 仍按 ID 回傳，但保留覆寫欄位的資料；管理頁重新套用共用排序。
+  const legacy = base
+    .map((work) => ({ ...work, ...manifest.items.find((item) => item.id === work.id) }))
+    .filter((work) => !work.deleted)
+    .sort((a, b) => Number(b.id.split("-").at(-1)) - Number(a.id.split("-").at(-1)));
+  assert.deepEqual(legacy.sort(compareArtworkOrder).map((work) => work.id), expected);
+  assert.equal(base[0].title, "甲");
+  for (const sortOrder of [null, 0, -1, 1.5, "8", Number.MAX_SAFE_INTEGER + 1]) {
+    assert.throws(
+      () => mergeArtworks(base, { version: 1, items: [{ ...manifest.items[0], sortOrder }] }),
+      /作品顯示順序必須是正整數/,
+    );
+  }
+});
+
+test("後台改名、換檔與下架保留已指定順序，過期草稿不能蓋回人工更新", () => {
+  const base = [{ id: "chibi-01", category: "chibi", title: "甲" }];
+  const originalMedia = { src: "original.png" };
+  const manifest = {
+    version: 1,
+    items: [{ ...base[0], revision: 2, sortOrder: 8, operationId: randomUUID(), media: originalMedia }],
+  };
+  const job = {
+    operationId: randomUUID(),
+    expectedRevision: 2,
+    action: "upsert",
+    work: { ...base[0], title: "新名稱", sortOrder: 99 },
+  };
+  const renamed = applyArtworkJob(manifest, base, job);
+  assert.equal(renamed.items[0].sortOrder, 8);
+  assert.equal(renamed.items[0].title, "新名稱");
+  assert.deepEqual(renamed.items[0].media, originalMedia);
+  const replacement = { src: "replacement.png" };
+  const replaced = applyArtworkJob(manifest, base, job, replacement);
+  assert.equal(replaced.items[0].sortOrder, 8);
+  assert.deepEqual(replaced.items[0].media, replacement);
+  const removed = applyArtworkJob(manifest, base, { ...job, action: "delete" });
+  assert.equal(removed.items[0].sortOrder, 8);
+  assert.equal(removed.items[0].deleted, true);
+  assert.throws(
+    () => applyArtworkJob(manifest, base, { ...job, expectedRevision: 1 }),
+    /作品已被其他工作更新/,
+  );
 });
 
 test("放棄後清理失敗保留待清理紀錄，重試只刪原草稿；文字草稿補檔也預留清理狀態", () => {

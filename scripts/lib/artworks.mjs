@@ -117,6 +117,8 @@ export function applyArtworkJob(manifest, base, job, media) {
     operationId: job.operationId,
     deleted: job.action === "delete",
   };
+  // 後台表單只編輯文字與媒體，省略排序欄位時保留維護者已核可的顯示順序。
+  if (previous?.sortOrder !== undefined) item.sortOrder = previous.sortOrder;
   if (!item.deleted && (media || previous?.media)) item.media = media || previous.media;
   return { version: 1, items: [...manifest.items.filter((entry) => entry.id !== item.id), item] };
 }

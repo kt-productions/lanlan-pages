@@ -9,7 +9,7 @@
 | `content/integration.json` | 公開的 Apps Script Web App URL，空值表示未啟用，禁止放憑證 |
 | `content/site.json` | 網站資訊、首頁展示價目、原表單來源 URL、社群連結、原精選 ID 紀錄（不再決定排序） |
 | `content/works.json` | 原站 94 支影片的資料、來源 URL、來源頁、尺寸、長度、位元組與 SHA-256 |
-| `content/artworks.json` | 後台發布的文字／媒體覆寫及下架紀錄；保留穩定 ID、revision、操作 ID 與來源雜湊 |
+| `content/artworks.json` | 文字／媒體覆寫、指定顯示順序 `sortOrder` 及下架紀錄；保留穩定 ID、revision、操作 ID 與來源雜湊 |
 | `content/video-assets.json` | 各作品的預覽版／展示版、編碼設定及原始來源對應 |
 | `content/hero-video.json` | 首頁中央影片原檔、衍生影片、縮圖、影格及來源雜湊 |
 | `content/source-assets.json` | 首頁貼圖總覽原圖的來源紀錄 |
@@ -45,7 +45,7 @@
 
 作品管理啟用後，繪師由後台新增、修改或下架，GAS 保存私人草稿與 Drive 暫存，Actions 處理 PNG／JPG／GIF／MP4 並更新 `content/artworks.json`。`scripts/lib/artworks.mjs` 將覆寫清單合併原站作品與貼圖總覽，核對全部受管素材的大小及 SHA-256。原 `content/works.json` 保留來源用途；發布與設定見[作品管理與發布](artwork-service.md)。
 
-維護既有原站影片時，沿用 `content/works.json` 與影片壓縮工具，尺寸、長度與雜湊必須反映實際原檔。使用者於 2026-09-24 確認編號越大越新，作品牆按 ID 數字由大到小排列，同號保留來源順序；後台配號沿用此方向。貼圖總覽的共用基底由 `scripts/lib/artworks.mjs` 定義，不改動委託表單款式。
+維護既有原站影片時，沿用 `content/works.json` 與影片壓縮工具，尺寸、長度與雜湊必須反映實際原檔。使用者於 2026-09-24 另提供 60 件小動圖的名稱與順序，覆寫清單以 `sortOrder` 保存正整數，數字越大越前；未指定者沿用 ID 數字降冪，同順位保留來源順序。`compareArtworkOrder()` 供建置與管理清單共用，作品工作更新時保留既有順序；後台配號及原始 ID 不變。貼圖總覽的共用基底由 `scripts/lib/artworks.mjs` 定義，不改動委託表單款式。
 
 作品名稱、精選清單與首屏素材的對應見[作品與素材盤點](../reference/assets.md)。修改原表單內容、費率或草稿時，分別參照[表單規格](../reference/commission.md)、[來源存檔](../reference/source-forms.md)及[草稿契約](../reference/draft-schema.md)，保留來源與目前規則的區別。
 

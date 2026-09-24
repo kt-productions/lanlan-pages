@@ -131,6 +131,16 @@ for (const [video] of html.matchAll(/<video\b[^>]*>/g)) {
 const portfolio = JSON.parse(
   html.match(/<script id="portfolio-data" type="application\/json">([\s\S]*?)<\/script>/)[1],
 );
+assert.deepEqual(
+  [...html.matchAll(/<article class="artwork" data-id="([^"]+)"/g)].map((match) => match[1]),
+  catalogWorks.map((work) => work.id),
+  "靜態作品牆必須沿用核可的顯示順序",
+);
+assert.deepEqual(
+  portfolio.works.map(({ id, title }) => ({ id, title })),
+  catalogWorks.map(({ id, title }) => ({ id, title })),
+  "分類、載入更多及檢視器必須沿用相同作品名稱與順序",
+);
 for (const work of portfolio.works.filter((item) => item.type === "video"))
   assert.equal(
     work.playbackSrc,

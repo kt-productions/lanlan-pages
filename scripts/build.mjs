@@ -49,6 +49,10 @@ const replacements = {
   WORKS: htmlWorks,
   ARTWORK_PANEL: await readFile(path.join(root, "src/features/artworks/panel.html"), "utf8"),
   HERO_CHIBI_SRC: escape(videoAssets.get("chibi-01").preview.src),
+  HERO_CHIBI_TITLE: escape(
+    works.find((work) => work.id === "chibi-01")?.title ||
+      rawWorks.find((work) => work.id === "chibi-01").title,
+  ),
   HERO_MAIN_SRC: escape(heroVideo.video.src),
   HERO_MAIN_POSTER: escape(heroVideo.poster.src),
   HERO_MAIN_TITLE: escape(heroVideo.title),

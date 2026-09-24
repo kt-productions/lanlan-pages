@@ -24,12 +24,13 @@
     {
       "id": "chibi-29",
       "category": "chibi",
-      "title": "小動圖 58",
+      "title": "DOKKO",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "c1559ab3-fd1c-488e-97d4-c7f425c75c12",
-      "deleted": false
+      "revision": 2,
+      "operationId": "75bc46ef-894e-4983-a0ef-b220aa3dc062",
+      "deleted": false,
+      "sortOrder": 57
     },
     {
       "id": "chibi-60",
@@ -37,8 +38,8 @@
       "title": "Seli",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "9906ec82-4715-4ed1-95a3-5b9477c996d7",
+      "revision": 2,
+      "operationId": "5c0fd4c8-0aa6-47d4-bf08-b683ddfa4d27",
       "deleted": false,
       "media": {
         "type": "video",
@@ -77,7 +78,8 @@
             "sha256": "18de251e4319e60ae4b8e3b73205557de80f33b4ce1d448b6bec6b3d3ce82bb3"
           }
         ]
-      }
+      },
+      "sortOrder": 53
     },
     {
       "id": "chibi-61",
@@ -85,8 +87,8 @@
       "title": "拉茲",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "8db3bc1f-a089-491d-8ffa-39c0d6efccc5",
+      "revision": 2,
+      "operationId": "ee1fbea3-7bf4-4d80-b874-c374f2a6bc41",
       "deleted": false,
       "media": {
         "type": "video",
@@ -125,7 +127,8 @@
             "sha256": "06a16fdad848d59ff59ed7bc8da942f38626f243084d430e0709aa0b5b504998"
           }
         ]
-      }
+      },
+      "sortOrder": 59
     },
     {
       "id": "chibi-62",
@@ -133,8 +136,8 @@
       "title": "沚滄",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "15ec0a38-f02f-4809-93a4-aec5c386a6ae",
+      "revision": 2,
+      "operationId": "97530be9-4e54-4a8b-9724-b78188d76df4",
       "deleted": false,
       "media": {
         "type": "video",
@@ -173,7 +176,624 @@
             "sha256": "42cb1115aa57a95691efd9d256fde7a065ec6c2b2fc67a76175fcdb986ff9d74"
           }
         ]
-      }
+      },
+      "sortOrder": 60
+    },
+    {
+      "id": "chibi-30",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "羽藍",
+      "sortOrder": 58,
+      "revision": 1,
+      "operationId": "9bca6fea-5a91-441b-9444-158e5cd294ac"
+    },
+    {
+      "id": "chibi-28",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "凜紅",
+      "sortOrder": 56,
+      "revision": 1,
+      "operationId": "61ffa972-c56b-435b-a24c-d9075e7f86cc"
+    },
+    {
+      "id": "chibi-57",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "啾啾",
+      "sortOrder": 55,
+      "revision": 1,
+      "operationId": "6a42f4a6-d89a-422c-99c6-4c59a74a933f"
+    },
+    {
+      "id": "chibi-56",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "nero",
+      "sortOrder": 54,
+      "revision": 1,
+      "operationId": "b9f1902f-db04-451c-9f61-6a06cfeac931"
+    },
+    {
+      "id": "chibi-26",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "莫斯波",
+      "sortOrder": 52,
+      "revision": 1,
+      "operationId": "fc90f166-c081-4bce-a1a6-cdc8e0a2b26a"
+    },
+    {
+      "id": "chibi-27",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "ruk",
+      "sortOrder": 51,
+      "revision": 1,
+      "operationId": "048ee773-aa3b-4038-aecd-aaf094986210"
+    },
+    {
+      "id": "chibi-55",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "落星",
+      "sortOrder": 50,
+      "revision": 1,
+      "operationId": "a0d29b89-1d71-4a5a-bb6a-e72a02705f1a"
+    },
+    {
+      "id": "chibi-25",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "楓華",
+      "sortOrder": 49,
+      "revision": 1,
+      "operationId": "80249e3f-a8e1-49bf-b0d6-bef306d4d808"
+    },
+    {
+      "id": "chibi-54",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "日祥",
+      "sortOrder": 48,
+      "revision": 1,
+      "operationId": "3942ba37-d50a-4ecb-a610-ad6d4978edb4"
+    },
+    {
+      "id": "chibi-53",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "古龍",
+      "sortOrder": 47,
+      "revision": 1,
+      "operationId": "207199ff-f7bf-4656-b5c6-04e6b143e4ae"
+    },
+    {
+      "id": "chibi-52",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "T2",
+      "sortOrder": 46,
+      "revision": 1,
+      "operationId": "3637ba93-c870-47d3-8508-666fa88ae672"
+    },
+    {
+      "id": "chibi-24",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "小白",
+      "sortOrder": 45,
+      "revision": 1,
+      "operationId": "0d1e4eca-daaf-47fd-8e2b-ee084088a168"
+    },
+    {
+      "id": "chibi-23",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "星夜",
+      "sortOrder": 44,
+      "revision": 1,
+      "operationId": "48f7cc5e-e7be-4a4d-818e-f8475050904f"
+    },
+    {
+      "id": "chibi-22",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "日向空空",
+      "sortOrder": 43,
+      "revision": 1,
+      "operationId": "214938b0-f206-434b-8dec-ea867919a315"
+    },
+    {
+      "id": "chibi-51",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "蒼玄龍太",
+      "sortOrder": 42,
+      "revision": 1,
+      "operationId": "a4e081c7-783d-4781-a9c1-9c651df83a34"
+    },
+    {
+      "id": "chibi-50",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Davy",
+      "sortOrder": 41,
+      "revision": 1,
+      "operationId": "e3a1f14c-1a71-4d80-b21d-b2f463ec1d26"
+    },
+    {
+      "id": "chibi-49",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "粼透",
+      "sortOrder": 40,
+      "revision": 1,
+      "operationId": "be533146-1d62-4b04-adf9-85222a58c72c"
+    },
+    {
+      "id": "chibi-21",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Daze",
+      "sortOrder": 39,
+      "revision": 1,
+      "operationId": "c63fc8e1-b942-45bf-9123-278610de7685"
+    },
+    {
+      "id": "chibi-20",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "焰凌",
+      "sortOrder": 38,
+      "revision": 1,
+      "operationId": "3d7f7b5b-39c5-4b7f-8b2f-279bde6fb127"
+    },
+    {
+      "id": "chibi-19",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "狼尾",
+      "sortOrder": 37,
+      "revision": 1,
+      "operationId": "4d3b8df4-780b-4288-8901-0dc1b9971670"
+    },
+    {
+      "id": "chibi-48",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "犬犽",
+      "sortOrder": 36,
+      "revision": 1,
+      "operationId": "82150f31-051e-4159-92ef-d26b699bcbd1"
+    },
+    {
+      "id": "chibi-47",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "諾恩",
+      "sortOrder": 35,
+      "revision": 1,
+      "operationId": "28c4fd0b-7dd1-418c-914d-57c7cfd9efc1"
+    },
+    {
+      "id": "chibi-46",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "烏爾凝",
+      "sortOrder": 34,
+      "revision": 1,
+      "operationId": "fd3d85a6-993c-40e8-a417-9a5ae34e356d"
+    },
+    {
+      "id": "chibi-18",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "洛恩",
+      "sortOrder": 33,
+      "revision": 1,
+      "operationId": "e4e45680-415a-4533-9981-53f8b0362e7e"
+    },
+    {
+      "id": "chibi-17",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "彌亞",
+      "sortOrder": 32,
+      "revision": 1,
+      "operationId": "2cda7abb-8120-4e26-b18b-ff8a6e632348"
+    },
+    {
+      "id": "chibi-16",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "月步銀狼",
+      "sortOrder": 31,
+      "revision": 1,
+      "operationId": "c2d67779-12ae-4608-ab57-083a69c2b9a7"
+    },
+    {
+      "id": "chibi-45",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "火心",
+      "sortOrder": 30,
+      "revision": 1,
+      "operationId": "fe42951c-0cbc-472b-8bdf-b9a47da2c4d3"
+    },
+    {
+      "id": "chibi-44",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "谷攸",
+      "sortOrder": 29,
+      "revision": 1,
+      "operationId": "8f59ae68-f2a4-4f07-9914-cdc2c563790b"
+    },
+    {
+      "id": "chibi-43",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "熊弟",
+      "sortOrder": 28,
+      "revision": 1,
+      "operationId": "6a4b07f7-09df-4a6f-9212-fa3c4fcd6308"
+    },
+    {
+      "id": "chibi-15",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Axit",
+      "sortOrder": 27,
+      "revision": 1,
+      "operationId": "bf3cb26e-ec61-4931-8223-5d312f814e28"
+    },
+    {
+      "id": "chibi-14",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "尤妮",
+      "sortOrder": 26,
+      "revision": 1,
+      "operationId": "c7882089-cde6-41fa-9d6a-6633631c7bd9"
+    },
+    {
+      "id": "chibi-13",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "巴克",
+      "sortOrder": 25,
+      "revision": 1,
+      "operationId": "1e662a99-4e8b-4c8c-9122-cdaa47328973"
+    },
+    {
+      "id": "chibi-42",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "奇諾",
+      "sortOrder": 24,
+      "revision": 1,
+      "operationId": "e4353e1d-c628-411f-a2cc-339e99f1d498"
+    },
+    {
+      "id": "chibi-41",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "雪揉",
+      "sortOrder": 23,
+      "revision": 1,
+      "operationId": "5fcd70ec-8829-45c4-a440-f1e983578ad0"
+    },
+    {
+      "id": "chibi-40",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "守守",
+      "sortOrder": 22,
+      "revision": 1,
+      "operationId": "e05461b1-a10b-4bd5-895e-c371b4373e52"
+    },
+    {
+      "id": "chibi-12",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "小恐龍",
+      "sortOrder": 21,
+      "revision": 1,
+      "operationId": "f64b87c1-9183-4651-a1fb-5492ec9ab71e"
+    },
+    {
+      "id": "chibi-11",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "鐘銘",
+      "sortOrder": 20,
+      "revision": 1,
+      "operationId": "3f55be74-7970-441b-9c98-560b28150de5"
+    },
+    {
+      "id": "chibi-10",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "かみゅ",
+      "sortOrder": 19,
+      "revision": 1,
+      "operationId": "35c606b3-4dd9-4705-ade7-5f74c7ed8c20"
+    },
+    {
+      "id": "chibi-39",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "天藍",
+      "sortOrder": 18,
+      "revision": 1,
+      "operationId": "14ceb576-bb14-4537-be4f-f7cd484ae59a"
+    },
+    {
+      "id": "chibi-38",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Jakei",
+      "sortOrder": 17,
+      "revision": 1,
+      "operationId": "7e23711e-7bab-4c9a-8657-bb2a94448a99"
+    },
+    {
+      "id": "chibi-37",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Alex",
+      "sortOrder": 16,
+      "revision": 1,
+      "operationId": "fe9ce3d4-705f-406d-98f5-815b5a122a63"
+    },
+    {
+      "id": "chibi-09",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Bear",
+      "sortOrder": 15,
+      "revision": 1,
+      "operationId": "0ed0a556-c0f3-4d9a-a380-5c732888896f"
+    },
+    {
+      "id": "chibi-08",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "ΧΕΝΟ",
+      "sortOrder": 14,
+      "revision": 1,
+      "operationId": "ae29c1a2-c27d-4165-ba8c-f9df138d0372"
+    },
+    {
+      "id": "chibi-07",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Misu Yamaneko",
+      "sortOrder": 13,
+      "revision": 1,
+      "operationId": "8917dfea-16ff-4d3f-9d65-409591645a72"
+    },
+    {
+      "id": "chibi-36",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "克爾伯洛斯",
+      "sortOrder": 12,
+      "revision": 1,
+      "operationId": "cc9a63a9-1e0c-40f9-8573-4a3a6cc78f10"
+    },
+    {
+      "id": "chibi-35",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "沫沫",
+      "sortOrder": 11,
+      "revision": 1,
+      "operationId": "f8e31ab6-4961-4766-bac7-a68e3c96c342"
+    },
+    {
+      "id": "chibi-34",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "白夜",
+      "sortOrder": 10,
+      "revision": 1,
+      "operationId": "7b3b05ab-f0cf-454f-b97c-3c9a23c1b731"
+    },
+    {
+      "id": "chibi-02",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "緹卡",
+      "sortOrder": 9,
+      "revision": 1,
+      "operationId": "ee452f38-9386-4a21-b64c-ad7af84a463d"
+    },
+    {
+      "id": "chibi-06",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "Taiyaki",
+      "sortOrder": 8,
+      "revision": 1,
+      "operationId": "c99ee278-4463-47b1-9234-d0c2c13ff585"
+    },
+    {
+      "id": "chibi-05",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "しゃっこ",
+      "sortOrder": 7,
+      "revision": 1,
+      "operationId": "50a5ec96-6e37-4dfc-87d0-323575255035"
+    },
+    {
+      "id": "chibi-33",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "輝二",
+      "sortOrder": 6,
+      "revision": 1,
+      "operationId": "d43404be-feec-41d7-9811-75bbe4e60eee"
+    },
+    {
+      "id": "chibi-32",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "佐佐",
+      "sortOrder": 5,
+      "revision": 1,
+      "operationId": "e367eeb7-fa0b-4f13-8123-922dfa2d18a5"
+    },
+    {
+      "id": "chibi-31",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "天狼星",
+      "sortOrder": 4,
+      "revision": 1,
+      "operationId": "3c67ebc9-ce34-42bd-8d8a-2c1bd471a3b7"
+    },
+    {
+      "id": "chibi-04",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "醬滋",
+      "sortOrder": 3,
+      "revision": 1,
+      "operationId": "09f7b80f-d6f8-4897-9f85-a52787c8bdec"
+    },
+    {
+      "id": "chibi-03",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "普特",
+      "sortOrder": 2,
+      "revision": 1,
+      "operationId": "6da39271-abd6-4e5a-af3f-448d905b17e6"
+    },
+    {
+      "id": "chibi-01",
+      "category": "chibi",
+      "alt": "",
+      "description": "",
+      "deleted": false,
+      "title": "逼舖",
+      "sortOrder": 1,
+      "revision": 1,
+      "operationId": "14ed870a-1d2a-412a-ac7b-4e5f93e4815f"
     }
   ]
 }

@@ -80,6 +80,12 @@ export function artworkMime(bytes) {
   return "";
 }
 
+/** 顯示順序獨立於作品 ID；尚未指定的作品沿用編號排序，新作品仍會排在前面。 */
+export function compareArtworkOrder(a, b) {
+  const order = (work) => work.sortOrder ?? Number(work.id.split("-").at(-1));
+  return order(b) - order(a);
+}
+
 /** 舊作品只用覆寫清單調整公開內容，原始來源及表單款式不跟著變動。 */
 export function mergeArtworks(base, manifest, includeDeleted = false) {
   artworkAssert(manifest?.version === 1 && Array.isArray(manifest.items), "作品清單版本不相容。");
@@ -92,10 +98,14 @@ export function mergeArtworks(base, manifest, includeDeleted = false) {
     );
     seen.add(item.id);
     artworkAssert(Number.isInteger(item.revision) && item.revision > 0, "作品版本不正確。");
+    artworkAssert(
+      item.sortOrder === undefined || (Number.isSafeInteger(item.sortOrder) && item.sortOrder > 0),
+      "作品顯示順序必須是正整數。",
+    );
     const previous = map.get(item.id);
     map.set(item.id, { ...previous, ...item, ...item.media });
   }
   return [...map.values()]
     .filter((work) => includeDeleted || !work.deleted)
-    .sort((a, b) => Number(b.id.split("-").at(-1)) - Number(a.id.split("-").at(-1)));
+    .sort(compareArtworkOrder);
 }
