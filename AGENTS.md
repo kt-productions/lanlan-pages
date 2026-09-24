@@ -133,6 +133,8 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-09-24 獨立作品管理頁**：依使用者要求，移除委託管理及作品管理的「管理項目」切換列。`src/pages/admin/` 只保留委託，`src/pages/artworks/` 獨立管理作品；`scripts/build.mjs` 產生第五頁 `artworks/` 與主導覽連結。兩個管理入口共用 `shared/navigation.js` 的 Telegram 驗證、到期及跨分頁登出規則。作品頁未登入時前往既有登入流程，完成後返回固定的作品管理網址，不允許任意轉址；兩個管理頁均不列入 sitemap。
+
 - **2026-09-24 作品管理正式啟用**：依使用者明確授權，GitHub App 限定本站 repo，GAS 第 18 版及作品專用暫存已啟用，178 筆既有委託在初始化前後一致。main 驗證、production 發布，Pages environment 只允許 production；維護者更新程式也須驗證後快轉 production，不能只推 main。正式結果及完整公開測試的界線見 `docs/records/artwork-activation-2026-09-24.md`；本段更新下列實作時尚未啟用的歷史狀態。
 
 - **2026-09-24 LanLan Pages Drive 父目錄**：依使用者指定，將作品發布暫存移到 `乾太工作室 KT Productions/LanLan Pages`，並以 Script Property `LANLAN_PAGES_DRIVE_FOLDER_ID` 作為所有 LanLan Pages 私人 Drive 資源的唯一父目錄。作品與委託附件初始化都驗證直接隸屬、資料夾型別及應用程式標記；若資源被移出指定目錄，服務停止而不在根目錄重建。既有資料夾 ID、檔案與 Orders 不變，實際搬移與核對見 `docs/records/drive-storage-2026-09-24.md`。

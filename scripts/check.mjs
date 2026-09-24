@@ -82,7 +82,7 @@ const commissionHtml = await readFile(
   "utf8",
 );
 const pages = { "index.html": html, "commission/index.html": commissionHtml };
-for (const file of ["progress/index.html", "admin/index.html"]) {
+for (const file of ["progress/index.html", "admin/index.html", "artworks/index.html"]) {
   pages[file] = await readFile(path.join(output, file), "utf8");
 }
 for (const [file, page] of Object.entries(pages)) {

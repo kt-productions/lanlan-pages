@@ -4,7 +4,7 @@ import { createAdminAccess } from "../features/orders/admin-access.js";
 
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector("#main-nav");
-const adminLink = nav.querySelector("[data-admin-link]");
+const adminLinks = [...nav.querySelectorAll("[data-admin-link]")];
 const { apiUrl } = integrationConfig();
 const savedSession = createAdminSession(apiUrl);
 const invalidListeners = new Set();
@@ -13,8 +13,10 @@ const adminAccess = createAdminAccess({
   readSession: () => apiUrl ? savedSession.read() : null,
   clearSession: savedSession.clear,
   onChange(visible) {
-    if (!visible && document.activeElement === adminLink) nav.querySelector("a").focus();
-    adminLink.hidden = !visible;
+    if (!visible && adminLinks.includes(document.activeElement)) {
+      nav.querySelector("a:not([hidden])")?.focus();
+    }
+    adminLinks.forEach((link) => { link.hidden = !visible; });
   },
   onInvalid(token) { invalidListeners.forEach((listener) => listener(token)); },
 });

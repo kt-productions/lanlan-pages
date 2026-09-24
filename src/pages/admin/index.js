@@ -9,9 +9,8 @@ import { loadBoardOrders, mergeDeliveredOrders } from "../../features/orders/boa
 import { setupAttachments } from "../../features/orders/attachments-view.js";
 import { createLoginPopup } from "../../features/orders/login-popup.js";
 import { createAdminSession } from "../../features/orders/admin-session.js";
+import { createLoginDestination } from "../../features/orders/login-destination.js";
 import { setupBoardDrag, statusUpdate } from "../../features/orders/board-drag.js";
-
-import { setupArtworkAdmin } from "../../features/artworks/admin.js";
 
 const config = JSON.parse(
   document.querySelector("#commission-data").textContent,
@@ -19,6 +18,7 @@ const config = JSON.parse(
 const { apiUrl } = integrationConfig();
 const request = pageApi(apiUrl);
 const savedSession = createAdminSession(apiUrl);
+const loginDestination = createLoginDestination(location.search);
 async function api(action, payload, requestToken) {
   try {
     const result = await request(action, payload, requestToken);
@@ -94,8 +94,6 @@ const drag = setupBoardDrag(list, {
   onMove: moveOrder,
 });
 
-const artworks = setupArtworkAdmin({ api, getToken: () => token, report, beforeSwitch: afterDiscard });
-
 function message(text, focus = false) {
   status.textContent = text;
   if (dialog.open) editStatus.textContent = text;
@@ -149,7 +147,7 @@ function clearPendingLogin() {
   sessionStorage.removeItem(storageKey);
 }
 function clearSession(removeSaved = true) {
-  artworks.clear();
+  loginDestination.clear();
   clearAdminNavigation();
   drag.reset();
   if (removeSaved) savedSession.clear();
@@ -255,7 +253,6 @@ async function work(task, operation = "load") {
   if (busy) return;
   busy = true;
   const controls = [
-    ...document.querySelectorAll("#admin-sections button"),
     ...workspace.querySelectorAll("button,input,select,textarea"),
     ...dialog.querySelectorAll("button,input,select,textarea"),
     logout,
@@ -320,11 +317,13 @@ login.addEventListener("click", () =>
       .join("");
     // OAuth 綁定值只暫存在原分頁，與登入完成後保存的工作階段分開。
     sessionStorage.setItem(storageKey, browserKey);
+    loginDestination.remember();
     status.textContent = "正在準備 Telegram 登入……";
     await popupLogin.start(browserKey);
   }, "login"),
 );
 loginCancel.addEventListener("click", () => {
+  loginDestination.clear();
   clearPendingLogin();
   login.disabled = !apiUrl;
   message("已取消登入，可以重新透過 Telegram 登入。");
@@ -467,6 +466,11 @@ async function exchangeLogin() {
   const session = await api("auth.exchange", pendingLogin);
   const persisted = savedSession.save(session);
   clearPendingLogin();
+  const destination = loginDestination.take();
+  if (persisted && destination) {
+    location.replace(destination);
+    return;
+  }
   activateSession(session);
   confirmAdminNavigation(session);
   // 登入與清單讀取分開回報；讀取失敗仍保留已建立的登入。
@@ -481,7 +485,6 @@ function activateSession(session) {
   sessionTimer = setTimeout(checkSessionExpiry, Math.max(0, sessionExpiresAt - Date.now()));
   loginPanel.hidden = true;
   workspace.hidden = logout.hidden = false;
-  artworks.activate();
 }
 function checkSessionExpiry() {
   if (token && sessionExpiresAt <= Date.now()) {
@@ -496,6 +499,11 @@ async function finishLogin() {
   if (!ticket) {
     const session = apiUrl && savedSession.read();
     if (session) {
+      const destination = loginDestination.take();
+      if (destination) {
+        location.replace(destination);
+        return;
+      }
       activateSession(session);
       await work(load);
     }

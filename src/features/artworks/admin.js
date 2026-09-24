@@ -1,6 +1,6 @@
 import { ARTWORK_CATEGORIES, ARTWORK_STATES, artworkFields, artworkFile } from "./contract.js";
 
-export function setupArtworkAdmin({ api, getToken, report, beforeSwitch }) {
+export function setupArtworkAdmin({ api, getToken, report }) {
   const $ = id => document.getElementById(id);
   const panel = $("artwork-panel");
   const dialog = $("artwork-dialog");
@@ -245,26 +245,13 @@ export function setupArtworkAdmin({ api, getToken, report, beforeSwitch }) {
   $("artwork-refresh").addEventListener("click", () => task(load));
   $("artwork-search").addEventListener("input", render);
   $("artwork-category").addEventListener("change", render);
-  $("section-artworks").addEventListener("click", () => beforeSwitch(() => {
-    $("admin-workspace").hidden = true; panel.hidden = false;
-    $("admin-status").hidden = true;
-    $("section-artworks").setAttribute("aria-pressed", "true"); $("section-orders").setAttribute("aria-pressed", "false");
-    task(load);
-  }));
-  $("section-orders").addEventListener("click", () => {
-    panel.hidden = true; $("admin-workspace").hidden = false; clearTimeout(timer);
-    $("admin-status").hidden = false;
-    $("section-orders").setAttribute("aria-pressed", "true"); $("section-artworks").setAttribute("aria-pressed", "false");
-  });
   window.addEventListener("beforeunload", event => { if (changed) { event.preventDefault(); event.returnValue = ""; } });
   return {
-    activate() { $("admin-sections").hidden = false; },
+    activate() { panel.hidden = false; task(load); },
     clear() {
       generation++; clearTimeout(timer); busy = false; changed = false; close(true);
-      panel.hidden = true; $("admin-sections").hidden = true;
-      $("admin-status").hidden = false;
+      panel.hidden = true;
       $("artwork-new").disabled = true;
-      $("section-orders").setAttribute("aria-pressed", "true"); $("section-artworks").setAttribute("aria-pressed", "false");
       works = []; jobs = []; draft = null; selected = null; file = null; fileInfo = null;
       $("artwork-list").replaceChildren(); $("artwork-jobs").replaceChildren(); form.reset();
     },

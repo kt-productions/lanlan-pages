@@ -57,7 +57,7 @@ test("舊頁面轉址保留子路徑、查詢參數與登入票證，不能被 q
     "utf8",
   );
   for (const prefix of ["/", "/lanlan-pages/"]) {
-    for (const page of ["commission", "progress", "admin"]) {
+    for (const page of ["commission", "progress", "admin", "artworks"]) {
       const location = new URL(
         `https://example.com${prefix}${page}.html?next=https%3A%2F%2Fother.example#ticket=fixture`,
       );

@@ -1,12 +1,3 @@
-.artwork-sections {
-  display: flex;
-  gap: 10px;
-  margin: 0 0 24px;
-}
-.artwork-sections [aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--paper);
-}
 .artwork-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

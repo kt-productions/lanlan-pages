@@ -127,6 +127,13 @@ const pages = [
     description: "委託管理後台，僅供已授權的管理員使用。",
     url: new URL("admin/", siteUrl).href,
   },
+  {
+    file: "artworks/index.html",
+    source: "artworks",
+    title: "作品管理｜爛爛 LANLAN",
+    description: "作品管理後台，僅供已授權的管理員使用。",
+    url: new URL("artworks/", siteUrl).href,
+  },
 ];
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -164,6 +171,7 @@ for (const page of pages) {
     { source: "commission", route: "commission/", label: "委託表單" },
     { source: "progress", route: "progress/", label: "委託進度" },
     { source: "admin", route: "admin/", label: "委託管理" },
+    { source: "artworks", route: "artworks/", label: "作品管理" },
   ];
   // 子頁使用目錄首頁；明確回到網站根目錄，不用 base 改變頁內錨點。
   const rootPrefix = page.source === "home" ? "./" : "../";
@@ -173,7 +181,7 @@ for (const page of pages) {
     ASSET_VERSION: assetVersion,
     PAGE: page.source,
     ROBOTS:
-      page.source === "admin"
+      ["admin", "artworks"].includes(page.source)
         ? '<meta name="robots" content="noindex,nofollow" />'
         : "",
     PRELOAD:
@@ -187,7 +195,7 @@ for (const page of pages) {
     NAV_LINKS: navigation
       .map(
         (item) =>
-          `<a href="${rootPrefix}${item.route}"${item.source === "admin" ? " data-admin-link hidden" : ""}${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
+          `<a href="${rootPrefix}${item.route}"${["admin", "artworks"].includes(item.source) ? " data-admin-link hidden" : ""}${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
       )
       .join(""),
   };
@@ -212,7 +220,7 @@ await writeFile(
 await writeFile(
   path.join(out, "sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages
-    .filter((page) => page.source !== "admin")
+    .filter((page) => !["admin", "artworks"].includes(page.source))
     .map((page) => `<url><loc>${escape(page.url)}</loc></url>`)
     .join("")}</urlset>\n`,
 );

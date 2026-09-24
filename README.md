@@ -10,7 +10,7 @@
 
 Telegram 登入現改由另一個視窗驗證，完成後原管理頁自動登入；視窗受阻時保留原分頁手動回程。實作與驗證範圍見[自動登入紀錄](docs/records/login-popup-2026-09-23.md)。
 
-四頁的主要導覽會依本站已保存、尚未到期的 Telegram 登入立即顯示「委託管理」，並在背景確認權限，切換頁面不必等待服務回覆。暫時斷線保留入口；登出、到期或伺服器確認權限失效時隱藏。管理資料與操作仍須通過後端驗證，沿用原三天期限、不因瀏覽頁面續期；驗證見[管理導覽紀錄](docs/records/admin-navigation-2026-09-24.md)。
+五頁的主要導覽會依本站已保存、尚未到期的 Telegram 登入立即顯示「委託管理、作品管理」，並在背景確認權限，切換頁面不必等待服務回覆。暫時斷線保留入口；登出、到期或伺服器確認權限失效時隱藏。管理資料與操作仍須通過後端驗證，沿用原三天期限、不因瀏覽頁面續期；驗證見[管理導覽紀錄](docs/records/admin-navigation-2026-09-24.md)。
 
 2026-09-24 GAS 已更新至第 14 版，管理登入自核發起固定有效 3 天（72 小時），同一瀏覽器重新整理、關閉網頁或重開瀏覽器後可還原。主動登出、到期或後端確認管理權限已移除時清除登入；瀏覽器禁止保存網站資料時會提示只能使用本頁登入。僅保存 token 與到期時間，不保存委託資料；更新前已建立的登入仍沿用原期限，重新登入後才採 3 天。
 
@@ -24,7 +24,7 @@ Telegram 收件通知已包含完整表單內容與伺服器預估明細；長�
 
 管理編輯視窗提供訂單金額：一般訂單可查看系統預估、編輯明細並自動加總，Trello 歷史訂單僅編輯總額。手動金額與原預估分開保存，沿用權限、版本與修改歷史，金額不公開且不觸發通知；驗證見[金額編輯紀錄](docs/records/order-quote-2026-09-24.md)。
 
-網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
+網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)、[作品管理](https://kt-productions.github.io/lanlan-pages/artworks/)。兩個管理頁只顯示各自內容，透過主導覽切換，沒有「管理項目」切換列。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
 
 2026-09-24 首頁小動圖分類改為桌機每列四張、每批八張；委託看板合併「草稿確認/等待付款」，卡片依原始建立時間由舊到新排列。管理頁預設小動圖，移除上方工作階段篩選，支援拖曳移欄；編輯視窗仍保留階段選擇。急件卡片紅底、擱置藍底，並存時加紅色側框。GAS 已更新至第 15 版，前端由本次 `main` 推送觸發 GitHub Pages 發布；驗證與發布範圍見[本次紀錄](docs/records/gallery-form-2026-09-24.md)。
 

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    {{HEAD}}
+  </head>
+  <body>
+    {{ICONS}}
+    <a class="skip-link" href="#main">跳到主要內容</a>
+    {{HEADER}}
+    <main id="main" class="wrap order-page artworks-page">
+      <div class="order-heading">
+        <div>
+          <h1>作品管理</h1>
+          <p>保存草稿、預覽作品，再發布到作品集。</p>
+        </div>
+        <button id="artwork-logout" class="button" type="button" hidden>登出</button>
+      </div>
+      <section id="artwork-login-panel" class="admin-login" aria-label="管理員登入">
+        <h2>透過 Telegram 登入</h2>
+        <p>僅限指定的管理員使用。完成登入後會回到作品管理。</p>
+        <a id="artwork-login" class="button button-primary" href="../admin/?return=artworks">前往 Telegram 登入</a>
+      </section>
+      <p id="artwork-session-status" role="status" tabindex="-1"></p>
+      {{ARTWORK_PANEL}}
+      <noscript><p>請啟用 JavaScript 使用作品管理。</p></noscript>
+    </main>
+    {{FOOTER}}
+  </body>
+</html>
