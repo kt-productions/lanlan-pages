@@ -1,11 +1,17 @@
 import { deliveredDate } from "./revenue.js";
+import { taipeiDate } from "./contract.js";
 
 export function setupRevenueEditor(form) {
   const fields = form.elements;
   function sync() {
     fields.deliveredOn.disabled = fields.status.value !== "delivered";
   }
-  fields.status.addEventListener("change", sync);
+  fields.status.addEventListener("change", () => {
+    // 僅在使用者切換階段時填入今天，開啟歷史已交稿訂單不能改寫原日期。
+    fields.deliveredOn.value =
+      fields.status.value === "delivered" ? taipeiDate(new Date().toISOString()) : "";
+    sync();
+  });
   return {
     fill(order) {
       const revenue = order.details.revenue || {};

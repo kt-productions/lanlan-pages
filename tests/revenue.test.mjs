@@ -10,6 +10,7 @@ import {
   taipeiDate,
 } from "../src/features/orders/contract.js";
 import { statusUpdate } from "../src/features/orders/board-drag.js";
+import { setupRevenueEditor } from "../src/features/orders/revenue-editor.js";
 
 const revenue = (overrides) => ({
   depositAmount: 0,
@@ -284,6 +285,75 @@ test("拖曳與舊頁保留收款；偽造 details.revenue 不能寫入；降報
   const cleared = app.invoke("admin.update", { ...old, quote: null, revenue: revenue() }, token);
   assert.equal(cleared.ok, true);
   assert.equal(app.invoke("admin.revenue", { year: 2026 }, token).data.missingQuotes.length, 1);
+});
+
+test("拖曳與編輯狀態即使沒有金額或收益欄位，也會儲存台灣當天交稿日", () => {
+  for (const viaEditor of [false, true]) {
+    const { app, token, order } = create();
+    const payload = statusUpdate(order, "delivered");
+    if (viaEditor) payload.revenue = revenue();
+    const response = app.invoke("admin.update", payload, token);
+    assert.equal(response.ok, true);
+    const saved = app.invoke("admin.get", { orderId: order.orderId }, token).data;
+    assert.equal(saved.details.revenue.deliveredOn, taipeiDate(saved.updatedAt));
+    assert.equal(saved.status, "delivered");
+    assert.equal(saved.revision, order.revision + 1);
+    assert.equal(saved.history.at(-1).before.status, order.status);
+    const retry = app.invoke("admin.update", payload, token);
+    assert.equal(retry.error.code, "CONFLICT");
+    assert.equal(
+      app.invoke("admin.get", { orderId: order.orderId }, token).data.revision,
+      saved.revision,
+    );
+  }
+});
+
+function editorFixture(order) {
+  const fields = Object.fromEntries(
+    ["status", "depositAmount", "depositReceivedOn", "expectedDeliveryOn", "deliveredOn"].map(
+      (name) => [name, Object.assign(new EventTarget(), { value: "", disabled: false })],
+    ),
+  );
+  fields.status.value = order.status;
+  const editor = setupRevenueEditor({ elements: fields });
+  editor.fill(order);
+  return {
+    editor,
+    fields,
+    change(status) {
+      fields.status.value = status;
+      fields.status.dispatchEvent(new Event("change"));
+    },
+  };
+}
+
+test("切換已交稿立即顯示台灣今天，可手動修正，退回再交稿更新日期", (t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: Date.parse("2026-09-30T16:15:00Z") });
+  const { editor, fields, change } = editorFixture(fixture("編輯範例", 1000, "finalizing"));
+  assert.equal(fields.deliveredOn.disabled, true);
+  change("delivered");
+  assert.equal(fields.deliveredOn.disabled, false);
+  assert.equal(editor.collect().deliveredOn, "2026-10-01");
+  fields.deliveredOn.value = "2026-09-29";
+  assert.equal(editor.collect().deliveredOn, "2026-09-29");
+  change("finalizing");
+  assert.equal(fields.deliveredOn.value, "");
+  assert.equal(editor.collect().deliveredOn, null);
+  t.mock.timers.setTime(Date.parse("2026-10-01T16:15:00Z"));
+  change("delivered");
+  assert.equal(editor.collect().deliveredOn, "2026-10-02");
+});
+
+test("開啟歷史已交稿訂單保留舊日期或空白，清除編輯器不留下日期", () => {
+  for (const deliveredOn of [null, "2025-03-04"]) {
+    const { editor, fields } = editorFixture(
+      fixture("歷史範例", 1000, "delivered", { deliveredOn }),
+    );
+    assert.equal(fields.deliveredOn.disabled, false);
+    assert.equal(editor.collect().deliveredOn, deliveredOn);
+    editor.clear();
+    assert.equal(fields.deliveredOn.value, "");
+  }
 });
 
 test("交稿自動記日期、保留訂金歷史，退回製作再交稿不沿用上次日期", () => {
