@@ -2,7 +2,11 @@
 <html lang="zh-Hant-TW">
   <head>
     {{HEAD}}
-    <noscript><style>.art-image video { display: none; }</style></noscript>
+    <noscript
+      ><style>
+        .art-image video { display: none; }
+      </style></noscript
+    >
   </head>
   <body>
     {{ICONS}}
@@ -84,8 +88,7 @@
               aria-pressed="false"
               hidden
             >
-              <svg class="icon" aria-hidden="true"><use href="#pause" /></svg
-              ><span>暫停動畫</span>
+              <svg class="icon" aria-hidden="true"><use href="#pause" /></svg><span>暫停動畫</span>
             </button>
           </div>
         </div>
@@ -114,16 +117,10 @@
             aria-pressed="false"
             hidden
           >
-            <svg class="icon" aria-hidden="true"><use href="#pause" /></svg
-            ><span>暫停動畫</span>
+            <svg class="icon" aria-hidden="true"><use href="#pause" /></svg><span>暫停動畫</span>
           </button>
         </div>
-        <p
-          id="playback-status"
-          class="playback-status"
-          role="status"
-          hidden
-        ></p>
+        <p id="playback-status" class="playback-status" role="status" hidden></p>
         <div class="art-grid" id="art-grid">{{WORKS}}</div>
         <div class="gallery-footer">
           <button class="button button-outline" id="load-more" hidden>
@@ -136,8 +133,7 @@
         </div>
         <noscript
           ><p class="fallback-note">
-            點選作品即可開啟原始影片或圖片。啟用 JavaScript
-            可使用自動播放、分類與放大檢視。
+            點選作品即可開啟原始影片或圖片。啟用 JavaScript 可使用自動播放、分類與放大檢視。
           </p></noscript
         >
       </section>
@@ -145,17 +141,13 @@
         <div class="wrap">
           <p class="section-label">委託價目</p>
           <div class="pricing-heading">
-            <h2 id="pricing-title">
-              目前開放的<br /><em>一些委託 &gt;ωó✨</em>
-            </h2>
+            <h2 id="pricing-title">目前開放的<br /><em>一些委託 &gt;ωó✨</em></h2>
             <p>想委託什麼，<br />都可以先聊聊 óωò</p>
           </div>
           <div class="price-list">{{SERVICES}}</div>
           <div class="pricing-notes">
             <p>插圖、小廢圖、梗圖、動畫……其他需求價格另計。</p>
-            <p>
-              實際報價、價格單位、交期與使用範圍，請以繪師回覆及委託說明為準。
-            </p>
+            <p>實際報價、價格單位、交期與使用範圍，請以繪師回覆及委託說明為準。</p>
           </div>
           <details class="commission-guide">
             <summary>
@@ -166,14 +158,10 @@
               <p>
                 可以先整理角色參考圖、想委託的類型、希望的表情或動作，以及預計的使用方式，方便向爛爛說明需求。
               </p>
-              <p>
-                有預算、希望完成的時間，或商用、直播相關需求，也請一併說明，方便討論。
-              </p>
+              <p>有預算、希望完成的時間，或商用、直播相關需求，也請一併說明，方便討論。</p>
             </div>
           </details>
-          <a
-            class="button button-primary commission-entry"
-            href="./commission/"
+          <a class="button button-primary commission-entry" href="./commission/"
             >開始填寫委託
             <svg class="icon" aria-hidden="true">
               <use href="#arrow-right" /></svg
@@ -194,15 +182,9 @@
           </button>
         </header>
         <div id="lightbox-media" class="lightbox-media"></div>
-        <p id="media-error" role="status" hidden>
-          作品暫時無法播放，請稍後重試。
-        </p>
+        <p id="media-error" role="status" hidden>作品暫時無法播放，請稍後重試。</p>
         <div class="lightbox-footer">
-          <button
-            class="icon-button"
-            id="previous-work"
-            aria-label="上一件作品"
-          >
+          <button class="icon-button" id="previous-work" aria-label="上一件作品">
             <svg class="icon" aria-hidden="true">
               <use href="#arrow-left" />
             </svg>

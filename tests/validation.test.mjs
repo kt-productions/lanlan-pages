@@ -1,10 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readCommission } from "../scripts/lib/content.mjs";
-import {
-  referenceError,
-  contactError,
-} from "../src/features/commission/validation.js";
+import { referenceError, contactError } from "../src/features/commission/validation.js";
 
 const config = await readCommission();
 test("三類參考檔的空檔、大小邊界及 MIME 限制", () => {
@@ -12,10 +9,7 @@ test("三類參考檔的空檔、大小邊界及 MIME 限制", () => {
     const bytes = service.referenceLimitMB * 1024 * 1024;
     assert.ok(referenceError(service, undefined));
     assert.ok(referenceError(service, { size: 0, type: "image/png" }));
-    assert.equal(
-      referenceError(service, { size: bytes, type: "image/png" }),
-      "",
-    );
+    assert.equal(referenceError(service, { size: bytes, type: "image/png" }), "");
     assert.ok(referenceError(service, { size: bytes + 1, type: "image/png" }));
   }
   const zip = { size: 1, type: "application/zip" };

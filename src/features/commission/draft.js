@@ -41,27 +41,20 @@ export function createDraft(config, service, data, files = [], rulesReviewed) {
     })),
     stickerIds:
       service === "stickers"
-        ? config.stickerOptions
-            .filter((item) => ids.has(item.number))
-            .map((item) => item.number)
+        ? config.stickerOptions.filter((item) => ids.has(item.number)).map((item) => item.number)
         : [],
     chibiPlan: service === "chibi" ? data.get("chibiPlan") : null,
-    characterCount:
-      service !== "stickers" ? Number(data.get("characterCount")) : null,
-    transition:
-      service === "animation" ? data.get("transition") === "yes" : null,
+    characterCount: service !== "stickers" ? Number(data.get("characterCount")) : null,
+    transition: service === "animation" ? data.get("transition") === "yes" : null,
     commercial: service !== "chibi" ? data.get("commercial") === "yes" : null,
-    background:
-      service === "animation" ? data.get("background") === "yes" : null,
+    background: service === "animation" ? data.get("background") === "yes" : null,
     rush: service !== "stickers" ? data.get("rush") === "yes" : null,
     payment: data.get("payment"),
     allowLivestream: config.services[service].livePermission
       ? data.get("allowLivestream") === "yes"
       : null,
     allowPortfolio: data.get("allowPortfolio") === "yes",
-    notes: config.services[service].notes
-      ? (data.get("notes") || "").trim()
-      : null,
+    notes: config.services[service].notes ? (data.get("notes") || "").trim() : null,
     rulesReviewed,
     priceConfirmed: false,
     estimatedPrice: estimateCommission(config, selection),

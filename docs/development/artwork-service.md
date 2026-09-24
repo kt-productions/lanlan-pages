@@ -4,9 +4,9 @@
 
 ## 繪師操作
 
-管理員使用既有 Telegram 登入，從主導覽進入獨立的 `artworks/`「作品管理」頁；此頁只載入作品清單、草稿及發布紀錄。主導覽的委託管理與作品管理共用登入驗證、到期及登出規則，未登入時均隱藏。直接開啟作品網址時可前往既有 Telegram 登入頁，完成並保存登入後自動返回作品管理。可依名稱、分類尋找作品，新增 PNG／JPG／GIF／MP4，填寫名稱、替代文字及說明，預覽後儲存草稿。草稿保存在私人工作表，檔案只上傳作品專用私人 Drive 資料夾。
+管理員使用既有 Telegram 登入，從主導覽進入獨立的 `artworks/`「作品管理」頁；此頁只載入作品清單、草稿及發布紀錄。主導覽的委託管理、作品管理與收益報表共用登入驗證、到期及登出規則，未登入時均隱藏。直接開啟作品網址時可前往既有 Telegram 登入頁，完成並保存登入後自動返回作品管理。可依名稱、分類尋找作品，新增 PNG／JPG／GIF／MP4，填寫名稱、替代文字及說明，預覽後儲存草稿。草稿保存在私人工作表，檔案只上傳作品專用私人 Drive 資料夾。
 
-「儲存並發布」要求確認公開範圍；含上傳檔案時另確認已保留原檔副本，並同意遠端 Git 保存核對成功後永久刪除這次暫存。確認不預先勾選。Git repo 必須是公開作品倉庫，main 推送成功就已公開，與網站部署是否完成分開。
+2026-09-24 依使用者要求，新增／編輯作品移除整段「發布確認」及兩個勾選，直接按「儲存並發布」送出。此操作沿用作品公開保存及遠端 Git 核對成功後清理該次 Drive 暫存的流程；前端仍傳送現有 GAS 契約的 `publicConfirmed`／`backupConfirmed` 旗標，不再要求額外勾選，也不新增對管理員本機備份的驗證。原檔雜湊、版本、管理權限及清理條件維持原規則。Git repo 必須是公開作品倉庫，main 推送成功就已公開，與網站部署是否完成分開。
 
 既有作品可只修改文字，不必重傳。選擇新檔即可建立替換版本；已保存草稿的檔案固定，需換另一檔時可放棄草稿後重新編輯。上傳回應中斷可重試同一檔；重新開啟未完成上傳的草稿時，重新選取原檔即可接續。按「下架作品」後確認發布，部署成功才從作品集移除；Git 歷史、舊原始來源與委託表單款式仍保留。
 
@@ -75,7 +75,7 @@ Repository Variables：`ARTWORK_SITE_ID`、`ARTWORK_APP_ID`、`ARTWORK_INSTALLAT
 1. 先完成來源審閱、離線驗證、App／Secrets／Variables 與 GAS 新版本，保持作品功能未啟用。
 2. 把已驗證程式提交到 main。此版本開始，`validate.yml` 驗證 main，`pages.yml` 只發布 production；正式網站維持前次部署內容，直到第一次 production 發布成功。
 3. GitHub Pages 發布來源維持 **GitHub Actions**；確認 `github-pages` environment 允許 production，檢查 main／production 分支規則允許預期機器人動作。若規則要求 PR，先配合規則完成工作流，不能繞過保護。
-4. 由維護者將 production 建立或快轉至該筆已驗證的 main SHA；不要單獨在 production 修改檔案，也不用 force push。這次以維護者或 App 憑證推送，觸發 Pages；確認正式四頁與 `release.json`。
+4. 由維護者將 production 建立或快轉至該筆已驗證的 main SHA；不要單獨在 production 修改檔案，也不用 force push。這次以維護者或 App 憑證推送，觸發 Pages；確認正式五頁、收益檢視與 `release.json`。
 5. 完成作品儲存初始化後，啟用 GAS 與 repo 的 `ARTWORKS_ENABLED=true`。在核可的測試環境使用虛構作品驗證完整發布、原檔保存及暫存清理，再使用正式作品。
 
 `artworks.yml` 支援 GAS 的 workflow_dispatch；每十五分鐘的排程接續未完成的排隊工作，每次最多五件。main 必須是預設分支，workflow 檔也須存在於 main。一般 main 人工提交不自動發布，要更新正式程式時，驗證指定 SHA 後同樣快轉 production。

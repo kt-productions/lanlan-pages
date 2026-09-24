@@ -31,48 +31,34 @@ export function estimateCommission(config, selection) {
 
   if (service === "stickers") {
     const ids = new Set((selection.stickerIds || []).map(Number));
-    const selected = config.stickerOptions.filter((item) =>
-      ids.has(item.number),
-    );
+    const selected = config.stickerOptions.filter((item) => ids.has(item.number));
     const subtotal = selected.reduce((sum, item) => sum + item.price, 0);
     empty = selected.length === 0;
     add(`貼圖原價（${selected.length} 款）`, subtotal);
-    const multiplier =
-      selection.commercial === "yes" ? pricing.commercialMultiplier : 1;
+    const multiplier = selection.commercial === "yes" ? pricing.commercialMultiplier : 1;
     // 兩種折扣先併用，再套商用倍數；不可把商用價先乘二後只折一次。
     const quantity = pricing.quantityDiscounts
       .filter((tier) => selected.length >= tier.count)
       .at(-1);
-    const halfPrice = selected.filter((item) =>
-      pricing.halfPriceIds.includes(item.number),
-    );
-    const specialDiscount = halfPrice
-      .slice(1)
-      .reduce((sum, item) => sum + item.price / 2, 0);
+    const halfPrice = selected.filter((item) => pricing.halfPriceIds.includes(item.number));
+    const specialDiscount = halfPrice.slice(1).reduce((sum, item) => sum + item.price / 2, 0);
     const quantityDiscount = quantity?.amount || 0;
     const discounts = quantityDiscount + specialDiscount;
-    if (quantityDiscount)
-      add(`滿 ${quantity.count} 張數量折扣`, -quantityDiscount);
+    if (quantityDiscount) add(`滿 ${quantity.count} 張數量折扣`, -quantityDiscount);
     if (specialDiscount) add("No.33–35 第 2、3 款半價", -specialDiscount);
     if (multiplier > 1) {
-      add(
-        `商用加價（折扣後總價 ×${multiplier}）`,
-        (subtotal - discounts) * (multiplier - 1),
-      );
+      add(`商用加價（折扣後總價 ×${multiplier}）`, (subtotal - discounts) * (multiplier - 1));
     }
   } else if (service === "animation") {
     add("單人角色動畫", pricing.base);
-    if (characterCount === 2)
-      add("雙人動畫（第二角色）", pricing.secondCharacter);
+    if (characterCount === 2) add("雙人動畫（第二角色）", pricing.secondCharacter);
     if (selection.transition === "yes") {
       add("循環動畫加購轉場", pricing.transition.min, pricing.transition.max);
       notes.push("加購轉場費依需求估算，確切金額由繪師確認。");
     }
     if (selection.commercial === "yes") add("商業用途", pricing.commercial);
-    if (selection.background === "no")
-      add("單色／無背景", pricing.noBackground);
-    if (selection.rush === "yes")
-      add("急件", pricing.rush.min, pricing.rush.max);
+    if (selection.background === "no") add("單色／無背景", pricing.noBackground);
+    if (selection.rush === "yes") add("急件", pricing.rush.min, pricing.rush.max);
   } else if (service === "chibi") {
     const plan = Object.hasOwn(pricing.plans, selection.chibiPlan)
       ? pricing.plans[selection.chibiPlan]
@@ -80,8 +66,7 @@ export function estimateCommission(config, selection) {
     const amounts = Object.values(pricing.plans);
     const planMin = plan ?? Math.min(...amounts);
     const planMax = plan ?? Math.max(...amounts);
-    if (plan !== undefined)
-      add(selection.chibiPlan === "animated" ? "插圖＋動畫" : "插圖", plan);
+    if (plan !== undefined) add(selection.chibiPlan === "animated" ? "插圖＋動畫" : "插圖", plan);
     else {
       add("插圖／含動畫（方案待選）", planMin, planMax);
       notes.push("選擇插圖或插圖＋動畫後，會更新方案金額。");
@@ -92,8 +77,7 @@ export function estimateCommission(config, selection) {
         (planMin * pricing.secondCharacterPercent) / 100,
         (planMax * pricing.secondCharacterPercent) / 100,
       );
-    if (selection.rush === "yes")
-      add("加急插隊", pricing.rush.min, pricing.rush.max);
+    if (selection.rush === "yes") add("加急插隊", pricing.rush.min, pricing.rush.max);
   }
 
   if (pricing.complexityPerCharacter) {
@@ -101,9 +85,7 @@ export function estimateCommission(config, selection) {
     for (let character = 1; character <= characterCount; character++) {
       add(`角色 ${character} 複雜費`, complexity.min, complexity.max);
     }
-    notes.push(
-      `已按 ${characterCount} 位角色分別計入複雜費範圍；確切金額由繪師依角色設定確認。`,
-    );
+    notes.push(`已按 ${characterCount} 位角色分別計入複雜費範圍；確切金額由繪師依角色設定確認。`);
   }
 
   // 全程累加整數分，再對完整小計計算 PayPal，避免小數浮點誤差影響捨入。
@@ -121,14 +103,7 @@ export function estimateCommission(config, selection) {
   }
   const required =
     service === "animation"
-      ? [
-          "characterCount",
-          "transition",
-          "commercial",
-          "background",
-          "rush",
-          "payment",
-        ]
+      ? ["characterCount", "transition", "commercial", "background", "rush", "payment"]
       : service === "chibi"
         ? ["characterCount", "chibiPlan", "rush", "payment"]
         : ["commercial", "payment"];
@@ -152,9 +127,6 @@ export function estimateCommission(config, selection) {
 
 const number = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 });
 export function formatPriceRange(min, max = min, currency = null) {
-  const amount =
-    min === max
-      ? number.format(min)
-      : `${number.format(min)} ~ ${number.format(max)}`;
+  const amount = min === max ? number.format(min) : `${number.format(min)} ~ ${number.format(max)}`;
   return currency === "TWD" ? "NT$ " + amount : amount + " 元";
 }

@@ -21,24 +21,40 @@ export function prepareTrelloImport(boards, { includeArchived, publishTitle }) {
       seen.add(card.id);
       const labels = (card.labels || []).map((label) => label.name).filter(Boolean);
       cards.push({
-        service, status: stages[list.id],
+        service,
+        status: stages[list.id],
         isRush: labels.some((label) => ["加急", "急單", "急件"].includes(label)),
         isOnHold: labels.includes("擱置"),
         source: {
-          kind: "trello", cardId: card.id, boardId: board.id, listId: list.id,
-          cardName: card.name, boardName: board.name, listName: list.name,
-          cardUrl: card.shortUrl, boardOrder, listPosition: list.pos, cardPosition: card.pos,
-          archived: card.closed === true, publishTitle, labels,
+          kind: "trello",
+          cardId: card.id,
+          boardId: board.id,
+          listId: list.id,
+          cardName: card.name,
+          boardName: board.name,
+          listName: list.name,
+          cardUrl: card.shortUrl,
+          boardOrder,
+          listPosition: list.pos,
+          cardPosition: card.pos,
+          archived: card.closed === true,
+          publishTitle,
+          labels,
           lastActivity: card.dateLastActivity,
           attachments: (card.attachments || []).map((attachment) => ({
-            name: attachment.name, url: attachment.url,
+            name: attachment.name,
+            url: attachment.url,
           })),
         },
       });
     }
   }
-  cards.sort((a, b) => a.source.boardOrder - b.source.boardOrder ||
-    a.source.listPosition - b.source.listPosition || a.source.cardPosition - b.source.cardPosition ||
-    a.source.cardId.localeCompare(b.source.cardId));
+  cards.sort(
+    (a, b) =>
+      a.source.boardOrder - b.source.boardOrder ||
+      a.source.listPosition - b.source.listPosition ||
+      a.source.cardPosition - b.source.cardPosition ||
+      a.source.cardId.localeCompare(b.source.cardId),
+  );
   return { version: 1, cards };
 }

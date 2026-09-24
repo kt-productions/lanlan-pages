@@ -1,7 +1,5 @@
 /** 保留原管理頁，驗證結果由已綁定 browserKey 的 API 取得，避免 GAS 頂層轉址限制。 */
-export function createLoginPopup(api, {
-  host = window, onWaiting = () => {}, onTicket, onError,
-}) {
+export function createLoginPopup(api, { host = window, onWaiting = () => {}, onTicket, onError }) {
   let attempt = null;
 
   function cancel() {
@@ -10,8 +8,11 @@ export function createLoginPopup(api, {
     if (!current) return;
     host.clearTimeout(current.timer);
     // 跨來源頁可能已自行關閉視窗；關閉失敗不影響原管理頁交換已驗證的票證。
-    try { current.popup?.close(); }
-    catch { return false; }
+    try {
+      current.popup?.close();
+    } catch {
+      return false;
+    }
     return true;
   }
 
@@ -42,8 +43,12 @@ export function createLoginPopup(api, {
   async function start(browserKey) {
     cancel();
     // 必須在使用者點擊時、第一個 await 之前開啟，避免被瀏覽器當成非預期彈出視窗。
-    const current = { browserKey, popup: host.open("about:blank", "_blank", "popup,width=520,height=720"),
-      timer: null, failures: 0 };
+    const current = {
+      browserKey,
+      popup: host.open("about:blank", "_blank", "popup,width=520,height=720"),
+      timer: null,
+      failures: 0,
+    };
     attempt = current;
     try {
       if (current.popup) current.popup.opener = null;

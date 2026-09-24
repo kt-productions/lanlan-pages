@@ -32,7 +32,7 @@ npm run check
 
 執行 `npm run optimize:hero` 可重新產生專用 MP4 與 JPEG 首格縮圖，沿用 `FFMPEG_PATH`、`FFPROBE_PATH`。影片採 960px 長邊、H.264 CRF 23、`yuv420p`、faststart；GIF 的 80／90ms 影格使用 `-fps_mode passthrough -enc_time_base 1/100 -video_track_timescale 1000` 保留，轉檔後逐格核對時間戳、12 格與 1 秒片長。縮圖採 JPEG 品質參數 3。編碼器需提供 `libx264` 及 `mjpeg`，一般建置和 CI 不執行轉檔。
 
-原 GIF 為 6,010,209 bytes，MP4 為 182,465 bytes，縮圖為 55,611 bytes；加上縮圖仍減少約 96% 傳輸量。原 GIF 保留不覆寫，建置仍排除 GIF；網頁只使用帶雜湊版本的 MP4 和縮圖。`readHeroVideo()` 於建置／檢查時核對來源與衍生檔，並確認比例、尺寸、片長、影格數及起播索引。
+原 GIF 為 6,010,209 bytes，MP4 為 182,465 bytes，縮圖為 55,611 bytes；加上縮圖仍減少約 96% 傳輸量。原 GIF 保留不覆寫，建置排除此首頁來源 GIF；後台受管作品 GIF 依作品清單另行打包。網頁只使用帶雜湊版本的 MP4 和縮圖。`readHeroVideo()` 於建置／檢查時核對來源與衍生檔，並確認比例、尺寸、片長、影格數及起播索引。
 
 同日於本機 1280 × 900 與 390 × 844 驗證新影片載入、循環、桌機暫停／恢復、手機完整比例及無橫向溢出；主控台無警告或錯誤。原 GIF 與 MP4 的全部影格時間戳一致，建置與靜態檢查通過。發布沿用既有 GitHub Pages workflow，GAS 不需更新。
 

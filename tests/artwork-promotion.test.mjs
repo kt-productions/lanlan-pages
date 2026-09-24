@@ -12,7 +12,7 @@ test("以實際 Git 驗證首次發布、快轉、同 SHA 與已包含版本重�
   const local = path.join(temp, "local");
   await mkdir(local);
   await run("git", ["init", "--bare", remote]);
-  const git = args => run("git", args, { cwd: local });
+  const git = (args) => run("git", args, { cwd: local });
   await git(["init", "-b", "main"]);
   await git(["config", "user.name", "虛構測試"]);
   await git(["config", "user.email", "fixture@example.invalid"]);
@@ -26,7 +26,9 @@ test("以實際 Git 驗證首次發布、快轉、同 SHA 與已包含版本重�
   const first = await commit("第一版");
   await git(["push", "origin", "main"]);
   let retries = 0;
-  const retry = async () => { retries++; };
+  const retry = async () => {
+    retries++;
+  };
   assert.equal((await promoteArtwork(git, first, "", retry)).state, "promoted");
   assert.equal((await promoteArtwork(git, first, "", retry)).state, "retry");
   assert.equal(retries, 1);

@@ -20,8 +20,15 @@ function memoryStorage() {
 function issueSession(app) {
   const ticket = "a".repeat(64);
   const browserKey = "c".repeat(64);
-  app.context.CacheService.getScriptCache().put("ticket:" + app.context.digest_(ticket),
-    JSON.stringify({ id: "987654", browserHash: app.context.digest_(browserKey), expiresAt: Date.now() + 120000 }), 120);
+  app.context.CacheService.getScriptCache().put(
+    "ticket:" + app.context.digest_(ticket),
+    JSON.stringify({
+      id: "987654",
+      browserHash: app.context.digest_(browserKey),
+      expiresAt: Date.now() + 120000,
+    }),
+    120,
+  );
   return app.invoke("auth.exchange", { ticket, browserKey }).data;
 }
 
@@ -29,12 +36,27 @@ test("重新開頁仍可還原登入，期限固定且不保存訂單或身分�
   const storage = memoryStorage();
   let now = Date.now();
   const original = { token, expiresAt: now + lifetime, id: "987654", orders: ["私人資料"] };
-  const first = createAdminSession("https://example.com/api", () => storage, () => now);
+  const first = createAdminSession(
+    "https://example.com/api",
+    () => storage,
+    () => now,
+  );
   assert.equal(first.save(original), true);
-  const reopened = createAdminSession("https://example.com/api", () => storage, () => now);
+  const reopened = createAdminSession(
+    "https://example.com/api",
+    () => storage,
+    () => now,
+  );
   now += lifetime - 1;
   assert.deepEqual(reopened.read(), { version: 1, token, expiresAt: original.expiresAt });
-  assert.equal(createAdminSession("https://example.com/another", () => storage, () => now).read(), null);
+  assert.equal(
+    createAdminSession(
+      "https://example.com/another",
+      () => storage,
+      () => now,
+    ).read(),
+    null,
+  );
   now += 1;
   assert.equal(reopened.read(), null);
   assert.equal(storage.getItem(first.key), null);
@@ -46,9 +68,13 @@ test("登出清除保存，格式損壞與不支援版本皆不能還原登入",
   session.save({ token, expiresAt: Date.now() + lifetime });
   session.clear();
   assert.equal(session.read(), null);
-  for (const value of ["{", "null", JSON.stringify({ version: 2, token, expiresAt: Date.now() + lifetime }),
+  for (const value of [
+    "{",
+    "null",
+    JSON.stringify({ version: 2, token, expiresAt: Date.now() + lifetime }),
     JSON.stringify({ version: 1, token: "wrong", expiresAt: Date.now() + lifetime }),
-    JSON.stringify({ version: 1, token, expiresAt: String(Date.now() + lifetime) })]) {
+    JSON.stringify({ version: 1, token, expiresAt: String(Date.now() + lifetime) }),
+  ]) {
     storage.setItem(session.key, value);
     assert.equal(session.read(), null);
     assert.equal(storage.getItem(session.key), null);
@@ -56,7 +82,9 @@ test("登出清除保存，格式損壞與不支援版本皆不能還原登入",
 });
 
 test("瀏覽器封鎖儲存時回報無法持久保存，但不拋錯阻斷登入介面", () => {
-  const session = createAdminSession("fixture", () => { throw new Error("SecurityError"); });
+  const session = createAdminSession("fixture", () => {
+    throw new Error("SecurityError");
+  });
   assert.equal(session.read(), null);
   assert.equal(session.save({ token, expiresAt: Date.now() + lifetime }), false);
   assert.equal(session.clear(), false);

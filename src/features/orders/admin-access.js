@@ -1,12 +1,23 @@
 /** 先用未到期的登入紀錄顯示入口，再於背景驗證；管理資料仍由 API 獨立授權。 */
-export function createAdminAccess({ api, readSession, clearSession, onChange, onInvalid = () => {},
-  now = Date.now, schedule = setTimeout, cancel = clearTimeout }) {
+export function createAdminAccess({
+  api,
+  readSession,
+  clearSession,
+  onChange,
+  onInvalid = () => {},
+  now = Date.now,
+  schedule = setTimeout,
+  cancel = clearTimeout,
+}) {
   let active = null;
   let generation = 0;
   let timer;
   let pending;
-  const valid = (session) => session && /^[a-f0-9]{64}$/.test(session.token || "") &&
-    Number.isSafeInteger(session.expiresAt) && session.expiresAt > now();
+  const valid = (session) =>
+    session &&
+    /^[a-f0-9]{64}$/.test(session.token || "") &&
+    Number.isSafeInteger(session.expiresAt) &&
+    session.expiresAt > now();
 
   function replace(session) {
     generation += 1;
@@ -27,13 +38,16 @@ export function createAdminAccess({ api, readSession, clearSession, onChange, on
   }
 
   function confirm(session) {
-    const expiresAt = active?.token === session.token
-      ? Math.min(active.expiresAt, session.expiresAt) : session.expiresAt;
+    const expiresAt =
+      active?.token === session.token
+        ? Math.min(active.expiresAt, session.expiresAt)
+        : session.expiresAt;
     replace({ ...session, expiresAt });
   }
 
   function refresh(session = active || readSession()) {
-    if (pending?.generation === generation && active?.token === session?.token) return pending.promise;
+    if (pending?.generation === generation && active?.token === session?.token)
+      return pending.promise;
     replace(session);
     if (!active) return Promise.resolve();
     const current = active;

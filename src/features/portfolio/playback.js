@@ -1,11 +1,7 @@
 // 播放許可由可見範圍、使用者選擇、分頁及檢視器共同決定，避免背景影片持續下載或播放。
 export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
-  const backgroundVideos = [
-    ...document.querySelectorAll("video[data-autoplay]"),
-  ];
-  const motionButtons = [
-    ...document.querySelectorAll("[data-animation-toggle]"),
-  ];
+  const backgroundVideos = [...document.querySelectorAll("video[data-autoplay]")];
+  const motionButtons = [...document.querySelectorAll("[data-animation-toggle]")];
   const playbackStatus = document.querySelector("#playback-status");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const connection = navigator.connection;
@@ -19,19 +15,22 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
     if (video.closest("[hidden]")) return false;
     const rect = video.getBoundingClientRect();
     return (
-      rect.width > 0 && rect.height > 0 &&
-      rect.bottom > -margin && rect.top < innerHeight + margin &&
-      rect.right > 0 && rect.left < innerWidth
+      rect.width > 0 &&
+      rect.height > 0 &&
+      rect.bottom > -margin &&
+      rect.top < innerHeight + margin &&
+      rect.right > 0 &&
+      rect.left < innerWidth
     );
   }
   function loadPoster(video) {
-    if (!video.hasAttribute("poster") && video.dataset.poster)
-      video.poster = video.dataset.poster;
+    if (!video.hasAttribute("poster") && video.dataset.poster) video.poster = video.dataset.poster;
   }
   function isFullyBuffered(video) {
     // readyState=4 只代表預估可順播，不保證整支影片已下載完成。
     return (
-      Number.isFinite(video.duration) && video.buffered.length === 1 &&
+      Number.isFinite(video.duration) &&
+      video.buffered.length === 1 &&
       video.buffered.start(0) <= 0.05 &&
       video.buffered.end(0) >= video.duration - 0.05
     );
@@ -50,16 +49,9 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
     for (const button of motionButtons) {
       button.hidden = false;
       button.setAttribute("aria-pressed", String(!animationsEnabled));
-      button.setAttribute(
-        "aria-label",
-        animationsEnabled ? "暫停所有動畫" : "播放所有動畫",
-      );
-      button.querySelector("span").textContent = animationsEnabled
-        ? "暫停動畫"
-        : "播放動畫";
-      button
-        .querySelector("use")
-        .setAttribute("href", animationsEnabled ? "#pause" : "#play");
+      button.setAttribute("aria-label", animationsEnabled ? "暫停所有動畫" : "播放所有動畫");
+      button.querySelector("span").textContent = animationsEnabled ? "暫停動畫" : "播放動畫";
+      button.querySelector("use").setAttribute("href", animationsEnabled ? "#pause" : "#play");
     }
     const blocked = [...blockedPlayback].some(wantsBackgroundPlayback);
     playbackStatus.hidden = !blocked;
@@ -82,12 +74,7 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
     }
   }
   async function playBackground(video) {
-    if (
-      !wantsBackgroundPlayback(video) ||
-      pendingPlayback.has(video) ||
-      video.error
-    )
-      return;
+    if (!wantsBackgroundPlayback(video) || pendingPlayback.has(video) || video.error) return;
     video.muted = true;
     video.defaultMuted = true;
     loadPoster(video);
@@ -103,10 +90,7 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
       if (error.name === "NotAllowedError" && wantsBackgroundPlayback(video)) {
         blockedPlayback.add(video);
         noticeFor(video, "點「播放動畫」或放大作品觀看");
-      } else if (
-        error.name === "AbortError" &&
-        wantsBackgroundPlayback(video)
-      ) {
+      } else if (error.name === "AbortError" && wantsBackgroundPlayback(video)) {
         // 快速切換分類時，前一次 pause 可能讓尚未完成的 play 中止。
         requestAnimationFrame(() => {
           if (wantsBackgroundPlayback(video)) void playBackground(video);
@@ -144,9 +128,7 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
   for (const video of backgroundVideos) {
     video.muted = true;
     video.defaultMuted = true;
-    video.addEventListener("error", () =>
-      noticeFor(video, "動畫載入失敗，點選作品重試"),
-    );
+    video.addEventListener("error", () => noticeFor(video, "動畫載入失敗，點選作品重試"));
   }
   const visibilityObserver =
     "IntersectionObserver" in window
@@ -164,14 +146,18 @@ export function setupPlayback({ isModalOpen, onMotionChange = () => {} }) {
   if (visibilityObserver) {
     backgroundVideos.forEach((video) => visibilityObserver.observe(video));
     // poster 不受 preload="none" 控制，另用觀察器延後載入作品縮圖。
-    const posterObserver = new IntersectionObserver((entries) => {
-      for (const { target, isIntersecting } of entries) {
-        if (!isIntersecting || target.closest("[hidden]")) continue;
-        loadPoster(target);
-        posterObserver.unobserve(target);
-      }
-    }, { rootMargin: "200px 0px" });
-    backgroundVideos.filter((video) => video.dataset.poster)
+    const posterObserver = new IntersectionObserver(
+      (entries) => {
+        for (const { target, isIntersecting } of entries) {
+          if (!isIntersecting || target.closest("[hidden]")) continue;
+          loadPoster(target);
+          posterObserver.unobserve(target);
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    backgroundVideos
+      .filter((video) => video.dataset.poster)
       .forEach((video) => posterObserver.observe(video));
   } else {
     let scheduled = false;

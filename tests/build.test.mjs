@@ -4,11 +4,7 @@ import path from "node:path";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 import { prepareStickerOptions, readContent } from "../scripts/lib/content.mjs";
-import {
-  escapeHtml,
-  inlineJson,
-  renderTemplate,
-} from "../scripts/lib/templates.mjs";
+import { escapeHtml, inlineJson, renderTemplate } from "../scripts/lib/templates.mjs";
 import { resolveWithin, output } from "../scripts/lib/paths.mjs";
 
 test("款式來源保留附註、排除未確認款式，無法解析時停止建置", async () => {
@@ -24,9 +20,7 @@ test("款式來源保留附註、排除未確認款式，無法解析時停止�
   );
   assert.equal(prepared.find((item) => item.number === 33).price, 200);
   assert.equal(prepared.find((item) => item.number === 48).price, 150);
-  assert.throws(() =>
-    prepareStickerOptions([{ ...options[0], label: "缺少價格" }]),
-  );
+  assert.throws(() => prepareStickerOptions([{ ...options[0], label: "缺少價格" }]));
   assert.throws(() => prepareStickerOptions([options[0], options[0]]));
 });
 
@@ -83,16 +77,11 @@ test("舊頁面轉址保留子路徑、查詢參數與登入票證，不能被 q
 });
 
 test("直接開啟 index.html 會回到目錄首頁，目錄網址本身不重複轉址", async () => {
-  const head = await readFile(
-    new URL("../src/templates/head.html", import.meta.url),
-    "utf8",
-  );
+  const head = await readFile(new URL("../src/templates/head.html", import.meta.url), "utf8");
   const script = head.match(/<script>([\s\S]*?)<\/script>/)[1];
   for (const prefix of ["/", "/lanlan-pages/", "/lanlan-pages/commission/"]) {
     let destination;
-    const location = new URL(
-      `https://example.com${prefix}index.html?source=bookmark#main`,
-    );
+    const location = new URL(`https://example.com${prefix}index.html?source=bookmark#main`);
     location.replace = (value) => {
       destination = new URL(value, location);
     };

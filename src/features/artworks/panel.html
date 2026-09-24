@@ -4,38 +4,77 @@
     <button id="artwork-new" type="button" class="button button-primary" disabled>新增作品</button>
   </div>
   <div class="order-toolbar">
-    <label>尋找作品<input id="artwork-search" type="search" placeholder="作品名稱" maxlength="100" /></label>
-    <label>作品分類<select id="artwork-category"><option value="">所有作品</option><option value="chibi">小動圖</option><option value="animation">角色動畫</option><option value="stickers">貼圖</option></select></label>
+    <label
+      >尋找作品<input id="artwork-search" type="search" placeholder="作品名稱" maxlength="100"
+    /></label>
+    <label
+      >作品分類<select id="artwork-category">
+        <option value="">所有作品</option>
+        <option value="chibi">小動圖</option>
+        <option value="animation">角色動畫</option>
+        <option value="stickers">貼圖</option>
+      </select></label
+    >
     <button id="artwork-refresh" type="button" class="button">更新狀態</button>
   </div>
   <p id="artwork-status" role="status" tabindex="-1"></p>
-  <details id="artwork-jobs-section" open><summary>草稿與發布紀錄</summary><div id="artwork-jobs" class="artwork-jobs"></div></details>
+  <details id="artwork-jobs-section" open>
+    <summary>草稿與發布紀錄</summary>
+    <div id="artwork-jobs" class="artwork-jobs"></div>
+  </details>
   <div id="artwork-list" class="artwork-grid" aria-label="作品清單"></div>
 </section>
-<dialog id="artwork-dialog" class="admin-dialog artwork-dialog" aria-labelledby="artwork-editor-heading">
+<dialog
+  id="artwork-dialog"
+  class="admin-dialog artwork-dialog"
+  aria-labelledby="artwork-editor-heading"
+>
   <form id="artwork-form">
-    <header class="dialog-heading"><h2 id="artwork-editor-heading">新增作品</h2><button id="artwork-close" type="button" class="button">關閉</button></header>
+    <header class="dialog-heading">
+      <h2 id="artwork-editor-heading">新增作品</h2>
+      <button id="artwork-close" type="button" class="button">關閉</button>
+    </header>
     <div class="dialog-body">
       <p id="artwork-editor-status" role="status" tabindex="-1"></p>
       <div class="artwork-editor-grid">
-        <div class="artwork-preview"><div id="artwork-preview-media"><p>選擇作品後，這裡會顯示預覽。</p></div><button id="artwork-preview-load" type="button" class="button" hidden>載入已保存的預覽</button></div>
+        <div class="artwork-preview">
+          <div id="artwork-preview-media"><p>選擇作品後，這裡會顯示預覽。</p></div>
+          <button id="artwork-preview-load" type="button" class="button" hidden>
+            載入已保存的預覽
+          </button>
+        </div>
         <fieldset id="artwork-fields">
           <legend>作品資料</legend>
           <label>作品名稱<input name="title" maxlength="100" required /></label>
-          <label>分類<select name="category"><option value="chibi">小動圖</option><option value="animation">角色動畫</option><option value="stickers">貼圖</option></select></label>
+          <label
+            >分類<select name="category">
+              <option value="chibi">小動圖</option>
+              <option value="animation">角色動畫</option>
+              <option value="stickers">貼圖</option>
+            </select></label
+          >
           <label>替代文字<input name="alt" maxlength="300" /></label>
           <label>作品說明<textarea name="description" maxlength="2000" rows="3"></textarea></label>
-          <label>作品檔案<input name="file" type="file" accept="image/png,image/jpeg,image/gif,video/mp4" /></label>
-          <p id="artwork-file-hint" class="field-hint">PNG、JPG、GIF 或 MP4，每檔最多 10 MiB。GIF 最多 15 秒、MP4 最多 120 秒。編輯文字時不必重新上傳。</p>
+          <label
+            >作品檔案<input
+              name="file"
+              type="file"
+              accept="image/png,image/jpeg,image/gif,video/mp4"
+          /></label>
+          <p id="artwork-file-hint" class="field-hint">
+            PNG、JPG、GIF 或 MP4，每檔最多 10 MiB。GIF 最多 15 秒、MP4 最多 120
+            秒。編輯文字時不必重新上傳。
+          </p>
         </fieldset>
       </div>
-      <fieldset id="artwork-confirmations">
-        <legend>發布確認</legend>
-        <label><input name="publicConfirmed" type="checkbox" />我確認這次變更可公開；上傳原檔、展示版本與作品資料會保存在公開 Git 倉庫。</label>
-        <label id="artwork-backup-label"><input name="backupConfirmed" type="checkbox" />我已保留可還原的原檔副本，同意遠端保存核對成功後，永久刪除這次上傳的 Drive 暫存。</label>
-        <p id="artwork-delete-hint" class="field-hint" hidden>下架會移除作品集中的展示，Git 歷史中的公開版本仍會保留。</p>
-      </fieldset>
-      <div id="artwork-discard-confirm" hidden><p>放棄這份草稿並永久刪除其暫存檔？這不會下架已公開作品。</p><button id="artwork-discard-yes" type="button" class="button">確認放棄草稿</button><button id="artwork-discard-no" type="button" class="button">繼續編輯</button></div>
+      <p id="artwork-delete-hint" class="field-hint" hidden>
+        下架會移除作品集中的展示，Git 歷史中的公開版本仍會保留。
+      </p>
+      <div id="artwork-discard-confirm" hidden>
+        <p>放棄這份草稿並永久刪除其暫存檔？這不會下架已公開作品。</p>
+        <button id="artwork-discard-yes" type="button" class="button">確認放棄草稿</button
+        ><button id="artwork-discard-no" type="button" class="button">繼續編輯</button>
+      </div>
     </div>
     <footer class="dialog-actions">
       <button id="artwork-save" type="submit" class="button">儲存草稿</button>

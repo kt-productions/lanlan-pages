@@ -6,7 +6,12 @@ function apiResult_(task) {
     result = {
       ok: false,
       error: {
-        code: error instanceof Core_.OrderError ? error.code : error.name === "ArtworkValidationError" ? "VALIDATION" : "SERVER",
+        code:
+          error instanceof Core_.OrderError
+            ? error.code
+            : error.name === "ArtworkValidationError"
+              ? "VALIDATION"
+              : "SERVER",
         message:
           error instanceof Core_.OrderError || error.name === "ArtworkValidationError"
             ? error.message
@@ -36,12 +41,12 @@ function callApi(text) {
     } catch (error) {
       throw new Core_.OrderError("VALIDATION", "請求格式不正確。");
     }
-    Core_.requireValue(
-      request && typeof request === "object",
-      "請求格式不正確。",
-    );
+    Core_.requireValue(request && typeof request === "object", "請求格式不正確。");
     const payload = request.payload || {};
-    Core_.requireValue(["orders.upload", "admin.artworks.upload"].includes(request.action) || text.length <= 40000, "請求內容過大。");
+    Core_.requireValue(
+      ["orders.upload", "admin.artworks.upload"].includes(request.action) || text.length <= 40000,
+      "請求內容過大。",
+    );
     switch (request.action) {
       case "artworks.worker":
         return artworkWorker_(payload);
@@ -60,13 +65,20 @@ function callApi(text) {
       default: {
         const actor = requireAdmin_(request.token);
         switch (request.action) {
-          case "admin.artworks.list": return listArtworks_();
-          case "admin.artworks.save": return saveArtwork_(payload);
-          case "admin.artworks.upload": return uploadArtwork_(payload);
-          case "admin.artworks.publish": return publishArtwork_(payload);
-          case "admin.artworks.preview": return previewArtwork_(payload);
-          case "admin.artworks.cancel": return cancelArtwork_(payload);
-          case "admin.artworks.cleanup": return cleanupArtwork_(payload);
+          case "admin.artworks.list":
+            return listArtworks_();
+          case "admin.artworks.save":
+            return saveArtwork_(payload);
+          case "admin.artworks.upload":
+            return uploadArtwork_(payload);
+          case "admin.artworks.publish":
+            return publishArtwork_(payload);
+          case "admin.artworks.preview":
+            return previewArtwork_(payload);
+          case "admin.artworks.cancel":
+            return cancelArtwork_(payload);
+          case "admin.artworks.cleanup":
+            return cleanupArtwork_(payload);
           case "auth.session":
             return { authenticated: true, expiresAt: actor.expiresAt };
           case "admin.list":
@@ -116,16 +128,16 @@ function doGet(event) {
       closePopup = result.popup;
       title = "Telegram 驗證完成";
       body =
-        (closePopup ? '原管理頁會自動完成登入，此視窗將自動關閉。若仍停留在此頁，可關閉視窗或' : '') +
+        (closePopup
+          ? "原管理頁會自動完成登入，此視窗將自動關閉。若仍停留在此頁，可關閉視窗或"
+          : "") +
         '<a target="_top" rel="noreferrer" href="' +
         escapeHtml_(result.destination) +
         '">返回管理後台</a>';
     } catch (error) {
       title = "無法登入";
       body = escapeHtml_(
-        error instanceof Core_.OrderError
-          ? error.message
-          : "登入未完成，請返回管理頁重試。",
+        error instanceof Core_.OrderError ? error.message : "登入未完成，請返回管理頁重試。",
       );
     }
   }
@@ -140,7 +152,9 @@ function doGet(event) {
       "</h1><p>" +
       body +
       "</p>" +
-      (closePopup ? '<script>setTimeout(function(){try{window.top.close();}catch(error){document.getElementById("close-hint").hidden=false;}},250);</script><p id="close-hint" hidden>請回到原本的管理頁，登入會自動完成。</p>' : '') +
+      (closePopup
+        ? '<script>setTimeout(function(){try{window.top.close();}catch(error){document.getElementById("close-hint").hidden=false;}},250);</script><p id="close-hint" hidden>請回到原本的管理頁，登入會自動完成。</p>'
+        : "") +
       "</body></html>",
   );
 }

@@ -1,6 +1,6 @@
 # JSON 草稿契約
 
-規格核對日期：2026-09-22。依 `src/features/commission/draft.js` 的 `createDraft()` 與 `content/commission.json` 整理。此文件只記錄已實作的本機草稿；正式送件另見[服務契約](order-api.md)。
+規格核對日期：2026-09-24。依 `src/features/commission/draft.js` 的 `createDraft()` 與 `content/commission.json` 整理。此文件只記錄已實作的本機草稿；正式送件另見[服務契約](order-api.md)。
 
 ## 目前流程
 

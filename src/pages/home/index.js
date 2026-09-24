@@ -3,9 +3,7 @@ import { setupPlayback } from "../../features/portfolio/playback.js";
 import { setupGallery } from "../../features/portfolio/gallery.js";
 import { setupLightbox } from "../../features/portfolio/lightbox.js";
 
-const { works } = JSON.parse(
-  document.querySelector("#portfolio-data").textContent,
-);
+const { works } = JSON.parse(document.querySelector("#portfolio-data").textContent);
 const dialog = document.querySelector("#lightbox");
 let lightbox;
 const motion = setupPlayback({

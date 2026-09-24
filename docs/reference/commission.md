@@ -1,6 +1,6 @@
 # 委託表單與計價規格
 
-規格核對日期：2026-09-22。依 `content/commission.json`、`src/pages/commission/index.html`、`src/pages/commission/index.js` 與 `src/features/commission/pricing.js` 整理目前規則；原表單及交付條款另見[來源存檔](source-forms.md)。
+規格核對日期：2026-09-24。依 `content/commission.json`、`src/pages/commission/index.html`、`src/pages/commission/index.js` 與 `src/features/commission/pricing.js` 整理目前規則；原表單及交付條款另見[來源存檔](source-forms.md)。
 
 站內表單提供即時預估、草稿下載及可設定的正式送件；未設定 API 時不開放收件。以下記錄現行欄位、計價與決策差異；只有取得後端回執才代表已收件，下載草稿不會加入排單，預估不是正式報價。
 

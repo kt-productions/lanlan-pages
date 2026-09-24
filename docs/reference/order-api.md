@@ -1,6 +1,6 @@
 # 委託服務資料契約
 
-實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。2026-09-23 雲端為第 13 版、32 欄 Orders；支援 Trello 歷史訂單、看板分組及 Html Service 通訊；同日依使用者要求開啟收件。
+實作為 `backend/apps-script/`、`src/features/orders/contract.js` 與 `src/features/orders/api.js`。設定見[委託服務設定](../development/order-service.md)。此為目前工作樹的契約，Orders 共 32 欄；正式環境最後驗收依據及待發布項目見[現況對照](../development/current-state.md)，不以文件版本推定已部署。
 
 ## 請求與回應
 
@@ -26,10 +26,10 @@
 | `admin.get` | 管理員 | `orderId`；取得單筆最新完整訂單，供收益報表開啟編輯。 |
 | `admin.revenue` | 管理員 | 選填整數 `year`；一次讀完整訂單，回傳每月及全年收益、明細與待補資料。金額單位為整數分，規則見[收益報表](revenue-report.md)。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
-| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入只更新工作狀態與備註，忽略客戶端 `details` 並保留既有內容。不再接受百分比或可見性作為更新欄位。 |
+| `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入可更新工作狀態、旗標、備註及獨立 `quote`／`revenue` 欄位；忽略客戶端 `details` 並保留既有來源內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |
 | `auth.logout` | 管理員 | 撤銷目前 token。 |
-| `auth.session` | 管理員 | 無額外 payload；重新核對 token、原到期時間及管理白名單，只回傳 `{ authenticated: true, expiresAt }`。不讀取訂單、不回傳身分資料、不延長期限，供四頁導覽確認管理入口。 |
+| `auth.session` | 管理員 | 無額外 payload；重新核對 token、原到期時間及管理白名單，只回傳 `{ authenticated: true, expiresAt }`。不讀取訂單、不回傳身分資料、不延長期限，供全站導覽確認管理入口。 |
 
 `progress.list` 與 `admin.list` 均接受 `delivery: "active" | "delivered" | "all"`。`active` 排除已交稿，`delivered` 只回傳已交稿；省略時沿用 `all`，相容尚未重新整理的舊前端。舊 `completed` 狀態先對應為 `delivered`，交稿範圍由伺服器在分頁及計算件數前套用。
 

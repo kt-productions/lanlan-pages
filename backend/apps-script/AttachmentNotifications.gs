@@ -4,15 +4,23 @@ function referenceDeliveryResults_(response, count) {
   const messages = count === 1 ? [body.result || {}] : body.result;
   const complete = accepted && Array.isArray(messages) && messages.length === count;
   return Array.from({ length: count }, function (_, index) {
-    const result = { status: complete ? "sent" : accepted ? "unknown" : "failed",
-      error: complete ? "" : accepted ? "DELIVERY_UNKNOWN" : "TELEGRAM_REJECTED" };
+    const result = {
+      status: complete ? "sent" : accepted ? "unknown" : "failed",
+      error: complete ? "" : accepted ? "DELIVERY_UNKNOWN" : "TELEGRAM_REJECTED",
+    };
     if (!complete) return result;
     const message = messages[index] || {};
-    const media = message.animation ? { method: "sendAnimation", fileId: message.animation.file_id } :
-      message.photo?.length ? { method: "sendPhoto", fileId: message.photo[message.photo.length - 1].file_id } :
-      message.document ? { method: "sendDocument", fileId: message.document.file_id } : null;
-    if (media && typeof media.fileId === "string" && media.fileId.length <= 256) result.media = media;
-    if (typeof message.media_group_id === "string" && message.media_group_id.length <= 100) result.groupId = message.media_group_id;
+    const media = message.animation
+      ? { method: "sendAnimation", fileId: message.animation.file_id }
+      : message.photo?.length
+        ? { method: "sendPhoto", fileId: message.photo[message.photo.length - 1].file_id }
+        : message.document
+          ? { method: "sendDocument", fileId: message.document.file_id }
+          : null;
+    if (media && typeof media.fileId === "string" && media.fileId.length <= 256)
+      result.media = media;
+    if (typeof message.media_group_id === "string" && message.media_group_id.length <= 100)
+      result.groupId = message.media_group_id;
     return result;
   });
 }
@@ -38,9 +46,14 @@ function notifyOrderParts_(id, claim) {
         const current = findOrder_(sheet, id);
         if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return false;
         const states = notificationStates_(current);
-        const target = states.find(function (item) { return item.id === recipient.id; });
+        const target = states.find(function (item) {
+          return item.id === recipient.id;
+        });
         if (target.textParts[index].status === "sent") return false;
-        target.textParts[index] = { status: "sending", attempts: target.textParts[index].attempts + 1 };
+        target.textParts[index] = {
+          status: "sending",
+          attempts: target.textParts[index].attempts + 1,
+        };
         target.status = "sending";
         target.attempts += 1;
         current.notificationAt = new Date().toISOString();
@@ -52,8 +65,12 @@ function notifyOrderParts_(id, claim) {
       let result = { status: "unknown", error: "DELIVERY_UNKNOWN" };
       try {
         const response = sendNotificationText_(recipient, texts[index]);
-        const accepted = response.getResponseCode() === 200 && JSON.parse(response.getContentText()).ok === true;
-        result = { status: accepted ? "sent" : "failed", error: accepted ? "" : "TELEGRAM_REJECTED" };
+        const accepted =
+          response.getResponseCode() === 200 && JSON.parse(response.getContentText()).ok === true;
+        result = {
+          status: accepted ? "sent" : "failed",
+          error: accepted ? "" : "TELEGRAM_REJECTED",
+        };
       } catch (error) {
         if (error.code === "CONFIG") result = { status: "failed", error: "CONFIG" };
       }
@@ -62,7 +79,9 @@ function notifyOrderParts_(id, claim) {
         const current = findOrder_(sheet, id);
         if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return;
         const states = notificationStates_(current);
-        const target = states.find(function (item) { return item.id === recipient.id; });
+        const target = states.find(function (item) {
+          return item.id === recipient.id;
+        });
         Object.assign(target.textParts[index], result, { at: new Date().toISOString() });
         target.status = notificationStatus_([...(target.parts || []), ...target.textParts]);
         target.error = target.status === "sent" ? "" : "PARTIAL_DELIVERY";
@@ -75,14 +94,22 @@ function notifyOrderParts_(id, claim) {
       // 一段失敗時保留後續段落待重試，避免閱讀順序被打亂。
       if (result.status !== "sent") break;
     }
-    const pending = attachments.map(function (_, index) { return index; }).filter(function (index) {
-      return recipient.parts?.[index]?.status !== "sent";
-    });
+    const pending = attachments
+      .map(function (_, index) {
+        return index;
+      })
+      .filter(function (index) {
+        return recipient.parts?.[index]?.status !== "sent";
+      });
     const photos = pending.filter(function (index) {
       return ["image/jpeg", "image/png", "image/webp"].includes(attachments[index].type);
     });
-    const documents = pending.filter(function (index) { return !photos.includes(index); });
-    for (const batch of [photos, documents].filter(function (items) { return items.length; })) {
+    const documents = pending.filter(function (index) {
+      return !photos.includes(index);
+    });
+    for (const batch of [photos, documents].filter(function (items) {
+      return items.length;
+    })) {
       // 保留回執處理時間；剩餘附件由既有後台「重試通知」接續。
       if (Date.now() - started > 80000) break outer;
       const prepared = lock_(function () {
@@ -90,9 +117,16 @@ function notifyOrderParts_(id, claim) {
         const current = findOrder_(sheet, id);
         if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return [];
         const states = notificationStates_(current);
-        const target = states.find(function (item) { return item.id === recipient.id; });
-        if (!target.parts) target.parts = attachments.map(function () { return { status: "pending", attempts: 0 }; });
-        const indices = batch.filter(function (index) { return target.parts[index].status !== "sent"; });
+        const target = states.find(function (item) {
+          return item.id === recipient.id;
+        });
+        if (!target.parts)
+          target.parts = attachments.map(function () {
+            return { status: "pending", attempts: 0 };
+          });
+        const indices = batch.filter(function (index) {
+          return target.parts[index].status !== "sent";
+        });
         if (!indices.length) return [];
         indices.forEach(function (index) {
           target.parts[index] = { status: "sending", attempts: target.parts[index].attempts + 1 };
@@ -105,23 +139,31 @@ function notifyOrderParts_(id, claim) {
         return indices;
       });
       if (!prepared.length) continue;
-      let results = prepared.map(function () { return { status: "unknown", error: "DELIVERY_UNKNOWN" }; });
+      let results = prepared.map(function () {
+        return { status: "unknown", error: "DELIVERY_UNKNOWN" };
+      });
       try {
-        results = referenceDeliveryResults_(sendReferenceBatch_(claim.order, recipient, prepared, reusable), prepared.length);
+        results = referenceDeliveryResults_(
+          sendReferenceBatch_(claim.order, recipient, prepared, reusable),
+          prepared.length,
+        );
         results.forEach(function (result, position) {
           if (result.status === "sent" && result.media) reusable[prepared[position]] = result.media;
         });
       } catch (error) {
-        if (["CONFIG", "ATTACHMENT"].includes(error.code)) results = prepared.map(function () {
-          return { status: "failed", error: error.code };
-        });
+        if (["CONFIG", "ATTACHMENT"].includes(error.code))
+          results = prepared.map(function () {
+            return { status: "failed", error: error.code };
+          });
       }
       lock_(function () {
         const sheet = orderSheet_();
         const current = findOrder_(sheet, id);
         if (Number(current.notificationAttempts) !== claim.order.notificationAttempts) return;
         const states = notificationStates_(current);
-        const target = states.find(function (item) { return item.id === recipient.id; });
+        const target = states.find(function (item) {
+          return item.id === recipient.id;
+        });
         prepared.forEach(function (index, position) {
           Object.assign(target.parts[index], results[position], { at: new Date().toISOString() });
         });

@@ -3,9 +3,7 @@ import path from "node:path";
 import { root } from "./paths.mjs";
 
 export async function readContent(relative) {
-  return JSON.parse(
-    await readFile(path.join(root, "content", relative), "utf8"),
-  );
+  return JSON.parse(await readFile(path.join(root, "content", relative), "utf8"));
 }
 
 // 只有經確認的款式可成為計價輸入；私人來源存檔不放入公開專案。
@@ -17,12 +15,7 @@ export function prepareStickerOptions(options) {
     .map((item) => {
       // 金額後可能附有半價或發光效果說明，只解析貨幣符號之前的數字。
       const match = item.label.match(/\.\.\.\s*(\d+)\s*💵(?:\s|$)/u);
-      if (
-        !Number.isInteger(item.number) ||
-        item.number < 1 ||
-        numbers.has(item.number) ||
-        !match
-      ) {
+      if (!Number.isInteger(item.number) || item.number < 1 || numbers.has(item.number) || !match) {
         throw new Error(`貼圖來源格式有誤或編號重複：${item.number}`);
       }
       numbers.add(item.number);
@@ -34,8 +27,6 @@ export async function readCommission() {
   const config = await readContent("commission.json");
   return {
     ...config,
-    stickerOptions: prepareStickerOptions(
-      await readContent("forms/sticker-options.json"),
-    ),
+    stickerOptions: prepareStickerOptions(await readContent("forms/sticker-options.json")),
   };
 }

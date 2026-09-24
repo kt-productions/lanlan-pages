@@ -33,4 +33,4 @@
 
 依 [Trello 官方 API 文件](https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/)，Card ID 採 Mongo ID，前 8 個十六進位字元可換算為 Unix 秒級建立時間。讀取時由已保存的 Card ID 取得，不需改寫 174 筆訂單或歷史。這是卡片建立時間，不能當成委託正式收件時間。
 
-[`dateLastActivity`](https://developer.atlassian.com/cloud/trello/guides/rest-api/object-definitions/) 是最後活動時間；移動、內容、標籤等異動可能更新它，不限製作進度。本站保留匯入當時的值，沒有持續同步。公開卡片展開資訊與後台分別顯示 Trello 建立、Trello 最後活動、匯入本站；本站另有修改時顯示本站更新。UTC 原值保留於資料，介面以台灣時間呈現。
+[`dateLastActivity`](https://developer.atlassian.com/cloud/trello/guides/rest-api/object-definitions/) 是最後活動時間；移動、內容、標籤等異動可能更新它，不限製作進度。本站保留匯入當時的值，沒有持續同步。後台來源區顯示 Trello 建立、Trello 最後活動及匯入本站時間；公開卡片已移除「訂單資訊」展開區，雖保留核可的 API 時間欄位，畫面不再列出這些時間。UTC 原值保留於資料，介面以台灣時間呈現。

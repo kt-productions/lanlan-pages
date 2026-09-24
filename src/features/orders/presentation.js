@@ -40,7 +40,9 @@ export function renderProgress(order) {
   article.id = order.orderId;
   article.classList.toggle("is-rush", order.isRush === true);
   article.classList.toggle("is-on-hold", order.isOnHold === true);
-  article.append(element("span", serviceNames[order.service] || "委託", `card-service service-${order.service}`));
+  article.append(
+    element("span", serviceNames[order.service] || "委託", `card-service service-${order.service}`),
+  );
   const flags = renderFlags(order);
   if (flags.childElementCount) article.append(flags);
   article.append(element("h3", order.displayTitle || order.orderId));
@@ -50,11 +52,8 @@ export function renderProgress(order) {
 
 export function renderFlags(order) {
   const flags = element("span", undefined, "order-flags");
-  if (order.isRush)
-    flags.append(element("span", "急件", "order-flag flag-rush"));
-  if (order.isOnHold)
-    flags.append(element("span", "擱置", "order-flag flag-hold"));
-  if (order.isArchived)
-    flags.append(element("span", "封存", "order-flag flag-hold"));
+  if (order.isRush) flags.append(element("span", "急件", "order-flag flag-rush"));
+  if (order.isOnHold) flags.append(element("span", "擱置", "order-flag flag-hold"));
+  if (order.isArchived) flags.append(element("span", "封存", "order-flag flag-hold"));
   return flags;
 }

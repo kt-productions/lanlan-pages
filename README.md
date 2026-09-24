@@ -1,62 +1,49 @@
 # LanLan Pages — 爛爛 LANLAN 個人作品集
 
-展示角色動畫、貼圖與小動圖的靜態網站，提供作品瀏覽、委託價目及獨立委託表單。
+爛爛的角色動畫、貼圖與小動圖作品集，提供委託表單、公開進度、作品管理及收益報表。網站採原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 靜態建置；Google Apps Script 負責 Telegram 管理登入、Sheets 訂單、私人 Drive 附件及通知。
 
-網站以 GitHub Pages 發布，原始碼位於 [kt-productions/lanlan-pages](https://github.com/kt-productions/lanlan-pages)，正式網址為 [LanLan Pages](https://kt-productions.github.io/lanlan-pages/)。2026-09-23 已完成 Telegram 登入與測試單通知驗證，並部署 GAS 第 13 版、升級 Orders 為 32 欄，匯入 174 筆 Trello 歷史訂單。公開進度目前為六欄卡片看板，支援類型與急件／擱置篩選；匯入單沿用原公開名稱，新表單改為顯示暱稱；封存工作不出現在公開進度，後台只在「封存」篩選顯示。2026-09-23 已依使用者要求開啟收件；已加入五檔私人附件與 Telegram 多圖相簿通知，沒有付款功能；附件發布與驗收狀態見[附件紀錄](docs/records/attachments-2026-09-23.md)。設定與匯入步驟見[服務維護](docs/development/order-service.md)及 [Trello 匯入](docs/development/trello-import.md)。
+[正式網站](https://kt-productions.github.io/lanlan-pages/) · [GitHub 倉庫](https://github.com/kt-productions/lanlan-pages) · [文件導覽](docs/README.md)
 
-使用原生 HTML、CSS、JavaScript（ES Modules）與 Node.js 建置。前端沒有第三方執行期套件；Apps Script 後端打包使用 node-forge 驗證登入簽章。
+## 功能與入口
 
-已修復後台登入的回應傳遞問題：正式網頁採用 GAS Html Service 通訊，部署資源使用內容版本，避免快取混用。修復後兩次 Telegram 登入、175 筆讀取、搜尋、歷史來源與附件、測試單儲存及公開同步、內容還原、登出均已實測；174 筆歷史訂單逐欄一致，通知未重發。結果不明的修改仍應先重新讀取。驗收範圍及工具限制見[後台驗收](docs/records/admin-2026-09-23.md)，早期問題見[首次發布紀錄](docs/records/pages-deployment-2026-09-23.md)。
+下列為目前工作樹的功能。程式已實作與正式環境已部署是不同狀態；最近驗收依據及待發布項目見[現況與決策對照](docs/development/current-state.md)。
 
-Telegram 登入現改由另一個視窗驗證，完成後原管理頁自動登入；視窗受阻時保留原分頁手動回程。實作與驗證範圍見[自動登入紀錄](docs/records/login-popup-2026-09-23.md)。
+| 入口 | 功能 |
+| --- | --- |
+| 首頁 `/` | 作品分類、分批載入、影片播放與放大檢視、價目及聯絡資訊。 |
+| 委託表單 `commission/` | 三種類型、三步驟、即時預估、JSON 草稿及正式送件；最多五檔私人附件。 |
+| 委託進度 `progress/` | 公開六階段看板，顯示暱稱及急件／擱置標記；排除封存委託。 |
+| 委託管理 `admin/` | 編輯需求、階段、封存、金額與收款日期，重試未完成通知。 |
+| 作品管理 `artworks/` | 新增、編輯、草稿、發布及下架；按「儲存並發布」直接送出，沒有發布確認勾選。 |
+| 收益報表 `admin/?view=revenue` | 每月／全年收益、待補資料與訂單編輯；共用管理頁的登入及編輯器。 |
 
-五頁的主要導覽會依本站已保存、尚未到期的 Telegram 登入立即顯示「委託管理、作品管理」，並在背景確認權限，切換頁面不必等待服務回覆。暫時斷線保留入口；登出、到期或伺服器確認權限失效時隱藏。管理資料與操作仍須通過後端驗證，沿用原三天期限、不因瀏覽頁面續期；驗證見[管理導覽紀錄](docs/records/admin-navigation-2026-09-24.md)。
+主導覽的三個管理入口共用 Telegram 身分驗證。已保存且未到期的登入會立即顯示入口，再由後端確認權限；登出、到期或確認權限失效時隱藏。每次管理 API 都重新驗證，導覽是否顯示不代表取得資料權限。登入自核發起固定 72 小時，瀏覽器只保存 token、版本及到期時間。
 
-2026-09-24 GAS 已更新至第 14 版，管理登入自核發起固定有效 3 天（72 小時），同一瀏覽器重新整理、關閉網頁或重開瀏覽器後可還原。主動登出、到期或後端確認管理權限已移除時清除登入；瀏覽器禁止保存網站資料時會提示只能使用本頁登入。僅保存 token 與到期時間，不保存委託資料；更新前已建立的登入仍沿用原期限，重新登入後才採 3 天。
+委託看板預設只讀未交稿，已交稿按需補載。收益報表讀取完整訂單快照，不受看板篩選影響；真實收益、暫收訂金與未完成餘額的定義見[收益規格](docs/reference/revenue-report.md)。網站沒有付款、退款或委託者帳號功能。
 
-首頁價目加入小字 NT$，貼圖包顯示 NT$ 50 ~ 250 起；表單價格區間統一使用 ~，角色動畫確認為新台幣。驗證見[價格格式紀錄](docs/records/price-format-2026-09-23.md)。
+## 開發與驗證
 
-Telegram 收件通知已包含完整表單內容與伺服器預估明細；長文自動分段，多張圖片維持一組相簿，補送只處理未成功的部分。正式驗證見[完整通知紀錄](docs/records/notification-text-2026-09-23.md)。
-
-委託進度與管理看板預設只載入未交稿；已交稿欄內提供「載入已交稿」按鈕，按下才補載，重新載入回到未交稿。搜尋與篩選會提示目前的資料範圍，詳見[按需載入驗收](docs/records/delivery-loading-2026-09-23.md)。
-
-委託進度已移除卡片的「訂單資訊」展開區。兩個看板於桌機並排顯示六欄，只有看板向 main 兩側延伸；標題、工具列、件數與提示維持原本 main 寬度。公開進度已移除工作階段選單。管理卡片隱藏編號與編輯按鈕，直接點選或按 Enter／空白鍵即可開啟編輯視窗，拖曳移欄仍保留；驗證見[六欄與卡片互動紀錄](docs/records/compact-board-2026-09-24.md)。
-
-管理編輯視窗提供訂單金額：一般訂單可查看系統預估、編輯明細並自動加總，Trello 歷史訂單僅編輯總額。手動金額與原預估分開保存，沿用權限、版本與修改歷史，金額不公開且不觸發通知；驗證見[金額編輯紀錄](docs/records/order-quote-2026-09-24.md)。
-
-網站入口使用目錄網址：[委託表單](https://kt-productions.github.io/lanlan-pages/commission/)、[委託進度](https://kt-productions.github.io/lanlan-pages/progress/)、[委託管理](https://kt-productions.github.io/lanlan-pages/admin/)、[作品管理](https://kt-productions.github.io/lanlan-pages/artworks/)。兩個管理頁只顯示各自內容，透過主導覽切換，沒有「管理項目」切換列。舊 `.html` 網址會自動轉址，`index.html` 會回到所在目錄。
-
-2026-09-24 首頁小動圖分類改為桌機每列四張、每批八張；委託看板合併「草稿確認/等待付款」，卡片依原始建立時間由舊到新排列。管理頁預設小動圖，移除上方工作階段篩選，支援拖曳移欄；編輯視窗仍保留階段選擇。急件卡片紅底、擱置藍底，並存時加紅色側框。GAS 已更新至第 15 版，前端由本次 `main` 推送觸發 GitHub Pages 發布；驗證與發布範圍見[本次紀錄](docs/records/gallery-form-2026-09-24.md)。
-
-2026-09-24 作品放映室改按使用者確認的編號由大到小排列，並更新歡迎文案；貼圖包新增一份表單限同一角色的說明、調整修改條款及準備提示，聯絡與參考素材標籤同步更新。草稿與計價契約不變，驗證見[作品排序與表單文案紀錄](docs/records/gallery-form-2026-09-24.md)。
-
-2026-09-24 首頁中央影片改為使用者提供的「逼餔撩髮」，原 6 MB GIF 另存為約 182 KB MP4，保留 1 秒循環、原影格節奏與完整比例；原檔保留。重建方式見[影片壓縮與延遲載入](docs/development/video-optimization.md)。
-
-收益報表來源已整合至 `main`，由委託管理工具列開啟；作品管理仍維持獨立頁面。每月及全年區分真實收益、暫收訂金與未完成餘額，依交稿／收款／預計交稿日期歸屬，交稿後不重複計入訂金。缺少金額或日期另列待補，可直接開啟訂單修正。這是目前訂單狀態的快照，規格及發布順序見[收益報表](docs/reference/revenue-report.md)；此功能尚未部署至正式環境，須先更新 GAS，再發布前端。
-
-## 快速開始
-
-需要 Node.js 22 以上。在專案根目錄執行：
+需要 Node.js 22 以上；CI 使用 Node.js 24。前端沒有第三方執行期套件，鎖定的 node-forge 僅用於 Apps Script 登入簽章驗證。
 
 ```sh
 npm ci
-npm run dev
+npm test
+npm run build
+npm run check
 ```
 
-建置完成後開啟 <http://127.0.0.1:4173/lanlan-pages/>。修改來源後需重新建置並重新整理瀏覽器；完整指令與環境設定見[開發指南](docs/development/setup.md)。代理啟動預覽前須遵守協作準則的授權規則。
+本機預覽使用 `npm run dev`，只監聽 <http://127.0.0.1:4173/lanlan-pages/>；修改後須重新建置及整理頁面，沒有熱更新。代理啟動預覽前依 [AGENTS.md](AGENTS.md) 確認授權。環境變數、後端打包及媒體工具見[開發指南](docs/development/setup.md)，檢查範圍見[驗證指南](docs/development/validation.md)。
 
-## 文件
+## 維護與發布
 
-- [作品管理與發布](docs/development/artwork-service.md)：已正式啟用草稿、Drive 暫存、main 保存核對與 production 發布流程；新增視窗操作列已修正，正式上傳、發布、文字更新及下架結果見[完整流程驗收](docs/records/artwork-flow-2026-09-24.md)，設定背景見[啟用紀錄](docs/records/artwork-activation-2026-09-24.md)。
-- [影片壓縮與延遲載入](docs/development/video-optimization.md)：可見時載入小尺寸預覽，點開才載入大尺寸壓縮版，原始檔保留供後續操作。
-- [文件導覽](docs/README.md)：依設計、開發、規格與來源、未來規劃、歷史紀錄分類。
-- [委託服務設定](docs/development/order-service.md)：Sheets、Telegram、管理員白名單與啟用驗收。
-- [公開倉庫與私人資料](docs/development/publication.md)：雲端資源、憑證、文件與素材的保存界線。
-- [協作準則](AGENTS.md)：開發、驗證、素材保留與發布界線。
-- [程式碼架構](docs/development/architecture.md)：頁面、功能模組、共用模板與測試的維護位置。
+- 頁面及模組位置見[程式碼架構](docs/development/architecture.md)；介面以[文字規格](docs/design/interface.md)維護。
+- 費率與草稿以[委託規格](docs/reference/commission.md)、[草稿契約](docs/reference/draft-schema.md)及內容 JSON 為準；原始來源與現行規則分開保存。
+- 後端設定見[委託服務](docs/development/order-service.md)、[參考附件](docs/development/reference-attachments.md)及[作品服務](docs/development/artwork-service.md)。
+- `main` 執行驗證，`production` 觸發 GitHub Pages 發布。更新後端契約時先部署 GAS，再將已驗證的版本快轉至 production；只推 main 不代表網站已更新。
+- 作品原檔與衍生檔保留來源及雜湊；訂單、憑證、私人維運清單與驗收暫存放在公開專案外，規則見[資料保存界線](docs/development/publication.md)。
+
+歷史部署版本、個別修正與驗收結果集中於[歷史紀錄](docs/records/README.md)，不作為即時服務狀態。協作、資料保留與外部操作授權均以 [AGENTS.md](AGENTS.md) 及使用者後續明確決策為準。
 
 ## 權利
 
-網站程式碼與作品未授予開源或再利用授權。作品著作權屬繪師及各角色權利人所有。
-
-頁尾分別標示「Artworks © 2026 爛爛 and respective rights holders.」與「Developed and maintained by 乾太.」，年份沿用自動更新；開發維運署名不另行宣告網站程式的權利歸屬。
+網站程式碼與作品未授予開源或再利用授權。作品著作權屬繪師及各角色權利人所有。頁尾保留作品權利標示與乾太的開發維運署名，年份自動更新；維運署名不另行宣告網站程式的權利歸屬。

@@ -1,4 +1,8 @@
-import { confirmAdminNavigation, clearAdminNavigation, onAdminNavigationInvalid } from "../../shared/navigation.js";
+import {
+  confirmAdminNavigation,
+  clearAdminNavigation,
+  onAdminNavigationInvalid,
+} from "../../shared/navigation.js";
 import { ApiError, pageApi, integrationConfig } from "../../features/orders/api.js";
 import { createAdminSession } from "../../features/orders/admin-session.js";
 import { setupArtworkAdmin } from "../../features/artworks/admin.js";

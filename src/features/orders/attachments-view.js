@@ -25,25 +25,42 @@ export function setupAttachments(container, api, getToken, onAuthError) {
       button.type = "button";
       const status = element("p", "", "field-hint");
       status.setAttribute("role", "status");
-      item.append(element("p", `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`), button, status);
+      item.append(
+        element("p", `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`),
+        button,
+        status,
+      );
       button.addEventListener("click", async () => {
         button.disabled = true;
         status.textContent = "正在讀取附件……";
         try {
-          const result = await api("admin.attachment", { orderId: order.orderId, index }, getToken());
+          const result = await api(
+            "admin.attachment",
+            { orderId: order.orderId, index },
+            getToken(),
+          );
           if (active !== generation) return;
-          if (result.size !== file.size || result.type !== file.type || result.size > ATTACHMENT_MAX_BYTES)
+          if (
+            result.size !== file.size ||
+            result.type !== file.type ||
+            result.size > ATTACHMENT_MAX_BYTES
+          )
             throw new Error("附件回應不符，請重新載入訂單。");
           const bytes = Uint8Array.from(atob(result.base64), (value) => value.charCodeAt(0));
           if (bytes.length !== result.size) throw new Error("附件尚未完整下載，請重試。");
           const previewable = ATTACHMENT_TYPES.includes(result.type);
-          const url = URL.createObjectURL(new Blob([bytes], { type: previewable ? result.type : "application/octet-stream" }));
+          const url = URL.createObjectURL(
+            new Blob([bytes], { type: previewable ? result.type : "application/octet-stream" }),
+          );
           urls.push(url);
           if (previewable) {
             const img = element("img");
             img.src = url;
             img.alt = file.name;
-            img.addEventListener("error", () => { img.hidden = true; status.textContent = "此圖片無法預覽，仍可下載原檔。"; });
+            img.addEventListener("error", () => {
+              img.hidden = true;
+              status.textContent = "此圖片無法預覽，仍可下載原檔。";
+            });
             item.append(img);
           }
           const download = element("a", "下載原檔", "button button-secondary");

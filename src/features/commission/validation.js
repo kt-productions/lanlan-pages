@@ -12,11 +12,7 @@ export function contactError(channel, value) {
   if (channel !== "facebook") return "";
   try {
     const url = new URL(text);
-    if (
-      url.protocol === "https:" &&
-      /(^|\.)facebook\.com$|^fb\.me$/.test(url.hostname)
-    )
-      return "";
+    if (url.protocol === "https:" && /(^|\.)facebook\.com$|^fb\.me$/.test(url.hostname)) return "";
   } catch {
     // 無法解析與網域不符使用相同提示，不把使用者輸入寫入日誌。
   }
@@ -43,7 +39,6 @@ export function fieldError(control) {
       ? "請閱讀並勾選這個類型的委託說明與製作流程。"
       : messages[control.name] || "請完成這個必填欄位。";
   }
-  if (control.validity.tooLong)
-    return `請將內容縮短至 ${control.maxLength} 字元以內。`;
+  if (control.validity.tooLong) return `請將內容縮短至 ${control.maxLength} 字元以內。`;
   return "請檢查這個欄位的格式。";
 }

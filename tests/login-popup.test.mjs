@@ -29,13 +29,19 @@ test("彈出視窗登入只讓原 browserKey 取得票證，交換後沿用既�
   const result = app.invoke("auth.poll", { browserKey }).data;
   assert.deepEqual(Object.keys(result), ["ticket"]);
   assert.match(result.ticket, /^[a-f0-9]{64}$/);
-  assert.equal(app.invoke("auth.exchange", { ...result, browserKey: "c".repeat(64) }).error.code, "AUTH");
+  assert.equal(
+    app.invoke("auth.exchange", { ...result, browserKey: "c".repeat(64) }).error.code,
+    "AUTH",
+  );
   const session = app.invoke("auth.exchange", { ...result, browserKey });
   assert.equal(session.ok, true);
   assert.equal(app.invoke("admin.list", {}, session.data.token).ok, true);
   assert.deepEqual(app.invoke("auth.exchange", { ...result, browserKey }).data, session.data);
   assert.equal(app.writes.length, writes);
-  assert.equal(app.calls.some(({ url }) => /api\.telegram\.org/.test(url)), false);
+  assert.equal(
+    app.calls.some(({ url }) => /api\.telegram\.org/.test(url)),
+    false,
+  );
 });
 
 test("拒絕、取消及逾時會回報原管理頁，不能拿到登入票證", () => {
@@ -54,7 +60,10 @@ test("拒絕、取消及逾時會回報原管理頁，不能拿到登入票證",
     const result = app.invoke("auth.poll", { browserKey });
     assert.equal(result.ok, false);
     assert.equal(result.error.code, scenario === "forbidden" ? "FORBIDDEN" : "AUTH");
-    assert.equal([...app.cache.keys()].some((key) => key.startsWith("ticket:")), false);
+    assert.equal(
+      [...app.cache.keys()].some((key) => key.startsWith("ticket:")),
+      false,
+    );
   }
   const app = backend();
   startBackend(app);
@@ -74,7 +83,10 @@ test("結果和票證維持兩分鐘期限；舊請求不能覆蓋新的登入",
   app.faults.token = currentToken;
   app.context.doGet({ parameter: current });
   const result = app.invoke("auth.poll", { browserKey }).data;
-  for (const key of ["login:" + app.context.digest_(browserKey), "ticket:" + app.context.digest_(result.ticket)]) {
+  for (const key of [
+    "login:" + app.context.digest_(browserKey),
+    "ticket:" + app.context.digest_(result.ticket),
+  ]) {
     const saved = app.cache.get(key);
     assert.ok(saved.until - Date.now() <= 120000);
     saved.until = Date.now() - 1;
@@ -97,13 +109,24 @@ function harness({ blocked = false, respond = async () => ({ pending: true }) } 
   const events = [];
   const timers = new Map();
   let nextTimer = 0;
-  const popup = { opener: {}, close: () => events.push("close"),
-    location: { replace: (url) => events.push(["navigate", url]) } };
+  const popup = {
+    opener: {},
+    close: () => events.push("close"),
+    location: { replace: (url) => events.push(["navigate", url]) },
+  };
   const host = {
-    open() { events.push("open"); return blocked ? null : popup; },
+    open() {
+      events.push("open");
+      return blocked ? null : popup;
+    },
     location: { assign: (url) => events.push(["fallback", url]) },
-    setTimeout(fn) { timers.set(++nextTimer, fn); return nextTimer; },
-    clearTimeout(id) { timers.delete(id); },
+    setTimeout(fn) {
+      timers.set(++nextTimer, fn);
+      return nextTimer;
+    },
+    clearTimeout(id) {
+      timers.delete(id);
+    },
   };
   const api = async (action, payload) => {
     events.push([action, payload]);
@@ -126,7 +149,7 @@ function harness({ blocked = false, respond = async () => ({ pending: true }) } 
 
 test("同步開啟視窗，驗證成功後只交換一次票證並結束輪詢", async () => {
   let calls = 0;
-  const qa = harness({ respond: async () => ++calls === 1 ? { pending: true } : { ticket } });
+  const qa = harness({ respond: async () => (++calls === 1 ? { pending: true } : { ticket }) });
   await qa.login.start(browserKey);
   assert.equal(qa.events[0], "open");
   assert.equal(qa.events[1][0], "auth.start");
@@ -137,13 +160,21 @@ test("同步開啟視窗，驗證成功後只交換一次票證並結束輪詢",
   await qa.tick();
   assert.equal(qa.login.active(), false);
   assert.equal(qa.timers.size, 0);
-  assert.deepEqual(qa.events.filter((event) => event[0] === "ticket"), [["ticket", { ticket, browserKey }]]);
+  assert.deepEqual(
+    qa.events.filter((event) => event[0] === "ticket"),
+    [["ticket", { ticket, browserKey }]],
+  );
   assert.equal(qa.events.filter((event) => event === "close").length, 1);
 });
 
 test("取消時清除輪詢，忽略已在傳輸中的成功結果", async () => {
   let resolve;
-  const qa = harness({ respond: () => new Promise((done) => { resolve = done; }) });
+  const qa = harness({
+    respond: () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  });
   await qa.login.start(browserKey);
   const pending = qa.tick();
   qa.login.cancel();
@@ -151,29 +182,47 @@ test("取消時清除輪詢，忽略已在傳輸中的成功結果", async () =>
   await pending;
   assert.equal(qa.login.active(), false);
   assert.equal(qa.timers.size, 0);
-  assert.equal(qa.events.some((event) => event[0] === "ticket"), false);
+  assert.equal(
+    qa.events.some((event) => event[0] === "ticket"),
+    false,
+  );
 });
 
 test("短暫網路失敗可恢復，連續失敗或驗證拒絕會停止並回報", async () => {
   for (const code of ["NETWORK", "FORBIDDEN", "AUTH"]) {
-    const qa = harness({ respond: async () => { throw Object.assign(new Error("模擬錯誤"), { code }); } });
+    const qa = harness({
+      respond: async () => {
+        throw Object.assign(new Error("模擬錯誤"), { code });
+      },
+    });
     await qa.login.start(browserKey);
     const attempts = code === "NETWORK" ? 3 : 1;
     for (let index = 0; index < attempts; index++) await qa.tick();
     assert.equal(qa.timers.size, 0);
     assert.equal(qa.login.active(), false);
-    assert.deepEqual(qa.events.filter((event) => event[0] === "error"), [["error", code]]);
+    assert.deepEqual(
+      qa.events.filter((event) => event[0] === "error"),
+      [["error", code]],
+    );
   }
   let calls = 0;
-  const qa = harness({ respond: async () => {
-    if (++calls === 1) throw Object.assign(new Error("短暫斷線"), { code: "NETWORK" });
-    return { ticket };
-  } });
+  const qa = harness({
+    respond: async () => {
+      if (++calls === 1) throw Object.assign(new Error("短暫斷線"), { code: "NETWORK" });
+      return { ticket };
+    },
+  });
   await qa.login.start(browserKey);
   await qa.tick();
   await qa.tick();
-  assert.equal(qa.events.some((event) => event[0] === "error"), false);
-  assert.equal(qa.events.some((event) => event[0] === "ticket"), true);
+  assert.equal(
+    qa.events.some((event) => event[0] === "error"),
+    false,
+  );
+  assert.equal(
+    qa.events.some((event) => event[0] === "ticket"),
+    true,
+  );
 });
 
 test("瀏覽器阻擋視窗時退回原分頁登入，且不啟動輪詢", async () => {
@@ -187,12 +236,20 @@ test("瀏覽器阻擋視窗時退回原分頁登入，且不啟動輪詢", async
 
 test("錯誤登入網址會關閉空白視窗；跨來源關閉受阻仍可完成票證交換", async () => {
   const qa = harness({ respond: async () => ({ ticket }) });
-  const invalid = createLoginPopup(async () => ({ url: "https://example.com/" }), { host: qa.host, ...qa.callbacks });
+  const invalid = createLoginPopup(async () => ({ url: "https://example.com/" }), {
+    host: qa.host,
+    ...qa.callbacks,
+  });
   await assert.rejects(() => invalid.start(browserKey), /登入網址不正確/);
   assert.equal(invalid.active(), false);
   assert.equal(qa.events.at(-1), "close");
-  qa.popup.close = () => { throw new Error("模擬跨來源視窗拒絕關閉"); };
+  qa.popup.close = () => {
+    throw new Error("模擬跨來源視窗拒絕關閉");
+  };
   await qa.login.start(browserKey);
   await qa.tick();
-  assert.equal(qa.events.some((event) => event[0] === "ticket"), true);
+  assert.equal(
+    qa.events.some((event) => event[0] === "ticket"),
+    true,
+  );
 });

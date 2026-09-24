@@ -13,37 +13,26 @@
           <h1>委託管理</h1>
           <p>整理需求，更新每一份委託的進度。</p>
         </div>
-        <button id="admin-logout" class="button" type="button" hidden>
-          登出
-        </button>
+        <button id="admin-logout" class="button" type="button" hidden>登出</button>
       </div>
-      <section
-        id="admin-login-panel"
-        class="admin-login"
-        aria-label="管理員登入"
-      >
+      <section id="admin-login-panel" class="admin-login" aria-label="管理員登入">
         <h2>透過 Telegram 登入</h2>
-        <p>
-          僅限指定的管理員使用。登入後可以查看委託內容、更新狀態及重試收件通知。
-        </p>
+        <p>僅限指定的管理員使用。登入後可以查看委託內容、更新狀態及重試收件通知。</p>
         <button id="admin-login" class="button button-primary" type="button">
           使用 Telegram 登入
         </button>
-        <p>Telegram 驗證會在另一個視窗開啟，完成後此頁會自動登入。同一瀏覽器會保留登入 3 天，重新整理或關閉後再開啟仍可使用；登出或到期後需重新登入。</p>
-        <button id="admin-login-cancel" class="button" type="button" hidden>
-          取消登入
-        </button>
-        <button id="admin-login-retry" class="button" type="button" hidden>
-          重試完成登入
-        </button>
+        <p>
+          Telegram 驗證會在另一個視窗開啟，完成後此頁會自動登入。同一瀏覽器會保留登入 3
+          天，重新整理或關閉後再開啟仍可使用；登出或到期後需重新登入。
+        </p>
+        <button id="admin-login-cancel" class="button" type="button" hidden>取消登入</button>
+        <button id="admin-login-retry" class="button" type="button" hidden>重試完成登入</button>
       </section>
       <p id="admin-status" role="status" tabindex="-1"></p>
       <section id="revenue-panel" hidden aria-labelledby="revenue-heading">
-        <button id="revenue-back" class="button" type="button">返回委託管理</button>
         <div class="order-heading revenue-heading">
           <div>
-            <h2 id="revenue-heading" tabindex="-1">收益報表</h2>
-            <p>每份委託，從預計收益到完成交稿。</p>
+            <h2 id="revenue-heading" tabindex="-1">收益概覽</h2>
           </div>
           <div class="revenue-controls">
             <label>年度<select id="revenue-year" aria-label="報表年度"></select></label>
@@ -53,23 +42,36 @@
         <p id="revenue-status" role="status"></p>
         <div id="revenue-content" hidden>
           <dl id="revenue-summary" class="revenue-summary"></dl>
-          <p class="field-hint">總計包含真實收益、暫收訂金與未完成餘額，不代表全部已收款。所有金額為新台幣。</p>
+          <p class="field-hint">
+            總計包含真實收益、暫收訂金與未完成餘額，不代表全部已收款。所有金額為新台幣。
+          </p>
           <details class="revenue-rules">
             <summary>計算方式與日期</summary>
-            <p>已交稿的訂單全額按實際交稿日列為真實收益；未交稿的已收訂金按收款日列為暫時收益，其餘金額按預計交稿日列為未完成收益。交稿後，訂金與餘額會轉入交稿月份的全額，不重複計入。</p>
-            <p>這是依目前訂單狀態重算的報表，過去月份可能隨交稿或金額修改而調整，並非歷史收款流水帳。包含所有委託類型及封存訂單，不受看板篩選影響；舊取消單排除。只使用已設定的訂單金額，系統預估不列入收益。</p>
-            <p>日期採台灣時間。舊資料無法確認日期時列在待補資料，不以建立日或最後修改日代替；缺少日期的金額不列入月份及年度合計。</p>
+            <p>
+              已交稿的訂單全額按實際交稿日列為真實收益；未交稿的已收訂金按收款日列為暫時收益，其餘金額按預計交稿日列為未完成收益。交稿後，訂金與餘額會轉入交稿月份的全額，不重複計入。
+            </p>
+            <p>
+              這是依目前訂單狀態重算的報表，過去月份可能隨交稿或金額修改而調整，並非歷史收款流水帳。包含所有委託類型及封存訂單，不受看板篩選影響；舊取消單排除。只使用已設定的訂單金額，系統預估不列入收益。
+            </p>
+            <p>
+              日期採台灣時間。舊資料無法確認日期時列在待補資料，不以建立日或最後修改日代替；缺少日期的金額不列入月份及年度合計。
+            </p>
           </details>
-          <div class="revenue-table-scroll" tabindex="0" role="region" aria-label="每月收益明細，可左右捲動">
+          <div
+            class="revenue-table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="每月收益明細，可左右捲動"
+          >
             <table class="revenue-table">
               <caption id="revenue-caption"></caption>
               <thead>
                 <tr>
                   <th scope="col">月份</th>
                   <th scope="col">真實收益</th>
-                  <th scope="col">暫時收益<br>已收訂金</th>
-                  <th scope="col">未完成收益<br>未收餘額</th>
-                  <th scope="col">總計<br>含未完成</th>
+                  <th scope="col">暫時收益<br />已收訂金</th>
+                  <th scope="col">未完成收益<br />未收餘額</th>
+                  <th scope="col">總計<br />含未完成</th>
                 </tr>
               </thead>
               <tbody id="revenue-months"></tbody>
@@ -78,7 +80,8 @@
           </div>
           <div class="revenue-detail-heading">
             <h3 id="revenue-detail-heading">訂單明細</h3>
-            <label>查看範圍
+            <label
+              >查看範圍
               <select id="revenue-month" aria-label="收益明細範圍">
                 <option value="all">全年明細</option>
                 <option value="missing">待補資料（所有年度）</option>
@@ -86,7 +89,11 @@
             </label>
           </div>
           <p id="revenue-missing" class="field-hint"></p>
-          <div id="revenue-details" class="revenue-details" aria-labelledby="revenue-detail-heading"></div>
+          <div
+            id="revenue-details"
+            class="revenue-details"
+            aria-labelledby="revenue-detail-heading"
+          ></div>
         </div>
       </section>
       <section id="admin-workspace" hidden aria-label="委託工作區">
@@ -98,7 +105,8 @@
               placeholder="委託編號或暱稱"
               maxlength="100"
           /></label>
-          <label for="admin-service">委託類型
+          <label for="admin-service"
+            >委託類型
             <select id="admin-service">
               <option value="">所有類型</option>
               <option value="chibi" selected>小動圖</option>
@@ -106,7 +114,8 @@
               <option value="stickers">貼圖包</option>
             </select>
           </label>
-          <label for="admin-flag">附加狀態
+          <label for="admin-flag"
+            >附加狀態
             <select id="admin-flag">
               <option value="">所有工作</option>
               <option value="rush">急件</option>
@@ -114,16 +123,20 @@
               <option value="archived">封存</option>
             </select>
           </label>
-          <button id="admin-refresh" class="button" type="button">
-            重新載入
-          </button>
-          <button id="admin-revenue" class="button" type="button" aria-controls="revenue-panel">
-            收益報表
-          </button>
+          <button id="admin-refresh" class="button" type="button">重新載入</button>
         </div>
         <p id="admin-summary"></p>
-        <p id="admin-board-hint" class="board-hint">點選卡片可編輯，拖曳至其他欄位可更新狀態；卡片由舊到新排列。桌機並排顯示六個階段，窄螢幕可左右捲動，欄內可上下捲動。封存委託只在附加狀態選擇「封存」時顯示。</p>
-        <div id="admin-list" class="progress-board" role="region" tabindex="0" aria-label="委託管理看板" aria-describedby="admin-board-hint"></div>
+        <p id="admin-board-hint" class="board-hint">
+          點選卡片可編輯，拖曳至其他欄位可更新狀態；卡片由舊到新排列。桌機並排顯示六個階段，窄螢幕可左右捲動，欄內可上下捲動。封存委託只在附加狀態選擇「封存」時顯示。
+        </p>
+        <div
+          id="admin-list"
+          class="progress-board"
+          role="region"
+          tabindex="0"
+          aria-label="委託管理看板"
+          aria-describedby="admin-board-hint"
+        ></div>
       </section>
       <dialog id="admin-editor-dialog" class="admin-dialog" aria-labelledby="edit-heading">
         <form id="admin-edit" novalidate>
@@ -147,8 +160,17 @@
               <p id="edit-quote-hint" class="field-hint"></p>
               <fieldset id="edit-quote-controls" hidden disabled>
                 <legend>金額編輯</legend>
-                <label id="edit-quote-amount-label">總金額（NT$）
-                  <input name="quoteAmount" type="number" inputmode="decimal" min="0" max="9999999.99" step="0.01" required />
+                <label id="edit-quote-amount-label"
+                  >總金額（NT$）
+                  <input
+                    name="quoteAmount"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    max="9999999.99"
+                    step="0.01"
+                    required
+                  />
                 </label>
                 <div id="edit-quote-item-editor">
                   <div id="edit-quote-lines"></div>
@@ -156,37 +178,47 @@
                 </div>
               </fieldset>
               <p id="edit-quote-total" class="quote-total" aria-live="polite"></p>
-              <p class="field-hint">金額僅供管理員查看。取消勾選並儲存可清除金額，先前內容會保留於修改紀錄。</p>
+              <p class="field-hint">
+                金額僅供管理員查看。取消勾選並儲存可清除金額，先前內容會保留於修改紀錄。
+              </p>
             </section>
             <fieldset>
               <legend>收益與收款紀錄</legend>
               <div class="edit-grid">
-                <label>已收訂金（NT$）
-                  <input name="depositAmount" type="number" inputmode="decimal"
-                    min="0" max="9999999.99" step="0.01" required />
+                <label
+                  >已收訂金（NT$）
+                  <input
+                    name="depositAmount"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    max="9999999.99"
+                    step="0.01"
+                    required
+                  />
                 </label>
-                <label>訂金收款日
+                <label
+                  >訂金收款日
                   <input name="depositReceivedOn" type="date" min="1900-01-01" max="9999-12-31" />
                 </label>
-                <label>預計交稿日
+                <label
+                  >預計交稿日
                   <input name="expectedDeliveryOn" type="date" min="1900-01-01" max="9999-12-31" />
                 </label>
-                <label>實際交稿日
+                <label
+                  >實際交稿日
                   <input name="deliveredOn" type="date" min="1900-01-01" max="9999-12-31" />
                 </label>
               </div>
-              <p class="field-hint">沒有收訂金請填 0；不從工作階段或 Trello 標籤推定已付款。訂金不可超過訂單金額。改為已交稿時，未填實際日期會自動記錄當天；歷史訂單可補填正確日期。缺少日期的金額列為待補資料。</p>
+              <p class="field-hint">
+                沒有收訂金請填 0；不從工作階段或 Trello
+                標籤推定已付款。訂金不可超過訂單金額。改為已交稿時，未填實際日期會自動記錄當天；歷史訂單可補填正確日期。缺少日期的金額列為待補資料。
+              </p>
             </fieldset>
             <fieldset>
               <legend>製作進度</legend>
               <div class="edit-grid">
-                <label
-                  >工作階段<select
-                    name="status"
-                    id="edit-status"
-                    required
-                  ></select
-                ></label>
+                <label>工作階段<select name="status" id="edit-status" required></select></label>
               </div>
               <div class="edit-flags" role="group" aria-label="附加狀態">
                 <label><input type="checkbox" name="isRush" />急件</label>
@@ -197,24 +229,23 @@
                 附加狀態可同時勾選；擱置與封存保留目前階段。封存後不顯示於公開進度，後台須選「封存」才可查看及解除。這裡的急件標記不會修改報價。
               </p>
               <label
-                >公開進度說明<textarea
-                  name="publicNote"
-                  maxlength="500"
-                  rows="2"
-                ></textarea>
+                >公開進度說明<textarea name="publicNote" maxlength="500" rows="2"></textarea>
               </label>
               <p class="field-hint">
                 未封存委託的暱稱、階段與急件／擱置標記會出現在公開進度頁；此說明也會公開，請勿填入聯絡方式或參考素材連結。
               </p>
             </fieldset>
-            <section id="edit-source" class="import-source" aria-label="Trello 來源紀錄" hidden></section>
+            <section
+              id="edit-source"
+              class="import-source"
+              aria-label="Trello 來源紀錄"
+              hidden
+            ></section>
             <section id="edit-attachments" aria-label="參考檔案" hidden></section>
             <fieldset id="edit-content">
               <legend>委託內容</legend>
               <div class="edit-grid">
-                <label
-                  >暱稱<input name="nickname" maxlength="80" required
-                /></label>
+                <label>暱稱<input name="nickname" maxlength="80" required /></label>
                 <label
                   >聯絡平台<select name="contactChannel">
                     <option value="telegram">Telegram</option>
@@ -223,39 +254,21 @@
                   </select></label
                 >
               </div>
+              <label>聯絡方式<input name="contact" maxlength="300" required /></label>
               <label
-                >聯絡方式<input name="contact" maxlength="300" required
-              /></label>
-              <label
-                >參考素材連結<input
-                  name="referenceUrl"
-                  type="url"
-                  maxlength="2000"
-                  required
+                >參考素材連結<input name="referenceUrl" type="url" maxlength="2000" required
               /></label>
               <a id="edit-reference" target="_blank" rel="noopener noreferrer"
                 >開啟目前已儲存的參考素材</a
               >
               <div id="edit-options" class="edit-grid"></div>
               <label id="edit-notes-label"
-                >特殊需求<textarea
-                  name="notes"
-                  maxlength="4000"
-                  rows="4"
-                ></textarea>
+                >特殊需求<textarea name="notes" maxlength="4000" rows="4"></textarea>
               </label>
             </fieldset>
-            <label
-              >內部備註<textarea
-                name="adminNote"
-                maxlength="4000"
-                rows="3"
-              ></textarea>
-            </label>
+            <label>內部備註<textarea name="adminNote" maxlength="4000" rows="3"></textarea></label>
             <p id="notification-status"></p>
-            <button id="admin-retry" type="button" class="button">
-              重試 Telegram 通知
-            </button>
+            <button id="admin-retry" type="button" class="button">重試 Telegram 通知</button>
             <p id="notification-hint" class="field-hint">
               若上次通知結果不明，重試可能再傳送一次。訂單不會重複建立。
             </p>
@@ -270,7 +283,12 @@
           </footer>
         </form>
       </dialog>
-      <dialog id="admin-discard-dialog" class="discard-dialog" aria-labelledby="discard-heading" aria-describedby="discard-description">
+      <dialog
+        id="admin-discard-dialog"
+        class="discard-dialog"
+        aria-labelledby="discard-heading"
+        aria-describedby="discard-description"
+      >
         <h2 id="discard-heading">放棄尚未儲存的修改？</h2>
         <p id="discard-description">尚未儲存的內容會被還原，已儲存的委託不受影響。</p>
         <div class="dialog-actions">

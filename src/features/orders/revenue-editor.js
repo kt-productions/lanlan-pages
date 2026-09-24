@@ -24,7 +24,8 @@ export function setupRevenueEditor(form) {
       };
     },
     clear() {
-      for (const key of ["depositAmount", "depositReceivedOn", "expectedDeliveryOn", "deliveredOn"]) fields[key].value = "";
+      for (const key of ["depositAmount", "depositReceivedOn", "expectedDeliveryOn", "deliveredOn"])
+        fields[key].value = "";
     },
   };
 }

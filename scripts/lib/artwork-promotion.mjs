@@ -11,8 +11,12 @@ export async function promoteArtwork(git, sha, token, retryDeployment) {
   if (current) {
     await git(["fetch", "origin", "production"]);
     let alreadyIncluded = false;
-    try { await git(["merge-base", "--is-ancestor", sha, current]); alreadyIncluded = true; }
-    catch { /* 尚未包含的版本仍須通過下方快轉檢查。 */ }
+    try {
+      await git(["merge-base", "--is-ancestor", sha, current]);
+      alreadyIncluded = true;
+    } catch {
+      /* 尚未包含的版本仍須通過下方快轉檢查。 */
+    }
     if (alreadyIncluded) {
       // 舊工作也可能遇到較新版部署失敗；重試現行 production，不能退回舊 SHA。
       await retryDeployment();

@@ -40,13 +40,10 @@ export function setupLightbox(getWorks, motion) {
     document.querySelector("#lightbox-title").textContent = work.title;
     description.textContent = work.description || "";
     description.hidden = !work.description;
-    document.querySelector("#lightbox-category").textContent =
-      labels[work.category];
+    document.querySelector("#lightbox-category").textContent = labels[work.category];
     document.querySelector("#lightbox-count").textContent =
       `${selectedIndex + 1} / ${getWorks().length}`;
-    const media = document.createElement(
-      work.type === "video" ? "video" : "img",
-    );
+    const media = document.createElement(work.type === "video" ? "video" : "img");
     if (work.type === "video") {
       media.controls = true;
       media.playsInline = true;
@@ -64,22 +61,18 @@ export function setupLightbox(getWorks, motion) {
       mediaError.textContent = "作品暫時無法播放，請稍後重試。";
       mediaError.hidden = false;
     });
-    media.src = "./" + (work.animated && !motion.isEnabled() ? work.poster : work.playbackSrc || work.src);
+    media.src =
+      "./" + (work.animated && !motion.isEnabled() ? work.poster : work.playbackSrc || work.src);
     mediaHost.append(media);
-    if (work.type === "video" && motion.isEnabled() && !document.hidden)
-      playDialog(media);
+    if (work.type === "video" && motion.isEnabled() && !document.hidden) playDialog(media);
     document.querySelector("#previous-work").disabled = selectedIndex === 0;
-    document.querySelector("#next-work").disabled =
-      selectedIndex === getWorks().length - 1;
+    document.querySelector("#next-work").disabled = selectedIndex === getWorks().length - 1;
   }
   for (const link of document.querySelectorAll("[data-work]")) {
     link.addEventListener("click", (event) => {
-      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)
-        return;
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       if (typeof dialog.showModal !== "function") return;
-      selectedIndex = getWorks().findIndex(
-        (work) => work.id === link.dataset.work,
-      );
+      selectedIndex = getWorks().findIndex((work) => work.id === link.dataset.work);
       if (selectedIndex < 0) return;
       event.preventDefault();
       trigger = link;
@@ -96,18 +89,10 @@ export function setupLightbox(getWorks, motion) {
     selectedIndex = next;
     renderWork();
   }
-  document
-    .querySelector("#previous-work")
-    .addEventListener("click", () => moveWork(-1));
-  document
-    .querySelector("#next-work")
-    .addEventListener("click", () => moveWork(1));
-  document
-    .querySelector("#close-lightbox")
-    .addEventListener("click", () => dialog.close());
-  document
-    .querySelector("#lightbox-form")
-    .addEventListener("click", () => dialog.close());
+  document.querySelector("#previous-work").addEventListener("click", () => moveWork(-1));
+  document.querySelector("#next-work").addEventListener("click", () => moveWork(1));
+  document.querySelector("#close-lightbox").addEventListener("click", () => dialog.close());
+  document.querySelector("#lightbox-form").addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", (event) => {
     if (event.target !== dialog) return;
     const rect = dialog.getBoundingClientRect();
@@ -152,7 +137,8 @@ export function setupLightbox(getWorks, motion) {
     syncMotion() {
       const work = getWorks()[selectedIndex];
       const image = mediaHost.querySelector("img");
-      if (dialog.open && work?.animated && image) image.src = "./" + (motion.isEnabled() ? work.playbackSrc || work.src : work.poster);
+      if (dialog.open && work?.animated && image)
+        image.src = "./" + (motion.isEnabled() ? work.playbackSrc || work.src : work.poster);
       const video = mediaHost.querySelector("video");
       if (!video) return;
       if (motion.isEnabled() && !document.hidden) playDialog(video);

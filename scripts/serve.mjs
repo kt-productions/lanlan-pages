@@ -5,11 +5,9 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 const root = fileURLToPath(new URL("../", import.meta.url));
 if (!process.argv.includes("--dist")) {
-  const build = spawnSync(
-    process.execPath,
-    [path.join(root, "scripts/build.mjs")],
-    { stdio: "inherit" },
-  );
+  const build = spawnSync(process.execPath, [path.join(root, "scripts/build.mjs")], {
+    stdio: "inherit",
+  });
   if (build.status !== 0) process.exit(build.status || 1);
 }
 const base = path.resolve(root, "dist");
@@ -43,9 +41,11 @@ http
       let info = await stat(target);
       if (info.isDirectory()) {
         if (!requestUrl.pathname.endsWith("/")) {
-          res.writeHead(301, {
-            Location: requestUrl.pathname + "/" + requestUrl.search,
-          }).end();
+          res
+            .writeHead(301, {
+              Location: requestUrl.pathname + "/" + requestUrl.search,
+            })
+            .end();
           return;
         }
         target = path.join(target, "index.html");
@@ -53,19 +53,13 @@ http
       }
       if (!info.isFile()) throw new Error("not found");
       const data = await readFile(target);
-      res.setHeader(
-        "Content-Type",
-        types[path.extname(target)] || "application/octet-stream",
-      );
+      res.setHeader("Content-Type", types[path.extname(target)] || "application/octet-stream");
       res.setHeader("Accept-Ranges", "bytes");
       res.setHeader("Cache-Control", "no-cache");
       const range = req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
       if (range) {
         const start = Number(range[1]);
-        const end = Math.min(
-          range[2] ? Number(range[2]) : info.size - 1,
-          info.size - 1,
-        );
+        const end = Math.min(range[2] ? Number(range[2]) : info.size - 1, info.size - 1);
         if (start > end || start >= info.size) {
           res.writeHead(416, { "Content-Range": `bytes */${info.size}` }).end();
           return;
@@ -74,19 +68,13 @@ http
           "Content-Range": `bytes ${start}-${end}/${info.size}`,
           "Content-Length": end - start + 1,
         });
-        res.end(
-          req.method === "HEAD" ? undefined : data.subarray(start, end + 1),
-        );
+        res.end(req.method === "HEAD" ? undefined : data.subarray(start, end + 1));
       } else {
         res.writeHead(200, { "Content-Length": info.size });
         res.end(req.method === "HEAD" ? undefined : data);
       }
     } catch {
-      res
-        .writeHead(404, { "Content-Type": "text/plain; charset=utf-8" })
-        .end("找不到這個頁面");
+      res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" }).end("找不到這個頁面");
     }
   })
-  .listen(port, "127.0.0.1", () =>
-    console.log(`預覽：http://127.0.0.1:${port}/lanlan-pages/`),
-  );
+  .listen(port, "127.0.0.1", () => console.log(`預覽：http://127.0.0.1:${port}/lanlan-pages/`));

@@ -34,9 +34,7 @@ const ORDER_HEADERS_ = [
 ];
 
 function orderSheet_() {
-  const sheet = SpreadsheetApp.openById(
-    setting_("SPREADSHEET_ID"),
-  ).getSheetByName("Orders");
+  const sheet = SpreadsheetApp.openById(setting_("SPREADSHEET_ID")).getSheetByName("Orders");
   Core_.requireValue(sheet, "訂單工作表尚未初始化。", "CONFIG");
   Core_.requireValue(
     sheet.getMaxColumns() >= ORDER_HEADERS_.length,
@@ -75,37 +73,45 @@ function setupOrders_() {
     if (!sheet) sheet = book.insertSheet("Orders");
     if (sheet.getLastRow() === 0) {
       ensureOrderColumns_(sheet);
-      sheet
-        .getRange(1, 1, 1, ORDER_HEADERS_.length)
-        .setValues([ORDER_HEADERS_]);
+      sheet.getRange(1, 1, 1, ORDER_HEADERS_.length).setValues([ORDER_HEADERS_]);
       sheet.setFrozenRows(1);
     } else {
       const width = Math.min(sheet.getMaxColumns(), ORDER_HEADERS_.length);
       const header = sheet.getRange(1, 1, 1, width).getValues()[0];
       if (JSON.stringify(header) !== JSON.stringify(ORDER_HEADERS_)) {
         const oldWidth = [31, 30, 29, 27].find(function (count) {
-          return JSON.stringify(header.slice(0, count)) ===
-            JSON.stringify(ORDER_HEADERS_.slice(0, count));
+          return (
+            JSON.stringify(header.slice(0, count)) ===
+            JSON.stringify(ORDER_HEADERS_.slice(0, count))
+          );
         });
         Core_.requireValue(
           Boolean(oldWidth),
           "訂單欄位不符，請停止操作並檢查工作表版本。",
           "CONFIG",
         );
-        const tail = width > oldWidth
-          ? sheet.getRange(1, oldWidth + 1, sheet.getLastRow(), width - oldWidth)
-          : null;
+        const tail =
+          width > oldWidth
+            ? sheet.getRange(1, oldWidth + 1, sheet.getLastRow(), width - oldWidth)
+            : null;
         Core_.requireValue(
-          !tail || (tail.getValues().every(function (row) {
-            return row.every(function (value) { return value === ""; });
-          }) && tail.getFormulas().every(function (row) {
-            return row.every(function (value) { return value === ""; });
-          })),
+          !tail ||
+            (tail.getValues().every(function (row) {
+              return row.every(function (value) {
+                return value === "";
+              });
+            }) &&
+              tail.getFormulas().every(function (row) {
+                return row.every(function (value) {
+                  return value === "";
+                });
+              })),
           "新增欄位已有內容，請停止操作，不可覆寫。",
           "CONFIG",
         );
         ensureOrderColumns_(sheet);
-        sheet.getRange(1, oldWidth + 1, 1, ORDER_HEADERS_.length - oldWidth)
+        sheet
+          .getRange(1, oldWidth + 1, 1, ORDER_HEADERS_.length - oldWidth)
           .setValues([ORDER_HEADERS_.slice(oldWidth)]);
       }
     }
@@ -143,9 +149,7 @@ function orderValues_(order) {
       "CAPACITY",
     );
     // setValues 會把等號開頭的字串當成公式。前置單引號讓使用者文字保留為純文字。
-    return typeof value === "string" && /^[=+@\-\t\r]/.test(value)
-      ? "'" + value
-      : value;
+    return typeof value === "string" && /^[=+@\-\t\r]/.test(value) ? "'" + value : value;
   });
 }
 
@@ -211,9 +215,7 @@ function submitOrder_(payload) {
     if (input.manifest.length) details.attachments = completedReferences_(payload.requestId, input);
     const now = new Date().toISOString();
     const order = Object.assign(detailColumns_(details), {
-      orderId:
-        "LL-" +
-        Utilities.getUuid().replace(/-/g, "").slice(0, 16).toUpperCase(),
+      orderId: "LL-" + Utilities.getUuid().replace(/-/g, "").slice(0, 16).toUpperCase(),
       requestId: payload.requestId,
       requestHash: requestHash,
       createdAt: now,
@@ -233,15 +235,14 @@ function submitOrder_(payload) {
       notificationError: "",
       notificationAt: "",
       notificationRecipientsJson: "",
-      historyJson: JSON.stringify([
-        { at: now, actor: "customer", action: "created", revision: 1 },
-      ]),
+      historyJson: JSON.stringify([{ at: now, actor: "customer", action: "created", revision: 1 }]),
     });
     writeOrder_(sheet, order);
     return { order: order, created: true };
   });
   // Sheet 回執寫入成功後才釋放上傳預留；重試已成立的訂單也可清掉遺留預留。
-  if (input.manifest.length) PropertiesService.getScriptProperties().deleteProperty("REFERENCE_UPLOAD_" + payload.requestId);
+  if (input.manifest.length)
+    PropertiesService.getScriptProperties().deleteProperty("REFERENCE_UPLOAD_" + payload.requestId);
   // 訂單已提交後，通知失敗也不得回滾訂單或向前端回報收件失敗。
   if (result.created) {
     try {
@@ -256,47 +257,55 @@ function submitOrder_(payload) {
 function pageOrders_(payload, admin) {
   // 舊版呼叫端省略此欄時保留原回應；新版看板明確要求未交稿或已交稿。
   const delivery = payload.delivery === undefined ? "all" : payload.delivery;
-  Core_.requireValue(["all", "active", "delivered"].includes(delivery),
-    "交稿範圍不正確。");
+  Core_.requireValue(["all", "active", "delivered"].includes(delivery), "交稿範圍不正確。");
   const offset = payload.offset === undefined ? 0 : payload.offset;
   const limit = admin || payload.limit === undefined ? 30 : payload.limit;
-  Core_.requireValue(Number.isInteger(limit) && limit >= 1 && limit <= 200,
-    "每頁筆數不正確。");
+  Core_.requireValue(Number.isInteger(limit) && limit >= 1 && limit <= 200, "每頁筆數不正確。");
   Core_.requireValue(
     Number.isInteger(offset) && offset >= 0 && offset <= 100000,
     "分頁位置不正確。",
   );
   let orders = readOrders_(orderSheet_());
-  if (delivery !== "all") orders = orders.filter(function (order) {
-    return (Core_.orderWorkflow(order).status === "delivered") === (delivery === "delivered");
-  });
+  if (delivery !== "all")
+    orders = orders.filter(function (order) {
+      return (Core_.orderWorkflow(order).status === "delivered") === (delivery === "delivered");
+    });
   let stageCounts;
   if (!admin) {
-    const stage = payload.status === undefined ? "" :
-      payload.status === "awaiting_payment" ? "draft_review" : payload.status;
+    const stage =
+      payload.status === undefined
+        ? ""
+        : payload.status === "awaiting_payment"
+          ? "draft_review"
+          : payload.status;
     const flag = payload.flag === undefined ? "" : payload.flag;
     const service = payload.service === undefined ? "" : payload.service;
-    Core_.requireValue(["", "animation", "chibi", "stickers"].includes(service),
-      "委託類型篩選不正確。");
     Core_.requireValue(
-      typeof stage === "string" &&
-        (!stage || Object.hasOwn(Core_.ORDER_STATUSES, stage)),
+      ["", "animation", "chibi", "stickers"].includes(service),
+      "委託類型篩選不正確。",
+    );
+    Core_.requireValue(
+      typeof stage === "string" && (!stage || Object.hasOwn(Core_.ORDER_STATUSES, stage)),
       "工作階段篩選不正確。",
     );
-    Core_.requireValue(
-      ["", "rush", "on_hold"].includes(flag),
-      "附加狀態篩選不正確。",
-    );
+    Core_.requireValue(["", "rush", "on_hold"].includes(flag), "附加狀態篩選不正確。");
     // 封存工作不得出現在公開 API；先對完整資料篩選再分頁與計算件數。
     orders = orders.filter(function (order) {
       const flow = Core_.orderWorkflow(order);
-      return !flow.isArchived && (!stage || flow.status === stage) &&
+      return (
+        !flow.isArchived &&
+        (!stage || flow.status === stage) &&
         (!service || order.service === service) &&
-        (!flag || (flag === "rush" ? flow.isRush : flow.isOnHold));
+        (!flag || (flag === "rush" ? flow.isRush : flow.isOnHold))
+      );
     });
     stageCounts = {};
-    Object.keys(Core_.ORDER_STATUSES).forEach(function (key) { stageCounts[key] = 0; });
-    orders.forEach(function (order) { stageCounts[Core_.orderWorkflow(order).status] += 1; });
+    Object.keys(Core_.ORDER_STATUSES).forEach(function (key) {
+      stageCounts[key] = 0;
+    });
+    orders.forEach(function (order) {
+      stageCounts[Core_.orderWorkflow(order).status] += 1;
+    });
   }
   orders.sort(Core_.compareOrderAge);
   const page = orders.slice(offset, offset + limit);
@@ -332,10 +341,13 @@ function updateOrder_(payload, actor) {
     // 新交稿自動記錄台灣日期；離開已交稿清掉舊日期，重新交稿不能誤用上次日期。
     const wasDelivered = Core_.orderWorkflow(current).status === "delivered";
     if (update.status === "delivered" && !wasDelivered) {
-      update.details.revenue = Object.assign({ depositAmount: 0, depositReceivedOn: null,
-        expectedDeliveryOn: null }, update.details.revenue || {}, {
-        deliveredOn: update.details.revenue?.deliveredOn || Core_.taipeiDate(now),
-      });
+      update.details.revenue = Object.assign(
+        { depositAmount: 0, depositReceivedOn: null, expectedDeliveryOn: null },
+        update.details.revenue || {},
+        {
+          deliveredOn: update.details.revenue?.deliveredOn || Core_.taipeiDate(now),
+        },
+      );
     } else if (update.status !== "delivered" && update.details.revenue) {
       update.details.revenue.deliveredOn = null;
     }
@@ -379,7 +391,8 @@ function updateOrder_(payload, actor) {
 
 function revenueReport_(payload) {
   const now = new Date().toISOString();
-  const year = payload.year === undefined ? Number(Core_.taipeiDate(now).slice(0, 4)) : payload.year;
+  const year =
+    payload.year === undefined ? Number(Core_.taipeiDate(now).slice(0, 4)) : payload.year;
   // 一次讀完整 Orders 快照，避免看板的未交稿延遲載入或分頁遺漏收益。
   return Core_.buildRevenueReport(readOrders_(orderSheet_()), year, now);
 }
@@ -389,10 +402,14 @@ function notificationRecipients_() {
   const source = users || setting_("TELEGRAM_CHAT_ID", true).trim();
   const ids = Array.from(new Set(source.split(/[,\s]+/).filter(Boolean)));
   Core_.requireValue(
-    ids.length > 0 && ids.length <= 20 && ids.every(function (id) {
-      return (users ? /^[1-9]\d{0,15}$/ : /^-?[1-9]\d{0,15}$/).test(id) &&
-        Number.isSafeInteger(Number(id));
-    }),
+    ids.length > 0 &&
+      ids.length <= 20 &&
+      ids.every(function (id) {
+        return (
+          (users ? /^[1-9]\d{0,15}$/ : /^-?[1-9]\d{0,15}$/).test(id) &&
+          Number.isSafeInteger(Number(id))
+        );
+      }),
     "請設定 1–20 位通知對象的 Telegram 數字 ID。",
     "CONFIG",
   );
@@ -404,12 +421,22 @@ function notificationRecipients_() {
 function notificationStates_(order) {
   const states = JSON.parse(order.notificationRecipientsJson);
   Core_.requireValue(
-    Array.isArray(states) && states.length > 0 && states.length <= 20 &&
+    Array.isArray(states) &&
+      states.length > 0 &&
+      states.length <= 20 &&
       states.every(function (entry) {
-        return entry && typeof entry.id === "string" &&
+        return (
+          entry &&
+          typeof entry.id === "string" &&
           /^-?[1-9]\d{0,15}$/.test(entry.id) &&
-          ["pending", "sending", "sent", "failed", "unknown"].includes(entry.status);
-      }) && new Set(states.map(function (entry) { return entry.id; })).size === states.length,
+          ["pending", "sending", "sent", "failed", "unknown"].includes(entry.status)
+        );
+      }) &&
+      new Set(
+        states.map(function (entry) {
+          return entry.id;
+        }),
+      ).size === states.length,
     "通知紀錄格式不符，請由維護者檢查。",
     "CONFIG",
   );
@@ -417,10 +444,30 @@ function notificationStates_(order) {
 }
 
 function notificationStatus_(states) {
-  if (states.every(function (entry) { return entry.status === "sent"; })) return "sent";
-  if (states.some(function (entry) { return entry.status === "unknown"; })) return "unknown";
-  if (states.some(function (entry) { return entry.status === "failed"; })) return "failed";
-  if (states.some(function (entry) { return ["pending", "sending"].includes(entry.status); })) return "sending";
+  if (
+    states.every(function (entry) {
+      return entry.status === "sent";
+    })
+  )
+    return "sent";
+  if (
+    states.some(function (entry) {
+      return entry.status === "unknown";
+    })
+  )
+    return "unknown";
+  if (
+    states.some(function (entry) {
+      return entry.status === "failed";
+    })
+  )
+    return "failed";
+  if (
+    states.some(function (entry) {
+      return ["pending", "sending"].includes(entry.status);
+    })
+  )
+    return "sending";
   return "failed";
 }
 
@@ -454,10 +501,14 @@ function notifyOrder_(id, retry) {
       const attachments = JSON.parse(order.detailsJson).attachments || [];
       recipients.forEach(function (recipient) {
         if (recipient.status !== "sent" && !recipient.textParts) {
-          recipient.textParts = recipients[0].messageTexts.map(function () { return { status: "pending", attempts: 0 }; });
+          recipient.textParts = recipients[0].messageTexts.map(function () {
+            return { status: "pending", attempts: 0 };
+          });
         }
         if (recipient.status !== "sent" && attachments.length && !recipient.parts) {
-          recipient.parts = attachments.map(function () { return { status: "pending", attempts: 0 }; });
+          recipient.parts = attachments.map(function () {
+            return { status: "pending", attempts: 0 };
+          });
         }
       });
       order.notificationRecipientsJson = JSON.stringify(recipients);

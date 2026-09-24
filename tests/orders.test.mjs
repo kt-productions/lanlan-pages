@@ -127,10 +127,7 @@ test("成功先寫入 Sheets 再通知；重送同一內容只有一筆訂單與
   const second = app.invoke("orders.submit", payload);
   assert.deepEqual(second, first);
   assert.equal(app.rows.length, 2);
-  assert.equal(
-    app.calls.filter((call) => call.url.endsWith("/sendMessage")).length,
-    1,
-  );
+  assert.equal(app.calls.filter((call) => call.url.endsWith("/sendMessage")).length, 1);
   // 使用者要求通知完整填單內容；聯絡方式只送往既有通知名單。
   assert.ok(app.calls[0].options.payload.includes("fictional_test"));
   payload.details.notes = "不同內容";
@@ -150,8 +147,7 @@ test("通知中斷不丟單、不向客戶洩漏例外，管理員可重試；�
   assert.equal(order.notificationStatus, "unknown");
   app.faults.telegram = false;
   assert.equal(
-    app.invoke("admin.retryNotification", { orderId: order.orderId }, token)
-      .data.status,
+    app.invoke("admin.retryNotification", { orderId: order.orderId }, token).data.status,
     "sent",
   );
   const count = app.calls.length;
@@ -175,8 +171,7 @@ test("寫入或鎖失敗不通知；暫停收件仍可取回既有回執", () =>
   app.properties.set("ACCEPTING_ORDERS", "false");
   assert.deepEqual(app.invoke("orders.submit", payload), receipt);
   assert.equal(
-    app.invoke("orders.submit", { ...payload, requestId: randomUUID() }).error
-      .code,
+    app.invoke("orders.submit", { ...payload, requestId: randomUUID() }).error.code,
     "CLOSED",
   );
 });
@@ -187,12 +182,14 @@ test("多人通知去除重複 ID，與管理員白名單分開，冪等重送�
   const payload = { requestId: randomUUID(), details: submission() };
   const receipt = app.invoke("orders.submit", payload);
   assert.equal(receipt.ok, true);
-  const sentTo = () => app.calls.filter(call => call.url.endsWith("/sendMessage"))
-    .map(call => JSON.parse(call.options.payload).chat_id);
+  const sentTo = () =>
+    app.calls
+      .filter((call) => call.url.endsWith("/sendMessage"))
+      .map((call) => JSON.parse(call.options.payload).chat_id);
   assert.deepEqual(sentTo(), ["111", "222"]);
   assert.equal(app.properties.get("ADMIN_TELEGRAM_IDS"), "987654");
   const states = JSON.parse(app.rows[1][app.rows[0].indexOf("notificationRecipientsJson")]);
-  assert.ok(states.every(entry => entry.status === "sent" && entry.attempts === 1));
+  assert.ok(states.every((entry) => entry.status === "sent" && entry.attempts === 1));
   assert.deepEqual(app.invoke("orders.submit", payload), receipt);
   app.properties.set("TELEGRAM_NOTIFY_USER_IDS", "333");
   app.invoke("admin.retryNotification", { orderId: receipt.data.orderId }, app.session());
@@ -206,32 +203,57 @@ test("部分通知失敗與中斷後只重試未送達者，名單固定且結�
   app.faults.telegramResult = (id) => {
     if (id === "333") throw new Error("模擬結果不明");
     return {
-      getResponseCode: () => id === "222" ? 403 : 200,
+      getResponseCode: () => (id === "222" ? 403 : 200),
       getContentText: () => JSON.stringify({ ok: id !== "222" }),
     };
   };
   const receipt = app.invoke("orders.submit", { requestId: randomUUID(), details: submission() });
   assert.equal(receipt.ok, true);
   const stateColumn = app.rows[0].indexOf("notificationRecipientsJson");
-  assert.deepEqual(JSON.parse(app.rows[1][stateColumn]).map(entry => entry.status), ["sent", "failed", "unknown"]);
-  assert.ok(app.writes.some(write => {
-    const value = write[0][stateColumn];
-    return typeof value === "string" && value.startsWith("[") &&
-      JSON.parse(value)[0].status === "sent" && JSON.parse(value)[1].status === "pending";
-  }));
+  assert.deepEqual(
+    JSON.parse(app.rows[1][stateColumn]).map((entry) => entry.status),
+    ["sent", "failed", "unknown"],
+  );
+  assert.ok(
+    app.writes.some((write) => {
+      const value = write[0][stateColumn];
+      return (
+        typeof value === "string" &&
+        value.startsWith("[") &&
+        JSON.parse(value)[0].status === "sent" &&
+        JSON.parse(value)[1].status === "pending"
+      );
+    }),
+  );
   const token = app.session();
   assert.equal(app.invoke("admin.list", {}, token).data.orders[0].notificationStatus, "unknown");
   app.properties.set("TELEGRAM_NOTIFY_USER_IDS", "444");
   app.faults.telegramResult = null;
-  assert.equal(app.invoke("admin.retryNotification", { orderId: receipt.data.orderId }, token).data.status, "sent");
-  assert.deepEqual(app.calls.filter(call => call.url.endsWith("/sendMessage"))
-    .map(call => JSON.parse(call.options.payload).chat_id), ["111", "222", "333", "222", "333"]);
-  assert.deepEqual(JSON.parse(app.rows[1][stateColumn]).map(entry => entry.attempts), [1, 2, 2]);
+  assert.equal(
+    app.invoke("admin.retryNotification", { orderId: receipt.data.orderId }, token).data.status,
+    "sent",
+  );
+  assert.deepEqual(
+    app.calls
+      .filter((call) => call.url.endsWith("/sendMessage"))
+      .map((call) => JSON.parse(call.options.payload).chat_id),
+    ["111", "222", "333", "222", "333"],
+  );
+  assert.deepEqual(
+    JSON.parse(app.rows[1][stateColumn]).map((entry) => entry.attempts),
+    [1, 2, 2],
+  );
   assert.equal(app.rows.length, 2);
 });
 
 test("通知設定錯誤不丟單、不送到部分名單，修正後可重試", () => {
-  for (const value of ["@someone", "111,-222", "111，222", "0", Array.from({ length: 21 }, (_, i) => String(i + 1)).join(",")]) {
+  for (const value of [
+    "@someone",
+    "111,-222",
+    "111，222",
+    "0",
+    Array.from({ length: 21 }, (_, i) => String(i + 1)).join(","),
+  ]) {
     const app = backend();
     app.properties.set("TELEGRAM_NOTIFY_USER_IDS", value);
     const receipt = app.invoke("orders.submit", { requestId: randomUUID(), details: submission() });
@@ -242,7 +264,10 @@ test("通知設定錯誤不丟單、不送到部分名單，修正後可重試",
     assert.equal(order.notificationStatus, "failed");
     assert.equal(order.notificationError, "CONFIG");
     app.properties.set("TELEGRAM_NOTIFY_USER_IDS", "111,222");
-    assert.equal(app.invoke("admin.retryNotification", { orderId: order.orderId }, token).data.status, "sent");
+    assert.equal(
+      app.invoke("admin.retryNotification", { orderId: order.orderId }, token).data.status,
+      "sent",
+    );
     assert.equal(app.calls.length, 2);
   }
 });
@@ -255,18 +280,26 @@ test("尚未發布 GitHub Pages 時仍可收件通知，略過未設定的管理
   const message = JSON.parse(app.calls[0].options.payload).text;
   assert.ok(message.includes(receipt.data.orderId));
   assert.ok(!message.includes("管理後台"));
-  assert.equal(app.invoke("admin.list", {}, app.session()).data.orders[0].notificationStatus, "sent");
+  assert.equal(
+    app.invoke("admin.list", {}, app.session()).data.orders[0].notificationStatus,
+    "sent",
+  );
   assert.equal(app.invoke("auth.start", { browserKey: "a".repeat(64) }).error.code, "CONFIG");
 });
 
 test("29 欄舊表只追加通知欄，已有尾端資料或公式時停止", () => {
   const app = backend();
   app.invoke("orders.submit", { requestId: randomUUID(), details: submission() });
-  app.rows.forEach(row => { row.length = 29; });
+  app.rows.forEach((row) => {
+    row.length = 29;
+  });
   app.faults.maxColumns = 29;
   const before = structuredClone(app.rows);
   app.context.setupOrders();
-  assert.deepEqual(app.rows.map(row => row.slice(0, 29)), before);
+  assert.deepEqual(
+    app.rows.map((row) => row.slice(0, 29)),
+    before,
+  );
   assert.equal(app.rows[0][29], "notificationRecipientsJson");
   assert.equal(app.faults.maxColumns, 32);
   const calls = app.calls.length;
@@ -288,31 +321,40 @@ test("多人通知傳送中拒絕重入重試，結果寫入失敗後保留已�
   app.properties.set("TELEGRAM_NOTIFY_USER_IDS", "111,222");
   const token = app.session();
   app.faults.onTelegram = () => {
-    assert.equal(app.invoke("admin.retryNotification", { orderId: app.rows[1][0] }, token).error.code, "BUSY");
+    assert.equal(
+      app.invoke("admin.retryNotification", { orderId: app.rows[1][0] }, token).error.code,
+      "BUSY",
+    );
   };
-  app.faults.telegramResult = id => {
+  app.faults.telegramResult = (id) => {
     if (id === "222") app.faults.write = true;
     return { getResponseCode: () => 200, getContentText: () => '{"ok":true}' };
   };
   const receipt = app.invoke("orders.submit", { requestId: randomUUID(), details: submission() });
   assert.equal(receipt.ok, true);
   const states = JSON.parse(app.rows[1][app.rows[0].indexOf("notificationRecipientsJson")]);
-  assert.deepEqual(states.map(entry => entry.status), ["sent", "sending"]);
+  assert.deepEqual(
+    states.map((entry) => entry.status),
+    ["sent", "sending"],
+  );
   app.faults.write = false;
   app.faults.telegramResult = null;
   app.rows[1][app.rows[0].indexOf("notificationAt")] = "2020-01-01T00:00:00Z";
-  assert.equal(app.invoke("admin.retryNotification", { orderId: receipt.data.orderId }, token).data.status, "sent");
-  assert.deepEqual(app.calls.filter(call => call.url.endsWith("/sendMessage"))
-    .map(call => JSON.parse(call.options.payload).chat_id), ["111", "222", "222"]);
+  assert.equal(
+    app.invoke("admin.retryNotification", { orderId: receipt.data.orderId }, token).data.status,
+    "sent",
+  );
+  assert.deepEqual(
+    app.calls
+      .filter((call) => call.url.endsWith("/sendMessage"))
+      .map((call) => JSON.parse(call.options.payload).chat_id),
+    ["111", "222", "222"],
+  );
 });
 
 test("未授權、權限撤除與登出後均無法讀寫訂單", () => {
   const app = backend();
-  for (const action of [
-    "admin.list",
-    "admin.update",
-    "admin.retryNotification",
-  ]) {
+  for (const action of ["admin.list", "admin.update", "admin.retryNotification"]) {
     assert.equal(app.invoke(action, {}).error.code, "AUTH");
   }
   const token = app.session();
@@ -335,10 +377,7 @@ test("後台修改保留原內容、重新計價並阻擋過期版本；公開�
   });
   const token = app.session();
   const order = app.invoke("admin.list", {}, token).data.orders[0];
-  assert.equal(
-    app.writes.at(-1)[0][app.rows[0].indexOf("nickname")],
-    '\'=HYPERLINK("x")',
-  );
+  assert.equal(app.writes.at(-1)[0][app.rows[0].indexOf("nickname")], '\'=HYPERLINK("x")');
   const payload = {
     ...order,
     status: "drafting",
@@ -353,23 +392,14 @@ test("後台修改保留原內容、重新計價並阻擋過期版本；公開�
   assert.equal(updated.data.revision, 2);
   assert.equal(updated.data.details.estimatedPrice.min, 7500);
   assert.equal(updated.data.history[1].before.details.characterCount, 1);
-  assert.equal(
-    app.invoke("admin.update", payload, token).error.code,
-    "CONFLICT",
-  );
+  assert.equal(app.invoke("admin.update", payload, token).error.code, "CONFLICT");
   const visible = app.invoke("progress.list").data.orders[0];
   assert.equal(visible.status, "drafting");
   assert.equal(visible.isRush, true);
   assert.equal(visible.isOnHold, true);
   assert.equal(updated.data.history[1].before.status, "queued");
   assert.equal(updated.data.history[1].before.isOnHold, false);
-  assert.throws(() =>
-    validateUpdate(
-      { ...payload, status: "completed" },
-      order,
-      config,
-    ),
-  );
+  assert.throws(() => validateUpdate({ ...payload, status: "completed" }, order, config));
 });
 
 test("收件配額限制與公開／私人分頁皆由後端處理", () => {
@@ -389,10 +419,7 @@ test("收件配額限制與公開／私人分頁皆由後端處理", () => {
     }).error.code,
     "RATE_LIMIT",
   );
-  assert.equal(
-    app.invoke("progress.list", { offset: -1 }).error.code,
-    "VALIDATION",
-  );
+  assert.equal(app.invoke("progress.list", { offset: -1 }).error.code, "VALIDATION");
   assert.equal(app.invoke("progress.list").data.orders.length, 1);
 });
 
@@ -433,10 +460,7 @@ test("Telegram 傳送期間管理員的更新不被通知狀態覆蓋", () => {
 
 test("RS256 驗證真正簽章、audience、nonce、有效期限與 Telegram profile.id", () => {
   const app = backend();
-  assert.equal(
-    app.context.verifyTelegramToken_(jwt(), "fixture-nonce").id,
-    "987654",
-  );
+  assert.equal(app.context.verifyTelegramToken_(jwt(), "fixture-nonce").id, "987654");
   for (const claims of [
     { aud: "another-client" },
     { nonce: "wrong" },
@@ -446,17 +470,11 @@ test("RS256 驗證真正簽章、audience、nonce、有效期限與 Telegram pro
     { id: null },
     { aud: ["12345", "other"] },
   ])
-    assert.throws(() =>
-      app.context.verifyTelegramToken_(jwt(claims), "fixture-nonce"),
-    );
+    assert.throws(() => app.context.verifyTelegramToken_(jwt(claims), "fixture-nonce"));
   const parts = jwt().split(".");
   parts[1] = Buffer.from(JSON.stringify({ id: 987654 })).toString("base64url");
-  assert.throws(() =>
-    app.context.verifyTelegramToken_(parts.join("."), "fixture-nonce"),
-  );
-  assert.throws(() =>
-    app.context.verifyTelegramToken_(jwt({}, { alg: "none" }), "fixture-nonce"),
-  );
+  assert.throws(() => app.context.verifyTelegramToken_(parts.join("."), "fixture-nonce"));
+  assert.throws(() => app.context.verifyTelegramToken_(jwt({}, { alg: "none" }), "fixture-nonce"));
 });
 
 test("七階段可前進與退回；旗標可並存、解除，不修改急件報價需求", () => {
@@ -472,35 +490,57 @@ test("七階段可前進與退回；旗標可並存、解除，不修改急件�
   assert.equal(order.isOnHold, false);
   assert.equal(order.details.estimatedPrice.min, 1800);
   for (const status of [...Object.keys(ORDER_STATUSES), "drafting"]) {
-    const result = app.invoke("admin.update", {
-      ...order, status, isRush: true, isOnHold: true,
-    }, token);
+    const result = app.invoke(
+      "admin.update",
+      {
+        ...order,
+        status,
+        isRush: true,
+        isOnHold: true,
+      },
+      token,
+    );
     assert.equal(result.ok, true);
     order = result.data;
     assert.equal(order.status, status);
     assert.equal(order.isRush, true);
     assert.equal(order.isOnHold, true);
   }
-  const resumed = app.invoke("admin.update", {
-    ...order, isRush: false, isOnHold: false,
-  }, token).data;
+  const resumed = app.invoke(
+    "admin.update",
+    {
+      ...order,
+      isRush: false,
+      isOnHold: false,
+    },
+    token,
+  ).data;
   assert.equal(resumed.status, "drafting");
   assert.equal(resumed.details.rush, true);
   assert.equal(resumed.details.estimatedPrice.min, 1800);
   assert.equal(resumed.isRush, false);
   assert.equal(resumed.isOnHold, false);
   for (const change of [
-    { status: "rush" }, { status: "on_hold" }, { status: "working" },
-    { isRush: "true" }, { isOnHold: 1 }, { isOnHold: undefined },
+    { status: "rush" },
+    { status: "on_hold" },
+    { status: "working" },
+    { isRush: "true" },
+    { isOnHold: 1 },
+    { isOnHold: undefined },
   ]) {
-    assert.equal(app.invoke("admin.update", { ...resumed, ...change }, token).error.code, "VALIDATION");
+    assert.equal(
+      app.invoke("admin.update", { ...resumed, ...change }, token).error.code,
+      "VALIDATION",
+    );
   }
 });
 
 test("舊表升級只追加旗標表頭，保留全部訂單；讀取不改寫歷史狀態", () => {
   const app = backend();
   app.invoke("orders.submit", { requestId: randomUUID(), details: submission({ rush: true }) });
-  app.rows.forEach((row) => { row.length = 27; });
+  app.rows.forEach((row) => {
+    row.length = 27;
+  });
   app.faults.maxColumns = 27;
   assert.equal(app.invoke("progress.list").error.code, "CONFIG");
   const columns = app.rows[0];
@@ -511,8 +551,17 @@ test("舊表升級只追加旗標表頭，保留全部訂單；讀取不改寫�
   const before = structuredClone(app.rows);
   app.context.setupOrders();
   assert.equal(app.faults.maxColumns, 32);
-  assert.deepEqual(app.rows[0].slice(27), ["isRush", "isOnHold", "notificationRecipientsJson", "sourceJson", "isArchived"]);
-  assert.deepEqual(app.rows.map((row) => row.slice(0, 27)), before);
+  assert.deepEqual(app.rows[0].slice(27), [
+    "isRush",
+    "isOnHold",
+    "notificationRecipientsJson",
+    "sourceJson",
+    "isArchived",
+  ]);
+  assert.deepEqual(
+    app.rows.map((row) => row.slice(0, 27)),
+    before,
+  );
   const writeCount = app.writes.length;
   const visible = app.invoke("progress.list").data;
   assert.equal(visible.total, 1);
@@ -551,8 +600,12 @@ test("舊表尾端有資料或公式時升級停止，絕不覆蓋既有欄位",
 
 test("舊狀態的相容投影保留取消標記，未知狀態不被默默當成排隊", () => {
   const legacy = {
-    received: "queued", discussing: "queued", queued: "queued",
-    working: "finalizing", reviewing: "draft_review", completed: "delivered",
+    received: "queued",
+    discussing: "queued",
+    queued: "queued",
+    working: "finalizing",
+    reviewing: "draft_review",
+    completed: "delivered",
   };
   for (const [status, expected] of Object.entries(legacy)) {
     assert.equal(orderWorkflow({ status }).status, expected);
@@ -587,7 +640,11 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
   assert.equal(end.orders.length, 5);
   assert.equal(end.nextOffset, null);
   assert.ok(end.orders.every((order) => order.status === "delivered"));
-  const filtered = app.invoke("progress.list", { status: "drafting", flag: "rush", offset: 30 }).data;
+  const filtered = app.invoke("progress.list", {
+    status: "drafting",
+    flag: "rush",
+    offset: 30,
+  }).data;
   assert.equal(filtered.total, 32);
   assert.equal(filtered.orders.length, 2);
   assert.equal(filtered.nextOffset, null);
@@ -596,11 +653,29 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
   assert.equal(held.orders[0].orderId, "LL-0000000000000032");
   assert.equal(held.orders[0].publicNote, "");
   assert.deepEqual(Object.keys(held.orders[0]), [
-    "orderId", "service", "status", "isRush", "isOnHold", "isArchived", "publicNote", "createdAt", "updatedAt", "displayTitle",
+    "orderId",
+    "service",
+    "status",
+    "isRush",
+    "isOnHold",
+    "isArchived",
+    "publicNote",
+    "createdAt",
+    "updatedAt",
+    "displayTitle",
   ]);
-  assert.equal(app.invoke("progress.list", { status: "drafting", flag: "on_hold", offset: 1 }).data.orders.length, 0);
+  assert.equal(
+    app.invoke("progress.list", { status: "drafting", flag: "on_hold", offset: 1 }).data.orders
+      .length,
+    0,
+  );
   assert.equal(app.invoke("progress.list", { status: "awaiting_payment" }).data.total, 0);
-  for (const payload of [{ status: "cancelled" }, { status: false }, { flag: "admin" }, { offset: "0" }]) {
+  for (const payload of [
+    { status: "cancelled" },
+    { status: false },
+    { flag: "admin" },
+    { offset: "0" },
+  ]) {
     assert.equal(app.invoke("progress.list", payload).error.code, "VALIDATION");
   }
 });
@@ -640,15 +715,10 @@ test("OIDC 使用 PKCE 與單次 state；綁定原瀏覽器的票證只建立一
     code: "fixture-code",
   });
   assert.equal(new URL(destination).pathname, "/lanlan-pages/admin/");
-  assert.throws(() =>
-    app.context.completeLogin_({ state, code: "fixture-code" }),
-  );
-  const ticket = new URLSearchParams(new URL(destination).hash.slice(1)).get(
-    "ticket",
-  );
+  assert.throws(() => app.context.completeLogin_({ state, code: "fixture-code" }));
+  const ticket = new URLSearchParams(new URL(destination).hash.slice(1)).get("ticket");
   assert.equal(
-    app.invoke("auth.exchange", { ticket, browserKey: "c".repeat(64) }).error
-      .code,
+    app.invoke("auth.exchange", { ticket, browserKey: "c".repeat(64) }).error.code,
     "AUTH",
   );
   const session = app.invoke("auth.exchange", { ticket, browserKey });
@@ -657,7 +727,10 @@ test("OIDC 使用 PKCE 與單次 state；綁定原瀏覽器的票證只建立一
   const until = app.cache.get(key).until;
   assert.deepEqual(app.invoke("auth.exchange", { ticket, browserKey }).data, session.data);
   assert.equal(app.cache.get(key).until, until);
-  assert.equal(app.invoke("auth.exchange", { ticket, browserKey: "c".repeat(64) }).error.code, "AUTH");
+  assert.equal(
+    app.invoke("auth.exchange", { ticket, browserKey: "c".repeat(64) }).error.code,
+    "AUTH",
+  );
   assert.equal(app.invoke("admin.list", {}, session.data.token).ok, true);
   app.invoke("auth.logout", {}, session.data.token);
   assert.equal(app.invoke("auth.exchange", { ticket, browserKey }).error.code, "AUTH");
@@ -667,7 +740,8 @@ test("OIDC 使用 PKCE 與單次 state；綁定原瀏覽器的票證只建立一
 
 test("Html Service API 與 POST 共用權限及驗證，不公開管理資料或擁有者入口", () => {
   const app = backend();
-  const rpc = (action, payload = {}, token = "") => JSON.parse(app.context.callApi(JSON.stringify({ action, payload, token })));
+  const rpc = (action, payload = {}, token = "") =>
+    JSON.parse(app.context.callApi(JSON.stringify({ action, payload, token })));
   assert.equal(rpc("admin.list").error.code, "AUTH");
   assert.equal(rpc("admin.update").error.code, "AUTH");
   assert.equal(rpc("setupOrders").error.code, "AUTH");
@@ -688,14 +762,10 @@ test("前端 API 只有可解析且明確成功的回應才完成送件，不使
   assert.equal((await api("orders.submit", {})).orderId, "LL-fixture");
   assert.equal(options.credentials, "omit");
   assert.equal(options.headers["Content-Type"], "text/plain;charset=UTF-8");
-  for (const response of [
-    { ok: false },
-    { ok: true, json: async () => ({}) },
-  ]) {
-    await assert.rejects(
-      createApi("https://example.com", async () => response)("orders.submit"),
-      { code: "NETWORK" },
-    );
+  for (const response of [{ ok: false }, { ok: true, json: async () => ({}) }]) {
+    await assert.rejects(createApi("https://example.com", async () => response)("orders.submit"), {
+      code: "NETWORK",
+    });
   }
   await assert.rejects(createApi("")("orders.submit"), {
     code: "NOT_CONFIGURED",

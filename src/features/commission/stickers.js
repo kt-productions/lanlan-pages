@@ -4,11 +4,8 @@ export function setupStickers(config, form, onChange) {
   const stickerDiscounts = config.services.stickers.pricing.quantityDiscounts;
   const formatMoney = (value) => new Intl.NumberFormat("zh-TW").format(value);
   function selectedStickers() {
-    return [...form.querySelectorAll('input[name="stickerIds"]:checked')].map(
-      (input) =>
-        config.stickerOptions.find(
-          (item) => item.number === Number(input.value),
-        ),
+    return [...form.querySelectorAll('input[name="stickerIds"]:checked')].map((input) =>
+      config.stickerOptions.find((item) => item.number === Number(input.value)),
     );
   }
   function updateStickerSummary() {
@@ -16,21 +13,15 @@ export function setupStickers(config, form, onChange) {
     const total = selected.reduce((sum, item) => sum + item.price, 0);
     document.querySelector("#sticker-selection").textContent =
       "已選 " + selected.length + " 款・原價小計 NT$" + formatMoney(total);
-    selectAllStickers.checked =
-      selected.length === config.stickerOptions.length;
+    selectAllStickers.checked = selected.length === config.stickerOptions.length;
     selectAllStickers.indeterminate =
       selected.length > 0 && selected.length < config.stickerOptions.length;
-    const tier = stickerDiscounts
-      .filter((item) => selected.length >= item.count)
-      .at(-1);
+    const tier = stickerDiscounts.filter((item) => selected.length >= item.count).at(-1);
     document.querySelector("#sticker-discount-summary").textContent = tier
       ? `已達滿 ${tier.count} 張，數量折扣 ${formatMoney(tier.amount)} 元。`
       : `未滿 ${stickerDiscounts[0].count} 張，尚未適用數量折扣。`;
-    for (const item of document.querySelectorAll(
-      "#sticker-discount-tiers li",
-    )) {
-      if (Number(item.dataset.count) === tier?.count)
-        item.setAttribute("aria-current", "true");
+    for (const item of document.querySelectorAll("#sticker-discount-tiers li")) {
+      if (Number(item.dataset.count) === tier?.count) item.setAttribute("aria-current", "true");
       else item.removeAttribute("aria-current");
     }
   }
@@ -44,18 +35,13 @@ export function setupStickers(config, form, onChange) {
   for (const item of config.stickerOptions) {
     const label = document.createElement("label");
     label.className = "sticker-choice";
-    label.dataset.page = String(
-      Math.floor(config.stickerOptions.indexOf(item) / 16),
-    );
+    label.dataset.page = String(Math.floor(config.stickerOptions.indexOf(item) / 16));
     label.hidden = label.dataset.page !== "0";
     const input = document.createElement("input");
     input.type = "checkbox";
     input.name = "stickerIds";
     input.value = String(item.number);
-    input.setAttribute(
-      "aria-label",
-      "貼圖 No." + item.number + "，NT$" + item.price,
-    );
+    input.setAttribute("aria-label", "貼圖 No." + item.number + "，NT$" + item.price);
     const img = document.createElement("img");
     img.src = "../" + item.image;
     img.alt = "貼圖 No." + item.number + " 原始示例";
@@ -68,9 +54,7 @@ export function setupStickers(config, form, onChange) {
     stickerHost.append(label);
   }
   selectAllStickers.addEventListener("change", () => {
-    for (const input of stickerHost.querySelectorAll(
-      'input[name="stickerIds"]',
-    ))
+    for (const input of stickerHost.querySelectorAll('input[name="stickerIds"]'))
       input.checked = selectAllStickers.checked;
     onChange();
   });

@@ -15,14 +15,19 @@ export function setupQuoteEditor(form) {
 
   function collect() {
     if (!enabled.checked) return null;
-    return validateQuote({
-      currency: "TWD",
-      amount: amount.value,
-      items: imported ? null : [...lines.children].map((row) => ({
-        label: row.querySelector(".quote-label").value,
-        amount: row.querySelector(".quote-amount").value,
-      })),
-    }, imported);
+    return validateQuote(
+      {
+        currency: "TWD",
+        amount: amount.value,
+        items: imported
+          ? null
+          : [...lines.children].map((row) => ({
+              label: row.querySelector(".quote-label").value,
+              amount: row.querySelector(".quote-amount").value,
+            })),
+      },
+      imported,
+    );
   }
 
   function refresh() {
@@ -36,7 +41,9 @@ export function setupQuoteEditor(form) {
     });
     try {
       const quote = collect();
-      total.textContent = quote ? `訂單總金額：${formatPriceRange(quote.amount, quote.amount, quote.currency)}` : "尚未設定訂單金額";
+      total.textContent = quote
+        ? `訂單總金額：${formatPriceRange(quote.amount, quote.amount, quote.currency)}`
+        : "尚未設定訂單金額";
     } catch {
       total.textContent = "請完成項目名稱與金額，填寫有效金額後會自動加總。";
     }
@@ -104,13 +111,21 @@ export function setupQuoteEditor(form) {
     if (!imported) {
       for (const item of order.details.estimatedPrice.items) {
         const row = element("li");
-        row.append(element("span", item.label), element("strong", formatPriceRange(item.min, item.max, order.details.estimatedPrice.currency)));
+        row.append(
+          element("span", item.label),
+          element(
+            "strong",
+            formatPriceRange(item.min, item.max, order.details.estimatedPrice.currency),
+          ),
+        );
         estimateLines.append(row);
       }
-      const items = quote?.items || order.details.estimatedPrice.items.map((item) => ({
-        label: item.label,
-        amount: item.min === item.max ? item.min : "",
-      }));
+      const items =
+        quote?.items ||
+        order.details.estimatedPrice.items.map((item) => ({
+          label: item.label,
+          amount: item.min === item.max ? item.min : "",
+        }));
       items.forEach(append);
     }
     form.querySelector("#edit-quote-hint").textContent = imported

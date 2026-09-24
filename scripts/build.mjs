@@ -5,11 +5,7 @@ import { readContent, readCommission } from "./lib/content.mjs";
 import { siteAssetVersion } from "./lib/site-assets.mjs";
 import { readVideoAssets, readHeroVideo } from "./lib/video-assets.mjs";
 import { readArtworkCatalog } from "./lib/artworks.mjs";
-import {
-  escapeHtml as escape,
-  inlineJson,
-  renderTemplate,
-} from "./lib/templates.mjs";
+import { escapeHtml as escape, inlineJson, renderTemplate } from "./lib/templates.mjs";
 
 // 清理範圍固定由腳本位置推導，與呼叫端工作目錄無關。
 if (out !== path.join(root, "dist")) throw new Error("不安全的建置目錄");
@@ -21,19 +17,13 @@ const commission = await readCommission();
 const integration = await readContent("integration.json");
 if (
   integration.apiUrl &&
-  !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(
-    integration.apiUrl,
-  )
+  !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(integration.apiUrl)
 ) {
-  throw new Error(
-    "integration.json 的 apiUrl 必須是 Apps Script 正式 Web App 網址。",
-  );
+  throw new Error("integration.json 的 apiUrl 必須是 Apps Script 正式 Web App 網址。");
 }
 const { works, manifest: artworkManifest } = await readArtworkCatalog(rawWorks, videoAssets);
 const categories = { animation: "角色動畫", chibi: "小動圖", stickers: "貼圖" };
-const siteUrl = new URL(
-  process.env.SITE_URL || "http://127.0.0.1:4173/lanlan-pages/",
-);
+const siteUrl = new URL(process.env.SITE_URL || "http://127.0.0.1:4173/lanlan-pages/");
 if (!siteUrl.pathname.endsWith("/")) siteUrl.pathname += "/";
 const htmlWorks = works
   .map((work) => {
@@ -54,9 +44,7 @@ const replacements = {
       site.services.map(({ id, description }) => [id, description]),
     ),
   }),
-  COMMISSION_DESCRIPTION: escape(
-    site.services.find(({ id }) => id === "animation").description,
-  ),
+  COMMISSION_DESCRIPTION: escape(site.services.find(({ id }) => id === "animation").description),
   INTEGRATION_DATA: inlineJson({ apiUrl: integration.apiUrl || "" }),
   WORKS: htmlWorks,
   ARTWORK_PANEL: await readFile(path.join(root, "src/features/artworks/panel.html"), "utf8"),
@@ -83,18 +71,20 @@ const replacements = {
     )
     .join("\n"),
   DATA: inlineJson({
-    works: works.map(({ id, category, title, type, src, playbackSrc, poster, alt, animated, description }) => ({
-      id,
-      category,
-      title,
-      type,
-      src,
-      playbackSrc,
-      poster,
-      alt,
-      animated,
-      description,
-    })),
+    works: works.map(
+      ({ id, category, title, type, src, playbackSrc, poster, alt, animated, description }) => ({
+        id,
+        category,
+        title,
+        type,
+        src,
+        playbackSrc,
+        poster,
+        alt,
+        animated,
+        description,
+      }),
+    ),
     services: site.services,
   }),
 };
@@ -137,17 +127,22 @@ const pages = [
 ];
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
-const allowedGifs = new Set(artworkManifest.items.flatMap(item => item.media?.assets.map(asset => asset.path) || []).filter(file => file.endsWith(".gif")));
+const allowedGifs = new Set(
+  artworkManifest.items
+    .flatMap((item) => item.media?.assets.map((asset) => asset.path) || [])
+    .filter((file) => file.endsWith(".gif")),
+);
 await cp(path.join(root, "public"), out, {
   recursive: true,
-  filter: (source) => !source.endsWith(".gif") || allowedGifs.has(path.relative(path.join(root, "public"), source).split(path.sep).join("/")),
+  filter: (source) =>
+    !source.endsWith(".gif") ||
+    allowedGifs.has(path.relative(path.join(root, "public"), source).split(path.sep).join("/")),
 });
 // 保留來源模組相對位置；只複製 JS／CSS，不讓模板與開發文件進入網站。
 const assetVersion = await siteAssetVersion(path.join(root, "src"));
 await cp(path.join(root, "src"), path.join(out, "assets/site", assetVersion), {
   recursive: true,
-  filter: (source) =>
-    !path.extname(source) || [".js", ".css"].includes(path.extname(source)),
+  filter: (source) => !path.extname(source) || [".js", ".css"].includes(path.extname(source)),
 });
 const partials = Object.fromEntries(
   await Promise.all(
@@ -157,21 +152,16 @@ const partials = Object.fromEntries(
     ]),
   ),
 );
-const redirectTemplate = await readFile(
-  path.join(root, "src/templates/redirect.html"),
-  "utf8",
-);
+const redirectTemplate = await readFile(path.join(root, "src/templates/redirect.html"), "utf8");
 for (const page of pages) {
-  const template = await readFile(
-    path.join(root, "src/pages", page.source, "index.html"),
-    "utf8",
-  );
+  const template = await readFile(path.join(root, "src/pages", page.source, "index.html"), "utf8");
   const navigation = [
     { source: "home", route: "", label: "首頁" },
     { source: "commission", route: "commission/", label: "委託表單" },
     { source: "progress", route: "progress/", label: "委託進度" },
     { source: "admin", route: "admin/", label: "委託管理" },
     { source: "artworks", route: "artworks/", label: "作品管理" },
+    { source: "revenue", route: "admin/?view=revenue", label: "收益報表" },
   ];
   // 子頁使用目錄首頁；明確回到網站根目錄，不用 base 改變頁內錨點。
   const rootPrefix = page.source === "home" ? "./" : "../";
@@ -180,10 +170,9 @@ for (const page of pages) {
     ROOT: rootPrefix,
     ASSET_VERSION: assetVersion,
     PAGE: page.source,
-    ROBOTS:
-      ["admin", "artworks"].includes(page.source)
-        ? '<meta name="robots" content="noindex,nofollow" />'
-        : "",
+    ROBOTS: ["admin", "artworks"].includes(page.source)
+      ? '<meta name="robots" content="noindex,nofollow" />'
+      : "",
     PRELOAD:
       page.source === "home"
         ? '<link rel="preload" href="./assets/posters/animation-02.webp" as="image" fetchpriority="high" />'
@@ -195,24 +184,25 @@ for (const page of pages) {
     NAV_LINKS: navigation
       .map(
         (item) =>
-          `<a href="${rootPrefix}${item.route}"${["admin", "artworks"].includes(item.source) ? " data-admin-link hidden" : ""}${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
+          `<a href="${rootPrefix}${item.route}"${["admin", "artworks", "revenue"].includes(item.source) ? " data-admin-link hidden" : ""}${item.source === page.source ? ' aria-current="page"' : ""}>${item.label}</a>`,
       )
       .join(""),
   };
-  for (const [key, partial] of Object.entries(partials))
-    data[key] = renderTemplate(partial, data);
+  for (const [key, partial] of Object.entries(partials)) data[key] = renderTemplate(partial, data);
   const html = renderTemplate(template, data);
   await mkdir(path.dirname(path.join(out, page.file)), { recursive: true });
   await writeFile(path.join(out, page.file), html);
   if (page.source !== "home") {
-    await writeFile(
-      path.join(out, page.source + ".html"),
-      renderTemplate(redirectTemplate, data),
-    );
+    await writeFile(path.join(out, page.source + ".html"), renderTemplate(redirectTemplate, data));
   }
 }
 await writeFile(path.join(out, ".nojekyll"), "");
-await writeFile(path.join(out, "release.json"), JSON.stringify({ commitSha: /^[a-f0-9]{40}$/.test(process.env.GITHUB_SHA || "") ? process.env.GITHUB_SHA : null }) + "\n");
+await writeFile(
+  path.join(out, "release.json"),
+  JSON.stringify({
+    commitSha: /^[a-f0-9]{40}$/.test(process.env.GITHUB_SHA || "") ? process.env.GITHUB_SHA : null,
+  }) + "\n",
+);
 await writeFile(
   path.join(out, "robots.txt"),
   `User-agent: *\nAllow: /\nSitemap: ${siteUrl.href}sitemap.xml\n`,

@@ -1,6 +1,6 @@
 # 公開倉庫與私人維運資料
 
-本文件記錄 2026-09-23 使用者確認的公開前整理方式。同日使用者後續已授權推送 `kt-productions/lanlan-pages` 並部署 GitHub Pages；收件開放仍須另行確認。發布方式見[開發指南](setup.md#github-pages-發布)。
+本文件記錄 2026-09-23 使用者確認的公開前整理方式。同日使用者後續已授權推送 `kt-productions/lanlan-pages` 並部署 GitHub Pages；後續曾依使用者要求開啟收件，歷史依據見[收件紀錄](../records/receiving-2026-09-23.md)；維護前仍須核對實際設定，文件本身不授權變更。發布方式見[開發指南](setup.md#github-pages-發布)。
 
 ## 資料放置原則
 
@@ -19,7 +19,7 @@
 
 沿用既有 GAS Script Properties 管理執行設定，公開文件只列名稱與用途。Properties 是程式可讀的設定儲存區，不是對 GAS 編輯者隱藏密鑰的隔離區，因此也要限制專案編輯權。[Google Properties Service](https://developers.google.com/apps-script/guides/properties)
 
-私人維運清單至少記錄資源用途、擁有者、管理連結、部署版本、憑證保管方式、備份與回復步驟。使用受控的私人文件或密碼管理器保存，不把它提交至此倉庫；本次整理已另存專案外副本。API 的部署 ID 已包含於公開 URL，無需因它可見就重新部署或更換網址。
+私人維運清單至少記錄資源用途、擁有者、管理連結、部署版本、憑證保管方式、備份與回復步驟。使用受控的私人文件或密碼管理器保存，不把它提交至此倉庫；歷史公開前整理的私人副本不列入此文件。API 的部署 ID 已包含於公開 URL，無需因它可見就重新部署或更換網址。
 
 ## 素材與來源紀錄
 
@@ -34,4 +34,4 @@
 3. 檢視 `git status --short`、`git diff` 及實際暫存內容。`.gitignore` 只防止未追蹤檔案被一般加入流程帶入，不能移除既有提交；不要對私人檔案使用強制加入。
 4. 新增素材需核對頁面引用、來源及雜湊。備份放專案外，不把副本再次放回公開目錄。
 
-若憑證曾真正進入公開提交，先撤銷／輪替，再評估歷史清理；只刪除目前檔案不足以移除歷史。本次沒有發現已提交的真實憑證，也沒有重寫 Git 歷史。[GitHub 敏感資料移除說明](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
+若憑證曾真正進入公開提交，先撤銷／輪替，再評估歷史清理；只刪除目前檔案不足以移除歷史。歷史整理結果見[公開前紀錄](../records/publication-cleanup-2026-09-23.md)；一般文件核對不等同完整憑證或安全稽核。[GitHub 敏感資料移除說明](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)

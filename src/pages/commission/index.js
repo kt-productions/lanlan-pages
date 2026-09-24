@@ -1,17 +1,8 @@
 import "../../shared/navigation.js";
 import { populateList } from "../../shared/dom.js";
-import {
-  estimateCommission,
-  formatPriceRange,
-} from "../../features/commission/pricing.js";
-import {
-  selectionFromData,
-  createDraft,
-} from "../../features/commission/draft.js";
-import {
-  contactError,
-  fieldError,
-} from "../../features/commission/validation.js";
+import { estimateCommission, formatPriceRange } from "../../features/commission/pricing.js";
+import { selectionFromData, createDraft } from "../../features/commission/draft.js";
+import { contactError, fieldError } from "../../features/commission/validation.js";
 import { setupReference } from "../../features/commission/reference.js";
 import { setupStickers } from "../../features/commission/stickers.js";
 import { renderEstimate } from "../../features/commission/estimate.js";
@@ -19,9 +10,7 @@ import { renderReview } from "../../features/commission/review.js";
 import { setupSubmission } from "../../features/commission/submission.js";
 import { httpsReference } from "../../features/orders/contract.js";
 
-const config = JSON.parse(
-  document.querySelector("#commission-data").textContent,
-);
+const config = JSON.parse(document.querySelector("#commission-data").textContent);
 const app = document.querySelector("#commission-app");
 const form = document.querySelector("#commission-form");
 const steps = [...form.querySelectorAll("[data-form-step]")];
@@ -37,32 +26,16 @@ const nickname = document.querySelector("#commission-nickname");
 let service = "animation";
 let step = 0;
 let snapshot = null;
-const submission = setupSubmission(
-  app,
-  form,
-  () => snapshot,
-  showError,
-  clearError,
-);
+const submission = setupSubmission(app, form, () => snapshot, showError, clearError);
 const referenceUrl = document.querySelector("#commission-reference-url");
-referenceUrl.addEventListener("input", () =>
-  referenceUrl.setCustomValidity(""),
-);
+referenceUrl.addEventListener("input", () => referenceUrl.setCustomValidity(""));
 
 const stickers = setupStickers(config, form, updateEstimate);
-const referencePreview = setupReference(
-  reference,
-  () => config.services[service],
-);
+const referencePreview = setupReference(reference, () => config.services[service]);
 
 function updateEstimate() {
   const selection = selectionFromData(service, new FormData(form));
-  renderEstimate(
-    config,
-    service,
-    selection,
-    estimateCommission(config, selection),
-  );
+  renderEstimate(config, service, selection, estimateCommission(config, selection));
   stickers.updateSummary();
 }
 
@@ -79,8 +52,7 @@ function clearError() {
     const descriptions = (control.getAttribute("aria-describedby") || "")
       .split(" ")
       .filter((id) => id !== errorBox.id);
-    if (descriptions.length)
-      control.setAttribute("aria-describedby", descriptions.join(" "));
+    if (descriptions.length) control.setAttribute("aria-describedby", descriptions.join(" "));
     else control.removeAttribute("aria-describedby");
   }
 }
@@ -103,9 +75,7 @@ function showStep(target, focus = true) {
   if (focus) {
     const heading = steps[target].querySelector(".form-step-title");
     heading.focus({ preventScroll: true });
-    document
-      .querySelector(".form-steps")
-      .scrollIntoView({ block: "start", behavior: "auto" });
+    document.querySelector(".form-steps").scrollIntoView({ block: "start", behavior: "auto" });
   }
 }
 form.addEventListener("change", (event) => {
@@ -143,20 +113,18 @@ function applyService() {
   }
   reference.accept = details.referenceAccept;
   document.querySelector("#reference-label-hint").textContent =
-    service === "stickers"
-      ? "一份表單限同一角色，若有多個角色請分開填寫"
-      : "最多 5 個";
+    service === "stickers" ? "一份表單限同一角色，若有多個角色請分開填寫" : "最多 5 個";
   document.querySelector("#reference-hint").textContent =
     service === "stickers"
       ? "最多 5 個圖片，單檔 10 MB、合計 45 MB（PNG、JPEG、GIF、WebP、AVIF）。送出委託時會一併上傳。"
       : "最多 5 個檔案，單檔 10 MB、合計 45 MB。送出委託時會一併上傳；較大檔案可改用下方素材連結。";
   document.querySelector("#commercial-hint").textContent =
     service === "stickers"
-      ? "先扣除數量與款式折扣，再將折扣後總價 ×" +
-        details.pricing.commercialMultiplier +
-        "。"
+      ? "先扣除數量與款式折扣，再將折扣後總價 ×" + details.pricing.commercialMultiplier + "。"
       : service === "animation"
-        ? "商業用途加收 " + formatPriceRange(details.pricing.commercial, undefined, details.pricing.currency) + "。"
+        ? "商業用途加收 " +
+          formatPriceRange(details.pricing.commercial, undefined, details.pricing.currency) +
+          "。"
         : "";
   if (service !== "stickers") {
     document.querySelector("#second-character-label").textContent =
@@ -178,9 +146,7 @@ function applyService() {
     : "";
   const paypalRate = details.pricing.paypalPercent;
   const paypalPercent =
-    paypalRate.min === paypalRate.max
-      ? paypalRate.min
-      : `${paypalRate.min}–${paypalRate.max}`;
+    paypalRate.min === paypalRate.max ? paypalRate.min : `${paypalRate.min}–${paypalRate.max}`;
   document.querySelector("#payment-hint").textContent =
     `PayPal 按加減價後的小計加收 ${paypalPercent}% 手續費。`;
   document.querySelector("#commission-read").checked = false;
@@ -202,8 +168,7 @@ document.querySelectorAll('[name="commission-service"]').forEach((input) => {
 function updateContactHint() {
   const messages = {
     telegram: "請填寫 Telegram ID，例如 @yourname；也可填寫 t.me 個人連結。",
-    facebook:
-      "請貼上 Facebook 個人頁面連結，例如 https://www.facebook.com/yourname。",
+    facebook: "請貼上 Facebook 個人頁面連結，例如 https://www.facebook.com/yourname。",
     discord: "請填寫 Discord 的英文使用者 ID，不是暱稱喔！",
   };
   document.querySelector("#contact-hint").textContent =
@@ -222,11 +187,7 @@ nickname.addEventListener("input", () => nickname.setCustomValidity(""));
 form.addEventListener("input", clearError);
 function validateStep() {
   clearError();
-  if (
-    step === 0 &&
-    service === "stickers" &&
-    stickers.selected().length === 0
-  ) {
+  if (step === 0 && service === "stickers" && stickers.selected().length === 0) {
     showError("請至少選擇一款貼圖。");
     return false;
   }
@@ -243,17 +204,15 @@ function validateStep() {
     contact.setCustomValidity(contactError(channel.value, contact.value));
     referencePreview.validate();
   }
-  const invalid = [
-    ...steps[step].querySelectorAll("input,select,textarea"),
-  ].find((input) => input.willValidate && !input.checkValidity());
+  const invalid = [...steps[step].querySelectorAll("input,select,textarea")].find(
+    (input) => input.willValidate && !input.checkValidity(),
+  );
   if (invalid) {
     showError(fieldError(invalid));
     invalid.setAttribute("aria-invalid", "true");
     invalid.setAttribute(
       "aria-describedby",
-      [invalid.getAttribute("aria-describedby"), errorBox.id]
-        .filter(Boolean)
-        .join(" "),
+      [invalid.getAttribute("aria-describedby"), errorBox.id].filter(Boolean).join(" "),
     );
     invalid.focus();
     return false;

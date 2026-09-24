@@ -6,12 +6,18 @@ import { filterBoard } from "../src/features/orders/board.js";
 
 test("封存從公開清單與件數排除，管理僅封存篩選可見，解除後保留工作階段與旗標", () => {
   const app = backend();
-  app.invoke("orders.submit", { requestId: randomUUID(), details: submission({ nickname: "公開暱稱" }) });
+  app.invoke("orders.submit", {
+    requestId: randomUUID(),
+    details: submission({ nickname: "公開暱稱" }),
+  });
   const token = app.session();
   const original = app.invoke("admin.list", {}, token).data.orders[0];
   const calls = app.calls.length;
-  const saved = app.invoke("admin.update", { ...original, status: "drafting", isRush: true,
-    isOnHold: true, isArchived: true }, token);
+  const saved = app.invoke(
+    "admin.update",
+    { ...original, status: "drafting", isRush: true, isOnHold: true, isArchived: true },
+    token,
+  );
   assert.equal(saved.ok, true);
   assert.equal(saved.data.isArchived, true);
   assert.equal(saved.data.history.at(-1).before.isArchived, false);
@@ -23,7 +29,8 @@ test("封存從公開清單與件數排除，管理僅封存篩選可見，解�
   }
   assert.equal(app.invoke("progress.list", { flag: "archived" }).error.code, "VALIDATION");
   const snapshot = app.invoke("admin.list", {}, token).data.orders;
-  for (const flag of ["", "rush", "on_hold"]) assert.equal(filterBoard(snapshot, { flag }).total, 0);
+  for (const flag of ["", "rush", "on_hold"])
+    assert.equal(filterBoard(snapshot, { flag }).total, 0);
   assert.equal(filterBoard(snapshot, { flag: "archived", search: "公開暱稱" }).total, 1);
   assert.equal(filterBoard(snapshot, { flag: "archived", service: "stickers" }).total, 0);
   const olderClient = { ...saved.data, publicNote: "更新說明" };
@@ -31,7 +38,10 @@ test("封存從公開清單與件數排除，管理僅封存篩選可見，解�
   const preserved = app.invoke("admin.update", olderClient, token).data;
   assert.equal(preserved.isArchived, true);
   for (const isArchived of ["false", null, 0]) {
-    assert.equal(app.invoke("admin.update", { ...preserved, isArchived }, token).error.code, "VALIDATION");
+    assert.equal(
+      app.invoke("admin.update", { ...preserved, isArchived }, token).error.code,
+      "VALIDATION",
+    );
   }
   const restored = app.invoke("admin.update", { ...preserved, isArchived: false }, token).data;
   assert.equal(restored.status, "drafting");
@@ -50,14 +60,24 @@ test("31 欄升級只追加封存欄，舊 Trello 封存預設隱藏且可明確
   const app = backend();
   app.invoke("orders.submit", { requestId: randomUUID(), details: submission() });
   const columns = app.rows[0];
-  app.rows[1][columns.indexOf("sourceJson")] = JSON.stringify({ kind: "trello", archived: true,
-    publishTitle: true, cardName: "封存來源範例", cardId: "1234567890abcdef12345678" });
-  app.rows.forEach(row => { row.length = 31; });
+  app.rows[1][columns.indexOf("sourceJson")] = JSON.stringify({
+    kind: "trello",
+    archived: true,
+    publishTitle: true,
+    cardName: "封存來源範例",
+    cardId: "1234567890abcdef12345678",
+  });
+  app.rows.forEach((row) => {
+    row.length = 31;
+  });
   app.faults.maxColumns = 31;
   const before = structuredClone(app.rows);
   app.context.setupOrders();
   assert.equal(app.rows[0][31], "isArchived");
-  assert.deepEqual(app.rows.map(row => row.slice(0, 31)), before);
+  assert.deepEqual(
+    app.rows.map((row) => row.slice(0, 31)),
+    before,
+  );
   const token = app.session();
   const saved = app.invoke("admin.list", {}, token).data.orders[0];
   assert.equal(saved.isArchived, true);

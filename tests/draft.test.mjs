@@ -23,8 +23,7 @@ function input() {
     notes: "  <測試文字>  ",
   }))
     data.set(key, value);
-  for (const number of [1, 1, 49, 50])
-    data.append("stickerIds", String(number));
+  for (const number of [1, 1, 49, 50]) data.append("stickerIds", String(number));
   return data;
 }
 
@@ -64,19 +63,19 @@ test("第 4 版草稿保留五個參考檔的中繼資料，下載不會變成�
     channel: "discord",
     value: "example_test",
   });
-  assert.deepEqual(result.references, Array(5).fill({
-    ...reference,
-    type: "application/octet-stream",
-    uploaded: false,
-  }));
+  assert.deepEqual(
+    result.references,
+    Array(5).fill({
+      ...reference,
+      type: "application/octet-stream",
+      uploaded: false,
+    }),
+  );
   assert.deepEqual(
     [result.submitted, result.priceConfirmed, result.estimatedPrice.confirmed],
     [false, false, false],
   );
-  assert.deepEqual(
-    [result.estimatedPrice.min, result.estimatedPrice.max],
-    [10500, 15225],
-  );
+  assert.deepEqual([result.estimatedPrice.min, result.estimatedPrice.max], [10500, 15225]);
   assert.equal(result.notes, "<測試文字>");
   assert.equal(result.rulesReviewed, true);
 });
@@ -93,30 +92,15 @@ test("第 4 版可只提供素材連結，沒有本機檔案時記錄空陣列",
 test("跨類型殘留選項不進入草稿；貼圖去重並排除未開放款式", () => {
   const stickers = createDraft(config, "stickers", input(), [reference], true);
   assert.deepEqual(stickers.stickerIds, [1]);
-  for (const key of [
-    "chibiPlan",
-    "characterCount",
-    "transition",
-    "background",
-    "rush",
-  ])
+  for (const key of ["chibiPlan", "characterCount", "transition", "background", "rush"])
     assert.equal(stickers[key], null, key);
   assert.equal(stickers.allowLivestream, false);
   const chibi = createDraft(config, "chibi", input(), [reference], true);
   assert.deepEqual(chibi.stickerIds, []);
-  for (const key of [
-    "transition",
-    "commercial",
-    "background",
-    "allowLivestream",
-    "notes",
-  ])
+  for (const key of ["transition", "commercial", "background", "allowLivestream", "notes"])
     assert.equal(chibi[key], null, key);
   assert.equal(chibi.allowPortfolio, true);
-  assert.deepEqual(
-    [chibi.estimatedPrice.min, chibi.estimatedPrice.max],
-    [2520, 2940],
-  );
+  assert.deepEqual([chibi.estimatedPrice.min, chibi.estimatedPrice.max], [2520, 2940]);
 });
 
 test("返回修改後的新草稿更新內容，原確認快照保持獨立", () => {

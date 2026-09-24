@@ -3,8 +3,14 @@ import { element, renderProgress } from "./presentation.js";
 
 /** 公開頁與管理頁共用欄位及卡片外觀；管理頁另提供編輯入口。 */
 export function boardColumns({
-  orders, counts, stage = "", message = "讀取中……", deferredStages = [],
-  onLoadDeferred, deferredDisabled = false, renderCard = renderProgress,
+  orders,
+  counts,
+  stage = "",
+  message = "讀取中……",
+  deferredStages = [],
+  onLoadDeferred,
+  deferredDisabled = false,
+  renderCard = renderProgress,
 }) {
   return Object.entries(ORDER_STATUSES)
     .filter(([key]) => !stage || key === stage)
@@ -17,11 +23,22 @@ export function boardColumns({
       const cards = orders.filter((order) => order.status === key);
       const count = counts?.[key];
       const deferred = deferredStages.includes(key);
-      const badge = element("span", deferred ? "未載入" : count === undefined ? "…" : String(count), "column-count");
-      badge.setAttribute("aria-label", deferred ? `${name}尚未載入` : count === undefined ? "件數讀取中" : `${count} 件`);
+      const badge = element(
+        "span",
+        deferred ? "未載入" : count === undefined ? "…" : String(count),
+        "column-count",
+      );
+      badge.setAttribute(
+        "aria-label",
+        deferred ? `${name}尚未載入` : count === undefined ? "件數讀取中" : `${count} 件`,
+      );
       const header = element("div", undefined, "column-heading");
       header.append(
-        element("span", String(Object.keys(ORDER_STATUSES).indexOf(key) + 1).padStart(2, "0"), "column-step"),
+        element(
+          "span",
+          String(Object.keys(ORDER_STATUSES).indexOf(key) + 1).padStart(2, "0"),
+          "column-step",
+        ),
         heading,
         badge,
       );
@@ -37,10 +54,12 @@ export function boardColumns({
         button.disabled = deferredDisabled;
         button.addEventListener("click", onLoadDeferred);
         body.append(button);
-      }
-      else if (count === undefined) body.append(element("p", message, "column-empty"));
+      } else if (count === undefined) body.append(element("p", message, "column-empty"));
       else if (!count) body.append(element("p", "目前沒有委託", "column-empty"));
-      else if (cards.length < count) body.append(element("p", `已顯示 ${cards.length}／${count} 件，請載入更多。`, "column-empty"));
+      else if (cards.length < count)
+        body.append(
+          element("p", `已顯示 ${cards.length}／${count} 件，請載入更多。`, "column-empty"),
+        );
       column.append(header, body);
       return column;
     });

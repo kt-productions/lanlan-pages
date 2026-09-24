@@ -457,8 +457,14 @@
   gap: 12px;
   margin-top: 12px;
 }
-.reference-preview figure { margin: 0; min-width: 0; }
-.reference-preview figcaption { font-size: 13px; overflow-wrap: anywhere; }
+.reference-preview figure {
+  margin: 0;
+  min-width: 0;
+}
+.reference-preview figcaption {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
 .reference-preview img {
   width: 100%;
   height: 130px;

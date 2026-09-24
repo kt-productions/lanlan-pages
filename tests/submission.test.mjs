@@ -5,25 +5,53 @@ import { backend, submission } from "./helpers/apps-script.mjs";
 
 test("前端逐檔上傳，第二檔回應中斷後從該檔續傳，不要求素材連結且不重複建檔", async () => {
   const service = backend();
-  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7WQAAAAASUVORK5CYII=", "base64");
-  const files = Array.from({ length: 5 }, (_, index) => new File([png], `測試-${index}.png`, { type: "image/png" }));
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7WQAAAAASUVORK5CYII=",
+    "base64",
+  );
+  const files = Array.from(
+    { length: 5 },
+    (_, index) => new File([png], `測試-${index}.png`, { type: "image/png" }),
+  );
   const elements = new Map();
   const element = (selector) => {
-    if (!elements.has(selector)) elements.set(selector, { disabled: false, hidden: true, textContent: "", files: [],
-      addEventListener(type, listener) { this[type] = listener; }, focus() {} });
+    if (!elements.has(selector))
+      elements.set(selector, {
+        disabled: false,
+        hidden: true,
+        textContent: "",
+        files: [],
+        addEventListener(type, listener) {
+          this[type] = listener;
+        },
+        focus() {},
+      });
     return elements.get(selector);
   };
-  element("#integration-data").textContent = JSON.stringify({ apiUrl: "https://script.google.com/macros/s/fixture/exec" });
+  element("#integration-data").textContent = JSON.stringify({
+    apiUrl: "https://script.google.com/macros/s/fixture/exec",
+  });
   element("#commission-reference").files = files;
-  const originals = ["document", "FormData", "fetch", "FileReader"].map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]);
+  const originals = ["document", "FormData", "fetch", "FileReader"].map((key) => [
+    key,
+    Object.getOwnPropertyDescriptor(globalThis, key),
+  ]);
   const calls = [];
   let interrupt = true;
   try {
     globalThis.document = { querySelector: element };
-    globalThis.FormData = class { get() { return ""; } };
+    globalThis.FormData = class {
+      get() {
+        return "";
+      }
+    };
     globalThis.FileReader = class {
       async readAsDataURL(file) {
-        this.result = "data:" + file.type + ";base64," + Buffer.from(await file.arrayBuffer()).toString("base64");
+        this.result =
+          "data:" +
+          file.type +
+          ";base64," +
+          Buffer.from(await file.arrayBuffer()).toString("base64");
         this.onload();
       }
     };
@@ -39,14 +67,23 @@ test("前端逐檔上傳，第二檔回應中斷後從該檔續傳，不要求�
     };
     const button = element("#commission-submit");
     const input = element("#nickname");
-    setupSubmission({ querySelectorAll: () => [input, button] }, {}, () => submission({ referenceUrl: "" }), () => {}, () => {});
+    setupSubmission(
+      { querySelectorAll: () => [input, button] },
+      {},
+      () => submission({ referenceUrl: "" }),
+      () => {},
+      () => {},
+    );
     await button.click();
     assert.equal(input.disabled, true);
     assert.equal(service.rows.length, 1);
     assert.equal(service.files.size, 3);
     await button.click();
     assert.equal(button.textContent, "已收件");
-    assert.deepEqual(calls.filter((call) => call.action === "orders.upload").map((call) => call.payload.index), [0, 1, 1, 2, 3, 4]);
+    assert.deepEqual(
+      calls.filter((call) => call.action === "orders.upload").map((call) => call.payload.index),
+      [0, 1, 1, 2, 3, 4],
+    );
     assert.equal(new Set(calls.map((call) => call.payload.requestId)).size, 1);
     assert.equal(service.files.size, 6);
     assert.equal(service.rows.length, 2);

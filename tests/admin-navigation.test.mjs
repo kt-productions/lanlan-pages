@@ -5,18 +5,36 @@ import { backend } from "./helpers/apps-script.mjs";
 
 const session = (token = "b".repeat(64)) => ({ token, expiresAt: 10000 });
 function fixture(saved = session()) {
-  const state = { saved, visible: false, changes: [], now: 1000, requests: [], invalid: [], timers: new Map() };
+  const state = {
+    saved,
+    visible: false,
+    changes: [],
+    now: 1000,
+    requests: [],
+    invalid: [],
+    timers: new Map(),
+  };
   let nextTimer = 0;
   const access = createAdminAccess({
     api(action, payload, token) {
-      return new Promise((resolve, reject) => state.requests.push({ action, payload, token, resolve, reject }));
+      return new Promise((resolve, reject) =>
+        state.requests.push({ action, payload, token, resolve, reject }),
+      );
     },
     readSession: () => state.saved,
-    clearSession: () => { state.saved = null; },
-    onChange: (visible) => { state.visible = visible; state.changes.push(visible); },
+    clearSession: () => {
+      state.saved = null;
+    },
+    onChange: (visible) => {
+      state.visible = visible;
+      state.changes.push(visible);
+    },
     onInvalid: (token) => state.invalid.push(token),
     now: () => state.now,
-    schedule: (fn) => { state.timers.set(++nextTimer, fn); return nextTimer; },
+    schedule: (fn) => {
+      state.timers.set(++nextTimer, fn);
+      return nextTimer;
+    },
     cancel: (id) => state.timers.delete(id),
   });
   return { state, access };
@@ -111,8 +129,12 @@ test("格式錯誤的回覆不延長登入，已驗證的本頁登入不依賴 l
 });
 
 test("缺少、格式錯誤或已到期的登入紀錄不顯示也不請求；等待期間到期不能被晚回覆恢復", async () => {
-  for (const saved of [null, { ...session(), token: "invalid" }, { ...session(), expiresAt: 1000 },
-    { ...session(), expiresAt: "10000" }]) {
+  for (const saved of [
+    null,
+    { ...session(), token: "invalid" },
+    { ...session(), expiresAt: 1000 },
+    { ...session(), expiresAt: "10000" },
+  ]) {
     const { state, access } = fixture(saved);
     await access.sync();
     assert.equal(state.visible, false);
@@ -133,7 +155,9 @@ test("缺少、格式錯誤或已到期的登入紀錄不顯示也不請求；�
 test("身分檢查沿用到期與白名單驗證，不讀訂單、不回傳身分或續期", () => {
   const app = backend();
   const token = app.session();
-  app.context.SpreadsheetApp.openById = () => { throw new Error("此操作不應讀取訂單"); };
+  app.context.SpreadsheetApp.openById = () => {
+    throw new Error("此操作不應讀取訂單");
+  };
   assert.equal(app.invoke("auth.session").error.code, "AUTH");
   assert.equal(app.invoke("auth.session", {}, "a".repeat(64)).error.code, "AUTH");
   const before = JSON.stringify([...app.cache]);

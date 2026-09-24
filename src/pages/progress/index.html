@@ -13,12 +13,11 @@
           <h1>委託進度</h1>
           <p>每一份工作，都在這裡慢慢完成，從排隊到交稿，一起看看目前忙到哪裡。</p>
         </div>
-        <a class="button button-primary" href="../commission/"
-          >開始填寫委託</a
-        >
+        <a class="button button-primary" href="../commission/">開始填寫委託</a>
       </div>
       <div class="order-toolbar">
-        <label for="progress-service">委託類型
+        <label for="progress-service"
+          >委託類型
           <select id="progress-service">
             <option value="">所有類型</option>
             <option value="chibi">小動圖</option>
@@ -26,25 +25,29 @@
             <option value="stickers">貼圖包</option>
           </select>
         </label>
-        <label for="progress-flag">附加狀態
+        <label for="progress-flag"
+          >附加狀態
           <select id="progress-flag">
             <option value="">所有工作</option>
             <option value="rush">急件</option>
             <option value="on_hold">擱置</option>
           </select>
         </label>
-        <button type="button" class="button" id="progress-refresh">
-          重新整理
-        </button>
+        <button type="button" class="button" id="progress-refresh">重新整理</button>
       </div>
       <p id="progress-status" role="status">正在讀取委託進度……</p>
-      <p class="board-hint" id="board-hint">桌機並排顯示六個階段，窄螢幕可左右捲動，欄內可上下捲動。「急件」與「擱置」可同時標記；擱置仍保留原階段。</p>
-      <div id="progress-list" class="progress-board" role="region" tabindex="0" aria-label="委託進度看板" aria-describedby="board-hint"></div>
-      <noscript
-        ><p>
-          請啟用 JavaScript 讀取最新進度，或透過頁尾的聯絡方式詢問。
-        </p></noscript
-      >
+      <p class="board-hint" id="board-hint">
+        桌機並排顯示六個階段，窄螢幕可左右捲動，欄內可上下捲動。「急件」與「擱置」可同時標記；擱置仍保留原階段。
+      </p>
+      <div
+        id="progress-list"
+        class="progress-board"
+        role="region"
+        tabindex="0"
+        aria-label="委託進度看板"
+        aria-describedby="board-hint"
+      ></div>
+      <noscript><p>請啟用 JavaScript 讀取最新進度，或透過頁尾的聯絡方式詢問。</p></noscript>
     </main>
     {{FOOTER}}
   </body>

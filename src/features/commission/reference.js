@@ -1,5 +1,9 @@
 import { referenceError } from "./validation.js";
-import { ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TOTAL_BYTES, ATTACHMENT_TYPES } from "../orders/attachment-contract.js";
+import {
+  ATTACHMENT_MAX_FILES,
+  ATTACHMENT_MAX_TOTAL_BYTES,
+  ATTACHMENT_TYPES,
+} from "../orders/attachment-contract.js";
 
 /** 管理本機預覽的生命週期；切換類型及返回快取頁面時重新驗證。 */
 export function setupReference(input, getDetails) {
@@ -17,10 +21,17 @@ export function setupReference(input, getDetails) {
 
   function validate() {
     const files = [...input.files];
-    input.setCustomValidity(files.length > ATTACHMENT_MAX_FILES ? "最多可上傳 5 個參考檔案。" :
-      files.map((file) => referenceError(getDetails(), file)).find(Boolean) ||
-      (files.reduce((sum, file) => sum + file.size, 0) > ATTACHMENT_MAX_TOTAL_BYTES ? "參考檔案合計最多 45 MB；較大素材請改用連結。" : "") ||
-      (!files.length && !link.value.trim() ? "請上傳至少一個參考檔案，或提供參考素材連結。" : ""));
+    input.setCustomValidity(
+      files.length > ATTACHMENT_MAX_FILES
+        ? "最多可上傳 5 個參考檔案。"
+        : files.map((file) => referenceError(getDetails(), file)).find(Boolean) ||
+            (files.reduce((sum, file) => sum + file.size, 0) > ATTACHMENT_MAX_TOTAL_BYTES
+              ? "參考檔案合計最多 45 MB；較大素材請改用連結。"
+              : "") ||
+            (!files.length && !link.value.trim()
+              ? "請上傳至少一個參考檔案，或提供參考素材連結。"
+              : ""),
+    );
   }
 
   function refresh() {
@@ -37,7 +48,9 @@ export function setupReference(input, getDetails) {
         img.src = URL.createObjectURL(file);
         urls.push(img.src);
         img.alt = `${file.name} 預覽`;
-        img.addEventListener("error", () => { img.hidden = true; });
+        img.addEventListener("error", () => {
+          img.hidden = true;
+        });
         item.append(img);
       }
       const caption = document.createElement("figcaption");

@@ -23,15 +23,23 @@ export function setupBoardDrag(board, { canDrag, onMove }) {
   let suppressClick = false;
 
   // 原生拖曳結束可能接著送出 click；只放行下一次新的按下，避免誤開編輯視窗。
-  board.addEventListener("pointerdown", () => {
-    if (!active) suppressClick = false;
-  }, true);
-  board.addEventListener("click", (event) => {
-    if (!suppressClick) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    suppressClick = false;
-  }, true);
+  board.addEventListener(
+    "pointerdown",
+    () => {
+      if (!active) suppressClick = false;
+    },
+    true,
+  );
+  board.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressClick) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      suppressClick = false;
+    },
+    true,
+  );
 
   function reset() {
     active?.classList.remove("is-dragging");
@@ -45,7 +53,8 @@ export function setupBoardDrag(board, { canDrag, onMove }) {
   function scroll() {
     if (!active || !point) return;
     // 跨越畫面外的欄位或長清單時，靠近邊緣即可連續捲動。
-    const speed = (position, start, end) => position < start + 48 ? -10 : position > end - 48 ? 10 : 0;
+    const speed = (position, start, end) =>
+      position < start + 48 ? -10 : position > end - 48 ? 10 : 0;
     const bounds = board.getBoundingClientRect();
     board.scrollLeft += speed(point.x, bounds.left, bounds.right);
     const column = document.elementFromPoint(point.x, point.y)?.closest(".board-column");
@@ -98,7 +107,11 @@ export function setupBoardDrag(board, { canDrag, onMove }) {
     const column = event.target.closest(".board-column");
     const id = active.dataset.dragOrderId;
     const status = column?.dataset.status;
-    const valid = canDrag() && column && board.contains(column) && !column.contains(active) &&
+    const valid =
+      canDrag() &&
+      column &&
+      board.contains(column) &&
+      !column.contains(active) &&
       Object.hasOwn(ORDER_STATUSES, status);
     reset();
     if (valid) void onMove(id, status);

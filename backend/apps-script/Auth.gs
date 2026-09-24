@@ -6,11 +6,7 @@ function setting_(name, optional) {
 
 function randomKey_() {
   const secret = setting_("SESSION_SECRET");
-  Core_.requireValue(
-    secret.length >= 32,
-    "登入工作階段密鑰設定不正確。",
-    "CONFIG",
-  );
+  Core_.requireValue(secret.length >= 32, "登入工作階段密鑰設定不正確。", "CONFIG");
   // Utilities UUID 沒有密碼學亂數保證；以獨立伺服器密鑰產生不可預測的驗證值。
   return Utilities.computeHmacSha256Signature(
     Utilities.getUuid() + Utilities.getUuid() + Date.now(),
@@ -28,25 +24,18 @@ function base64url_(bytes) {
 
 function digest_(text) {
   return base64url_(
-    Utilities.computeDigest(
-      Utilities.DigestAlgorithm.SHA_256,
-      text,
-      Utilities.Charset.UTF_8,
-    ),
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text, Utilities.Charset.UTF_8),
   );
 }
 
 function decodeJson_(encoded) {
   return JSON.parse(
-    Utilities.newBlob(Utilities.base64DecodeWebSafe(encoded)).getDataAsString(
-      "UTF-8",
-    ),
+    Utilities.newBlob(Utilities.base64DecodeWebSafe(encoded)).getDataAsString("UTF-8"),
   );
 }
 
 function equal_(a, b) {
-  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length)
-    return false;
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
   let difference = 0;
   for (let index = 0; index < a.length; index++)
     difference |= a.charCodeAt(index) ^ b.charCodeAt(index);
@@ -55,11 +44,7 @@ function equal_(a, b) {
 
 function lock_(task) {
   const lock = LockService.getScriptLock();
-  Core_.requireValue(
-    lock.tryLock(10000),
-    "目前有其他操作，請稍後重試。",
-    "BUSY",
-  );
+  Core_.requireValue(lock.tryLock(10000), "目前有其他操作，請稍後重試。", "BUSY");
   try {
     return task();
   } finally {
@@ -99,9 +84,7 @@ function adminUrl_() {
 function callbackUrl_() {
   const url = setting_("WEB_APP_URL");
   Core_.requireValue(
-    /^https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_-]+\/exec$/.test(
-      url,
-    ),
+    /^https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_-]+\/exec$/.test(url),
     "登入回呼網址設定不正確。",
     "CONFIG",
   );
@@ -109,13 +92,12 @@ function callbackUrl_() {
 }
 
 function beginLogin_(payload) {
+  Core_.requireValue(/^[a-f0-9]{64}$/.test(payload.browserKey || ""), "登入請求不正確。", "AUTH");
   Core_.requireValue(
-    /^[a-f0-9]{64}$/.test(payload.browserKey || ""),
-    "登入請求不正確。",
+    payload.popup === undefined || typeof payload.popup === "boolean",
+    "登入方式不正確。",
     "AUTH",
   );
-  Core_.requireValue(payload.popup === undefined || typeof payload.popup === "boolean",
-    "登入方式不正確。", "AUTH");
   adminUrl_();
   const state = randomKey_();
   const verifier = randomKey_();
@@ -131,11 +113,12 @@ function beginLogin_(payload) {
     }),
     600,
   );
-  if (payload.popup) CacheService.getScriptCache().put(
-    "login:" + digest_(payload.browserKey),
-    JSON.stringify({ stateHash: digest_(state), expiresAt: Date.now() + 600000 }),
-    600,
-  );
+  if (payload.popup)
+    CacheService.getScriptCache().put(
+      "login:" + digest_(payload.browserKey),
+      JSON.stringify({ stateHash: digest_(state), expiresAt: Date.now() + 600000 }),
+      600,
+    );
   const params = {
     client_id: setting_("TELEGRAM_CLIENT_ID"),
     redirect_uri: callbackUrl_(),
@@ -151,9 +134,7 @@ function beginLogin_(payload) {
       "https://oauth.telegram.org/auth?" +
       Object.keys(params)
         .map(function (key) {
-          return (
-            encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
-          );
+          return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
         })
         .join("&"),
   };
@@ -163,36 +144,21 @@ function telegramKeys_(refresh) {
   const cache = CacheService.getScriptCache();
   const saved = !refresh && cache.get("telegram:jwks");
   if (saved) return JSON.parse(saved);
-  const response = UrlFetchApp.fetch(
-    "https://oauth.telegram.org/.well-known/jwks.json",
-    {
-      muteHttpExceptions: true,
-      followRedirects: false,
-      validateHttpsCertificates: true,
-    },
-  );
-  Core_.requireValue(
-    response.getResponseCode() === 200,
-    "暫時無法驗證 Telegram 登入。",
-    "AUTH",
-  );
+  const response = UrlFetchApp.fetch("https://oauth.telegram.org/.well-known/jwks.json", {
+    muteHttpExceptions: true,
+    followRedirects: false,
+    validateHttpsCertificates: true,
+  });
+  Core_.requireValue(response.getResponseCode() === 200, "暫時無法驗證 Telegram 登入。", "AUTH");
   const data = JSON.parse(response.getContentText());
-  Core_.requireValue(
-    Array.isArray(data.keys),
-    "Telegram 登入金鑰格式不正確。",
-    "AUTH",
-  );
+  Core_.requireValue(Array.isArray(data.keys), "Telegram 登入金鑰格式不正確。", "AUTH");
   cache.put("telegram:jwks", JSON.stringify(data.keys), 3600);
   return data.keys;
 }
 
 /** 只接受 RS256；先以 Telegram 公鑰驗證，再採用 ID 與權限，不能只解碼 JWT。 */
 function verifyTelegramToken_(token, nonce) {
-  Core_.requireValue(
-    typeof token === "string" && token.length < 16000,
-    "登入憑證不正確。",
-    "AUTH",
-  );
+  Core_.requireValue(typeof token === "string" && token.length < 16000, "登入憑證不正確。", "AUTH");
   const parts = token.split(".");
   Core_.requireValue(
     parts.length === 3 &&
@@ -222,10 +188,7 @@ function verifyTelegramToken_(token, nonce) {
   let key = findKey(telegramKeys_(false));
   if (!key) key = findKey(telegramKeys_(true));
   Core_.requireValue(
-    key &&
-      typeof key.n === "string" &&
-      key.n.length >= 342 &&
-      key.n.length <= 700,
+    key && typeof key.n === "string" && key.n.length >= 342 && key.n.length <= 700,
     "找不到有效的 Telegram 登入金鑰。",
     "AUTH",
   );
@@ -275,20 +238,12 @@ function verifyTelegramToken_(token, nonce) {
     "缺少 Telegram 使用者 ID。",
     "AUTH",
   );
-  Core_.requireValue(
-    isAdmin_(String(claims.id)),
-    "這個 Telegram 帳號沒有管理權限。",
-    "FORBIDDEN",
-  );
+  Core_.requireValue(isAdmin_(String(claims.id)), "這個 Telegram 帳號沒有管理權限。", "FORBIDDEN");
   return { id: String(claims.id) };
 }
 
 function completeLogin_(params) {
-  Core_.requireValue(
-    /^[a-f0-9]{64}$/.test(params.state || ""),
-    "登入請求不正確。",
-    "AUTH",
-  );
+  Core_.requireValue(/^[a-f0-9]{64}$/.test(params.state || ""), "登入請求不正確。", "AUTH");
   const pending = takeCache_("oauth:" + digest_(params.state));
   try {
     return completePendingLogin_(params, pending);
@@ -310,14 +265,19 @@ function saveLoginResult_(pending, state, result) {
   const key = "login:" + pending.browserHash;
   const current = JSON.parse(cache.get(key) || "null");
   if (!current || !equal_(current.stateHash, digest_(state))) return;
-  cache.put(key, JSON.stringify(Object.assign({}, current, result, {
-    expiresAt: Date.now() + 120000,
-  })), 120);
+  cache.put(
+    key,
+    JSON.stringify(
+      Object.assign({}, current, result, {
+        expiresAt: Date.now() + 120000,
+      }),
+    ),
+    120,
+  );
 }
 
 function pollLogin_(payload) {
-  Core_.requireValue(/^[a-f0-9]{64}$/.test(payload.browserKey || ""),
-    "登入請求不正確。", "AUTH");
+  Core_.requireValue(/^[a-f0-9]{64}$/.test(payload.browserKey || ""), "登入請求不正確。", "AUTH");
   const value = CacheService.getScriptCache().get("login:" + digest_(payload.browserKey));
   Core_.requireValue(value, "登入已逾時，請重新登入。", "AUTH");
   const result = JSON.parse(value);
@@ -341,9 +301,7 @@ function completePendingLogin_(params, pending) {
       Authorization:
         "Basic " +
         Utilities.base64Encode(
-          setting_("TELEGRAM_CLIENT_ID") +
-            ":" +
-            setting_("TELEGRAM_CLIENT_SECRET"),
+          setting_("TELEGRAM_CLIENT_ID") + ":" + setting_("TELEGRAM_CLIENT_SECRET"),
         ),
     },
     payload: {
@@ -382,8 +340,7 @@ function completePendingLogin_(params, pending) {
 
 function exchangeTicket_(payload) {
   Core_.requireValue(
-    /^[a-f0-9]{64}$/.test(payload.ticket || "") &&
-      /^[a-f0-9]{64}$/.test(payload.browserKey || ""),
+    /^[a-f0-9]{64}$/.test(payload.ticket || "") && /^[a-f0-9]{64}$/.test(payload.browserKey || ""),
     "登入請求不正確。",
     "AUTH",
   );
@@ -400,11 +357,7 @@ function exchangeTicket_(payload) {
       "請從原先登入的分頁完成驗證。",
       "AUTH",
     );
-    Core_.requireValue(
-      isAdmin_(ticket.id),
-      "這個帳號沒有管理權限。",
-      "FORBIDDEN",
-    );
+    Core_.requireValue(isAdmin_(ticket.id), "這個帳號沒有管理權限。", "FORBIDDEN");
     if (ticket.session) {
       requireAdmin_(ticket.session.token);
       return ticket.session;
@@ -418,7 +371,11 @@ function exchangeTicket_(payload) {
       JSON.stringify({ id: ticket.id, expiresAt: expiresAt }),
     );
     ticket.session = { token: token, id: ticket.id, expiresAt: expiresAt };
-    cache.put(key, JSON.stringify(ticket), Math.max(1, Math.ceil((ticket.expiresAt - Date.now()) / 1000)));
+    cache.put(
+      key,
+      JSON.stringify(ticket),
+      Math.max(1, Math.ceil((ticket.expiresAt - Date.now()) / 1000)),
+    );
     return ticket.session;
   });
 }
@@ -427,10 +384,17 @@ function exchangeTicket_(payload) {
 function pruneAdminSessions_() {
   const properties = PropertiesService.getScriptProperties();
   const saved = properties.getProperties();
-  Object.keys(saved).filter(function (key) { return key.startsWith("session:"); })
+  Object.keys(saved)
+    .filter(function (key) {
+      return key.startsWith("session:");
+    })
     .forEach(function (key) {
       let session;
-      try { session = JSON.parse(saved[key]); } catch (error) { session = null; }
+      try {
+        session = JSON.parse(saved[key]);
+      } catch (error) {
+        session = null;
+      }
       if (!session || !Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now()) {
         properties.deleteProperty(key);
       }
@@ -444,18 +408,19 @@ function revokeAdminSession_(token) {
 }
 
 function requireAdmin_(token) {
-  Core_.requireValue(
-    /^[a-f0-9]{64}$/.test(token || ""),
-    "請先登入管理後台。",
-    "AUTH",
-  );
+  Core_.requireValue(/^[a-f0-9]{64}$/.test(token || ""), "請先登入管理後台。", "AUTH");
   const key = "session:" + digest_(token);
   // 部署前的一小時工作階段仍依原期限有效，不替舊 token 自動續期。
-  const value = PropertiesService.getScriptProperties().getProperty(key) ||
+  const value =
+    PropertiesService.getScriptProperties().getProperty(key) ||
     CacheService.getScriptCache().get(key);
   Core_.requireValue(value, "登入已逾時，請重新登入。", "AUTH");
   const session = JSON.parse(value);
-  if (!Number.isFinite(session.expiresAt) || session.expiresAt <= Date.now() || !isAdmin_(session.id)) {
+  if (
+    !Number.isFinite(session.expiresAt) ||
+    session.expiresAt <= Date.now() ||
+    !isAdmin_(session.id)
+  ) {
     revokeAdminSession_(token);
     throw new Core_.OrderError("AUTH", "登入已失效或管理權限已移除。");
   }

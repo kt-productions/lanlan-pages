@@ -71,7 +71,8 @@
   font-size: 12px;
   font-weight: 800;
 }
-.column-drafting .column-heading, .column-finalizing .column-heading {
+.column-drafting .column-heading,
+.column-finalizing .column-heading {
   border-color: var(--accent);
 }
 .column-delivered .column-heading {

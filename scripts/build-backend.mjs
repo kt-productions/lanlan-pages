@@ -3,25 +3,27 @@ import path from "node:path";
 import { root } from "./lib/paths.mjs";
 import { readCommission, readContent } from "./lib/content.mjs";
 import { stickerWork } from "./lib/artworks.mjs";
+import { backendSource } from "./lib/backend-source.mjs";
 
 // 後端產物獨立於 dist，避免把程式或未來設定一起發布到 Pages。
 const out = path.join(root, "build/apps-script");
 await mkdir(out, { recursive: true });
 const read = (file) => readFile(path.join(root, file), "utf8");
-const pricing = (await read("src/features/commission/pricing.js")).replace(
-  /^export /gm,
-  "",
-);
-const contract = (await read("src/features/orders/contract.js"))
-  .replace(/^import .*;\r?\n/gm, "")
-  .replace(/^export /gm, "");
-const attachments = (await read("src/features/orders/attachment-contract.js")).replace(/^export /gm, "");
-const revenue = (await read("src/features/orders/revenue.js")).replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
+const pricing = backendSource(await read("src/features/commission/pricing.js"));
+const contract = backendSource(await read("src/features/orders/contract.js"));
+const attachments = backendSource(await read("src/features/orders/attachment-contract.js"));
+const revenue = backendSource(await read("src/features/orders/revenue.js"));
 const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\n${revenue}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareOrderAge, attachmentManifest, attachmentFileError, formatPriceRange, taipeiDate, buildRevenueReport, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
 await writeFile(path.join(out, "Core.gs"), core);
-const artworks = (await read("src/features/artworks/contract.js")).replace(/^export /gm, "");
-await writeFile(path.join(out, "ArtworkCore.gs"), `var ArtworkCore_ = (() => {\n${artworks}\nreturn { ARTWORK_TYPES, ARTWORK_MAX_BYTES, artworkFields, artworkFile, artworkMime, artworkOperation, mergeArtworks };\n})();\n`);
-await writeFile(path.join(out, "ArtworkBase.gs"), `const ARTWORK_BASE_ = ${JSON.stringify([...(await readContent("works.json")), stickerWork])};\n`);
+const artworks = backendSource(await read("src/features/artworks/contract.js"));
+await writeFile(
+  path.join(out, "ArtworkCore.gs"),
+  `var ArtworkCore_ = (() => {\n${artworks}\nreturn { ARTWORK_TYPES, ARTWORK_MAX_BYTES, artworkFields, artworkFile, artworkMime, artworkOperation, mergeArtworks };\n})();\n`,
+);
+await writeFile(
+  path.join(out, "ArtworkBase.gs"),
+  `const ARTWORK_BASE_ = ${JSON.stringify([...(await readContent("works.json")), stickerWork])};\n`,
+);
 await writeFile(
   path.join(out, "Config.gs"),
   `const COMMISSION_CONFIG_ = ${JSON.stringify(await readCommission())};\n`,
@@ -35,10 +37,21 @@ await copyFile(
   path.join(root, "node_modules/node-forge/LICENSE"),
   path.join(out, "THIRD_PARTY_LICENSE.txt"),
 );
-for (const file of ["Auth.gs", "Orders.gs", "Attachments.gs", "DriveStorage.gs", "AttachmentNotifications.gs", "NotificationText.gs", "Import.gs", "Bridge.gs", "Web.gs", "Artworks.gs", "ArtworkGitHub.gs", "ArtworkWorker.gs", "appsscript.json"]) {
-  await copyFile(
-    path.join(root, "backend/apps-script", file),
-    path.join(out, file),
-  );
+for (const file of [
+  "Auth.gs",
+  "Orders.gs",
+  "Attachments.gs",
+  "DriveStorage.gs",
+  "AttachmentNotifications.gs",
+  "NotificationText.gs",
+  "Import.gs",
+  "Bridge.gs",
+  "Web.gs",
+  "Artworks.gs",
+  "ArtworkGitHub.gs",
+  "ArtworkWorker.gs",
+  "appsscript.json",
+]) {
+  await copyFile(path.join(root, "backend/apps-script", file), path.join(out, file));
 }
 console.log("已產生 build/apps-script；尚未部署或連線外部服務。");

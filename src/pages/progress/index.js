@@ -18,15 +18,19 @@ let deliveredLoaded = false;
 
 function renderBoard(message = "尚未取得進度") {
   const result = filterBoard(orders, {
-    flag: flag.value, service: service.value,
+    flag: flag.value,
+    service: service.value,
   });
-  list.replaceChildren(...boardColumns({
-    orders: result.orders, counts: hasSnapshot ? result.stageCounts : null,
-    message,
-    deferredStages: deliveredLoaded ? [] : ["delivered"],
-    onLoadDeferred: () => load(true),
-    deferredDisabled: busy || !hasSnapshot || !apiUrl,
-  }));
+  list.replaceChildren(
+    ...boardColumns({
+      orders: result.orders,
+      counts: hasSnapshot ? result.stageCounts : null,
+      message,
+      deferredStages: deliveredLoaded ? [] : ["delivered"],
+      onLoadDeferred: () => load(true),
+      deferredDisabled: busy || !hasSnapshot || !apiUrl,
+    }),
+  );
   if (!hasSnapshot) return;
   status.textContent = result.total
     ? `共 ${result.total} 件${deliveredLoaded ? "" : "未交稿"}委託 · 依照委託順序排列`
@@ -38,7 +42,9 @@ async function load(includeDelivered = false) {
   if (busy) return;
   busy = true;
   const controls = [refresh, flag, service, ...list.querySelectorAll("button")];
-  controls.forEach((control) => { control.disabled = true; });
+  controls.forEach((control) => {
+    control.disabled = true;
+  });
   list.setAttribute("aria-busy", "true");
   const label = includeDelivered ? "已交稿" : "未交稿";
   if (!hasSnapshot) renderBoard("讀取中……");
@@ -57,14 +63,17 @@ async function load(includeDelivered = false) {
     if (!includeDelivered) list.scrollLeft = 0;
   } catch (error) {
     if (!hasSnapshot) renderBoard();
-    status.textContent = error.code === "NOT_CONFIGURED"
-      ? "工作進度尚未開放，繪師啟用後會在這裡公開工作。"
-      : error.code === "NETWORK"
-        ? "暫時無法讀取最新進度，請稍後重試。"
-        : error.message;
+    status.textContent =
+      error.code === "NOT_CONFIGURED"
+        ? "工作進度尚未開放，繪師啟用後會在這裡公開工作。"
+        : error.code === "NETWORK"
+          ? "暫時無法讀取最新進度，請稍後重試。"
+          : error.message;
   } finally {
     busy = false;
-    controls.forEach((control) => { control.disabled = !apiUrl; });
+    controls.forEach((control) => {
+      control.disabled = !apiUrl;
+    });
     const loadButton = list.querySelector(".column-delivered button");
     if (loadButton) loadButton.disabled = !hasSnapshot || !apiUrl;
     list.setAttribute("aria-busy", "false");
@@ -74,9 +83,10 @@ async function load(includeDelivered = false) {
     }
   }
 }
-for (const filter of [flag, service]) filter.addEventListener("change", () => {
-  renderBoard();
-  list.scrollLeft = 0;
-});
+for (const filter of [flag, service])
+  filter.addEventListener("change", () => {
+    renderBoard();
+    list.scrollLeft = 0;
+  });
 refresh.addEventListener("click", () => load());
 load();

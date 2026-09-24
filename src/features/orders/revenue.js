@@ -1,6 +1,17 @@
-import { orderWorkflow, orderSource, quoteCents, revenueDate, taipeiDate, requireValue } from "./contract.js";
+import {
+  orderWorkflow,
+  orderSource,
+  quoteCents,
+  revenueDate,
+  taipeiDate,
+  requireValue,
+} from "./contract.js";
 
-export const REVENUE_KINDS = { realized: "真實收益", temporary: "暫時收益（訂金）", unfinished: "未完成收益（餘額）" };
+export const REVENUE_KINDS = {
+  realized: "真實收益",
+  temporary: "暫時收益（訂金）",
+  unfinished: "未完成收益（餘額）",
+};
 
 /** 舊資料只從可證明的進入已交稿事件補日期，不能用最後修改日或 Trello 最後活動日。 */
 export function deliveredDate(order) {
@@ -26,15 +37,22 @@ export function buildRevenueReport(orders, year, now = new Date().toISOString())
   const missingQuotes = [];
   let excludedCancelled = 0;
   for (const order of orders) {
-    if (order.status === "cancelled") { excludedCancelled++; continue; }
+    if (order.status === "cancelled") {
+      excludedCancelled++;
+      continue;
+    }
     const details = order.details || JSON.parse(order.detailsJson || "{}");
     const flow = orderWorkflow(order);
     const identity = {
       orderId: order.orderId,
       title: orderSource(order)?.cardName || details.nickname || order.orderId,
-      service: order.service, isArchived: flow.isArchived,
+      service: order.service,
+      isArchived: flow.isArchived,
     };
-    if (!details.quote) { missingQuotes.push(identity); continue; }
+    if (!details.quote) {
+      missingQuotes.push(identity);
+      continue;
+    }
     requireValue(details.quote.currency === "TWD", "訂單金額含有不支援的幣別。", "CONFIG");
     const amount = quoteCents(details.quote.amount);
     const revenue = details.revenue || {};
@@ -50,8 +68,13 @@ export function buildRevenueReport(orders, year, now = new Date().toISOString())
       }
     }
   }
-  const years = [...new Set([year, Number(taipeiDate(now).slice(0, 4)),
-    ...entries.filter(entry => entry.date).map(entry => Number(entry.date.slice(0, 4)))])].sort((a, b) => b - a);
+  const years = [
+    ...new Set([
+      year,
+      Number(taipeiDate(now).slice(0, 4)),
+      ...entries.filter((entry) => entry.date).map((entry) => Number(entry.date.slice(0, 4))),
+    ]),
+  ].sort((a, b) => b - a);
   const months = Array.from({ length: 12 }, (_, index) => ({ month: index + 1, ...totals() }));
   const annual = totals();
   const undated = { ...totals(), entries: [] };
@@ -71,6 +94,17 @@ export function buildRevenueReport(orders, year, now = new Date().toISOString())
     }
   }
   selected.sort((a, b) => a.date.localeCompare(b.date) || a.orderId.localeCompare(b.orderId));
-  return { year, years, currency: "TWD", generatedAt: now, months, annual,
-    entries: selected, undated, missingQuotes, excludedCancelled, orderCount: orders.length };
+  return {
+    year,
+    years,
+    currency: "TWD",
+    generatedAt: now,
+    months,
+    annual,
+    entries: selected,
+    undated,
+    missingQuotes,
+    excludedCancelled,
+    orderCount: orders.length,
+  };
 }

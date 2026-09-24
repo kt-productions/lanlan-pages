@@ -6,8 +6,7 @@ export function renderEstimate(config, service, selection, estimate) {
   const label = estimateLabel(estimate);
   document.querySelector("#commission-price").textContent = label;
   document.querySelector("#mobile-estimate-price").textContent = label;
-  document.querySelector("#estimate-announcement").textContent =
-    "預估金額：" + label;
+  document.querySelector("#estimate-announcement").textContent = "預估金額：" + label;
   populateDescription(
     "#estimate-breakdown",
     estimate.items.map((item) => [

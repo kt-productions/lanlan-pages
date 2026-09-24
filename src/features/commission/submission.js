@@ -50,8 +50,11 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
     if (!pending) {
       files = [...document.querySelector("#commission-reference").files];
       uploaded = 0;
-      pending = { requestId: crypto.randomUUID(), details: getSnapshot(),
-        website: new FormData(form).get("website") || "" };
+      pending = {
+        requestId: crypto.randomUUID(),
+        details: getSnapshot(),
+        website: new FormData(form).get("website") || "",
+      };
     }
     freeze();
     sending = true;
@@ -63,20 +66,30 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
         for (const file of files) {
           status.textContent = `正在準備參考檔案 ${manifest.length + 1}／${files.length}……`;
           const hash = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
-          manifest.push({ name: file.name, type: file.type || "application/octet-stream", size: file.size,
-            sha256: [...new Uint8Array(hash)].map((value) => value.toString(16).padStart(2, "0")).join("") });
+          manifest.push({
+            name: file.name,
+            type: file.type || "application/octet-stream",
+            size: file.size,
+            sha256: [...new Uint8Array(hash)]
+              .map((value) => value.toString(16).padStart(2, "0"))
+              .join(""),
+          });
         }
         pending.attachments = attachmentManifest(manifest);
       }
       for (; uploaded < files.length; uploaded += 1) {
         status.textContent = `正在上傳參考檔案 ${uploaded + 1}／${files.length}，請保留此頁……`;
-        const result = await request("orders.upload", { ...pending, index: uploaded, data: await encodedFile(files[uploaded]) });
-        if (result?.index !== uploaded || result.uploaded !== true) throw new Error("無法確認附件上傳結果，請重試送出。");
+        const result = await request("orders.upload", {
+          ...pending,
+          index: uploaded,
+          data: await encodedFile(files[uploaded]),
+        });
+        if (result?.index !== uploaded || result.uploaded !== true)
+          throw new Error("無法確認附件上傳結果，請重試送出。");
       }
       status.textContent = "檔案已準備完成，正在建立委託與傳送通知……";
       const receipt = await request("orders.submit", pending);
-      if (!/^LL-[A-F0-9]{16}$/.test(receipt?.orderId))
-        throw new Error("收件回執格式不正確。");
+      if (!/^LL-[A-F0-9]{16}$/.test(receipt?.orderId)) throw new Error("收件回執格式不正確。");
       accepted = true;
       status.textContent = `已收到委託，編號 ${receipt.orderId}。請保存編號，等候繪師確認需求與報價。`;
       button.textContent = "已收件";
@@ -89,9 +102,7 @@ export function setupSubmission(app, form, getSnapshot, showError, clearError) {
       button.textContent = "重試送出";
       // 可確定未受理的錯誤才解鎖編輯；網路中斷或不明回應保留冪等重試。
       if (
-        ["VALIDATION", "VERSION", "CLOSED", "RATE_LIMIT", "NOT_CONFIGURED"].includes(
-          error.code,
-        )
+        ["VALIDATION", "VERSION", "CLOSED", "RATE_LIMIT", "NOT_CONFIGURED"].includes(error.code)
       ) {
         restore();
         pending = null;

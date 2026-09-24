@@ -2,12 +2,20 @@
 export function createAdminSession(apiUrl, storage = () => window.localStorage, now = Date.now) {
   const key = `lanlan-admin-session:${apiUrl}`;
   function valid(session) {
-    return session?.version === 1 && /^[a-f0-9]{64}$/.test(session.token || "") &&
-      Number.isSafeInteger(session.expiresAt) && session.expiresAt > now();
+    return (
+      session?.version === 1 &&
+      /^[a-f0-9]{64}$/.test(session.token || "") &&
+      Number.isSafeInteger(session.expiresAt) &&
+      session.expiresAt > now()
+    );
   }
   function clear() {
-    try { storage().removeItem(key); return true; }
-    catch { return false; }
+    try {
+      storage().removeItem(key);
+      return true;
+    } catch {
+      return false;
+    }
   }
   function read() {
     try {
@@ -22,8 +30,13 @@ export function createAdminSession(apiUrl, storage = () => window.localStorage, 
   function save(session) {
     const saved = { version: 1, token: session.token, expiresAt: session.expiresAt };
     if (!valid(saved)) return false;
-    try { storage().setItem(key, JSON.stringify(saved)); return true; }
-    catch { clear(); return false; }
+    try {
+      storage().setItem(key, JSON.stringify(saved));
+      return true;
+    } catch {
+      clear();
+      return false;
+    }
   }
   return { key, read, save, clear };
 }

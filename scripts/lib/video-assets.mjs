@@ -39,9 +39,7 @@ export function hasFastStart(bytes) {
 }
 
 export async function readVideoAssets(works) {
-  const manifest = JSON.parse(
-    await readFile(path.join(root, "content/video-assets.json"), "utf8"),
-  );
+  const manifest = JSON.parse(await readFile(path.join(root, "content/video-assets.json"), "utf8"));
   assert.equal(manifest.version, 1, "未知的影片衍生素材版本");
   assert.deepEqual(manifest.profiles, videoProfiles, "請重新執行 npm run optimize:videos");
   assert.equal(manifest.videos.length, works.length, "影片衍生素材數量不符");
@@ -57,14 +55,31 @@ export async function readVideoAssets(works) {
     for (const [kind, profile] of Object.entries(videoProfiles)) {
       const variant = asset[kind];
       assert.ok(variant, `${work.id} 缺少 ${kind} 版本`);
-      assert.match(variant.src, new RegExp(`^assets/videos/optimized/${work.id}-[a-f0-9]{12}\\.mp4$`));
+      assert.match(
+        variant.src,
+        new RegExp(`^assets/videos/optimized/${work.id}-[a-f0-9]{12}\\.mp4$`),
+      );
       const bytes = await readFile(resolveWithin(path.join(root, "public"), variant.src));
       assert.equal(bytes.length, variant.bytes, `${work.id} ${kind} 大小不符`);
       assert.equal(sha256(bytes), variant.sha256, `${work.id} ${kind} 雜湊不符`);
-      assert.ok(variant.src.endsWith(`-${variant.sha256.slice(0, 12)}.mp4`), "影片網址必須包含內容版本");
-      assert.ok(variant.bytes < work.bytes && hasFastStart(bytes), `${work.id} ${kind} 未縮小或缺少起播索引`);
-      assert.ok(variant.width > 0 && variant.height > 0 && Math.max(variant.width, variant.height) <= profile.maxDimension, `${work.id} ${kind} 尺寸有誤`);
-      assert.ok(Math.abs(variant.width / variant.height - work.width / work.height) < 0.01, `${work.id} ${kind} 比例有誤`);
+      assert.ok(
+        variant.src.endsWith(`-${variant.sha256.slice(0, 12)}.mp4`),
+        "影片網址必須包含內容版本",
+      );
+      assert.ok(
+        variant.bytes < work.bytes && hasFastStart(bytes),
+        `${work.id} ${kind} 未縮小或缺少起播索引`,
+      );
+      assert.ok(
+        variant.width > 0 &&
+          variant.height > 0 &&
+          Math.max(variant.width, variant.height) <= profile.maxDimension,
+        `${work.id} ${kind} 尺寸有誤`,
+      );
+      assert.ok(
+        Math.abs(variant.width / variant.height - work.width / work.height) < 0.01,
+        `${work.id} ${kind} 比例有誤`,
+      );
       assert.ok(Math.abs(variant.duration - work.duration) < 0.1, `${work.id} ${kind} 片長有誤`);
     }
     assert.ok(asset.preview.bytes < asset.display.bytes, `${work.id} 預覽版應更小`);
@@ -83,8 +98,10 @@ export async function readHeroVideo() {
     assert.equal(bytes.length, asset.bytes, `首頁 ${key} 大小不符`);
     assert.equal(sha256(bytes), asset.sha256, `首頁 ${key} 雜湊不符`);
     assert.ok(asset.width > 0 && asset.height > 0, `首頁 ${key} 尺寸不正確`);
-    assert.ok(Math.abs(asset.width / asset.height - hero.source.width / hero.source.height) < 0.01,
-      `首頁 ${key} 比例不正確`);
+    assert.ok(
+      Math.abs(asset.width / asset.height - hero.source.width / hero.source.height) < 0.01,
+      `首頁 ${key} 比例不正確`,
+    );
     if (key === "source") continue;
     assert.ok(asset.src.includes(`-${asset.sha256.slice(0, 12)}.`), "首頁素材網址須包含內容版本");
     assert.ok(asset.bytes < hero.source.bytes, `首頁 ${key} 未縮小`);

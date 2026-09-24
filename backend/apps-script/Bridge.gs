@@ -29,6 +29,8 @@ function bridgePage_(channel) {
   // 此頁沒有登入表單或管理內容；只允許設定的網站來源、分頁識別與上層視窗通訊。
   return HtmlService.createHtmlOutput(
     '<!doctype html><html><head><meta name="referrer" content="no-referrer">' +
-      '<title>委託服務連線</title></head><body><script>' + script + '</script></body></html>',
+      "<title>委託服務連線</title></head><body><script>" +
+      script +
+      "</script></body></html>",
   ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }

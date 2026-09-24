@@ -9,12 +9,27 @@ import { artworkBackend, artworkPayload, artworkPng } from "./helpers/artworks.m
 function prepared(service, input = artworkPayload()) {
   const saved = service.admin("save", input);
   assert.equal(saved.ok, true, JSON.stringify(saved));
-  if (input.file) assert.equal(service.admin("upload", { operationId: input.operationId, data: artworkPng.toString("base64") }).ok, true);
-  const published = service.admin("publish", { operationId: input.operationId, revision: saved.data.revision, publicConfirmed: true, backupConfirmed: true });
+  if (input.file)
+    assert.equal(
+      service.admin("upload", {
+        operationId: input.operationId,
+        data: artworkPng.toString("base64"),
+      }).ok,
+      true,
+    );
+  const published = service.admin("publish", {
+    operationId: input.operationId,
+    revision: saved.data.revision,
+    publicConfirmed: true,
+    backupConfirmed: true,
+  });
   assert.equal(published.ok, true, JSON.stringify(published));
   const claim = service.machine("claim", { owner: "123:1" });
   assert.equal(claim.ok, true, JSON.stringify(claim));
-  return { job: claim.data.job, auth: { operationId: input.operationId, leaseId: claim.data.leaseId } };
+  return {
+    job: claim.data.job,
+    auth: { operationId: input.operationId, leaseId: claim.data.leaseId },
+  };
 }
 test("作品操作沿用管理白名單，停用設定與匿名請求不能接觸 Drive 或 GitHub", () => {
   const service = artworkBackend();
@@ -27,10 +42,21 @@ test("作品操作沿用管理白名單，停用設定與匿名請求不能接�
 test("GitHub App JWT 可驗證，token 限定本站 repo 與 Actions 寫入、Contents 讀取", () => {
   const service = artworkBackend();
   assert.equal(service.admin("list").ok, true);
-  const call = service.calls.find(item => item.url.endsWith("/access_tokens"));
+  const call = service.calls.find((item) => item.url.endsWith("/access_tokens"));
   const jwt = call.options.headers.Authorization.slice(7).split(".");
-  assert.equal(verify("RSA-SHA256", Buffer.from(jwt.slice(0, 2).join(".")), signingKeys.publicKey, Buffer.from(jwt[2], "base64url")), true);
-  assert.deepEqual(JSON.parse(call.options.payload), { repositories: ["site"], permissions: { actions: "write", contents: "read" } });
+  assert.equal(
+    verify(
+      "RSA-SHA256",
+      Buffer.from(jwt.slice(0, 2).join(".")),
+      signingKeys.publicKey,
+      Buffer.from(jwt[2], "base64url"),
+    ),
+    true,
+  );
+  assert.deepEqual(JSON.parse(call.options.payload), {
+    repositories: ["site"],
+    permissions: { actions: "write", contents: "read" },
+  });
   assert.ok(!JSON.stringify(service.admin("list")).includes("fixture-installation-token"));
 });
 test("草稿重送保留 ID；舊版、跨分類與換檔被拒絕，原始訂單表不變", () => {
@@ -41,9 +67,23 @@ test("草稿重送保留 ID；舊版、跨分類與換檔被拒絕，原始訂�
   assert.equal(one.ok, true, JSON.stringify(one));
   assert.deepEqual(service.admin("save", input), one);
   assert.equal(one.data.work.id, "chibi-58");
-  assert.equal(service.admin("save", { ...input, work: { ...input.work, title: "改名" } }).error.code, "CONFLICT");
-  assert.equal(service.admin("save", { ...input, revision: 1, work: { ...input.work, category: "animation" } }).error.code, "CONFLICT");
-  assert.equal(service.admin("save", { ...input, revision: 1, file: { ...input.file, sha256: "a".repeat(64) } }).error.code, "CONFLICT");
+  assert.equal(
+    service.admin("save", { ...input, work: { ...input.work, title: "改名" } }).error.code,
+    "CONFLICT",
+  );
+  assert.equal(
+    service.admin("save", { ...input, revision: 1, work: { ...input.work, category: "animation" } })
+      .error.code,
+    "CONFLICT",
+  );
+  assert.equal(
+    service.admin("save", {
+      ...input,
+      revision: 1,
+      file: { ...input.file, sha256: "a".repeat(64) },
+    }).error.code,
+    "CONFLICT",
+  );
   assert.equal(JSON.stringify(service.rows), before);
 });
 test("Drive 已寫入但回應中斷後，重試同一檔案不重複上傳；偽裝 MIME 與雜湊不符拒絕", () => {
@@ -57,7 +97,13 @@ test("Drive 已寫入但回應中斷後，重試同一檔案不重複上傳；�
   service.faults.driveResponse = false;
   assert.equal(service.admin("upload", payload).data.uploaded, true);
   assert.equal(service.files.size, count);
-  assert.equal(service.admin("upload", { ...payload, data: Buffer.alloc(artworkPng.length).toString("base64") }).ok, false);
+  assert.equal(
+    service.admin("upload", {
+      ...payload,
+      data: Buffer.alloc(artworkPng.length).toString("base64"),
+    }).ok,
+    false,
+  );
   assert.throws(() => artworkFile({ ...input.file, type: "image/svg+xml" }));
   assert.throws(() => artworkFile({ ...input.file, size: 10 * 1024 * 1024 + 1 }));
   assert.equal(artworkMime(artworkPng), "image/png");
@@ -66,7 +112,12 @@ test("未確認原檔公開、備份或上傳未完成不能發布；dispatch �
   const service = artworkBackend();
   const input = artworkPayload();
   const saved = service.admin("save", input).data;
-  const payload = { operationId: input.operationId, revision: saved.revision, publicConfirmed: true, backupConfirmed: true };
+  const payload = {
+    operationId: input.operationId,
+    revision: saved.revision,
+    publicConfirmed: true,
+    backupConfirmed: true,
+  };
   assert.equal(service.admin("publish", payload).ok, false);
   service.admin("upload", { operationId: input.operationId, data: artworkPng.toString("base64") });
   assert.equal(service.admin("publish", { ...payload, backupConfirmed: false }).ok, false);
@@ -75,15 +126,27 @@ test("未確認原檔公開、備份或上傳未完成不能發布；dispatch �
   const result = service.admin("publish", payload);
   assert.equal(result.data.state, "queued");
   assert.equal(result.data.dispatchPending, true);
-  assert.equal(service.machine("claim", { owner: "123:1" }).data.job.operationId, input.operationId);
+  assert.equal(
+    service.machine("claim", { owner: "123:1" }).data.job.operationId,
+    input.operationId,
+  );
 });
 test("工作簽章、站點與租約隔離；第二個 runner 無法重複領取，逾期租約不能回寫", () => {
   const service = artworkBackend();
   const { auth } = prepared(service);
   assert.equal(service.machine("claim", { owner: "124:1" }).data.busy, true);
-  assert.equal(service.machine("heartbeat", { ...auth, siteId: "another" }).error.code, "FORBIDDEN");
-  assert.equal(service.machine("heartbeat", auth, { signature: "a".repeat(64) }).error.code, "FORBIDDEN");
-  assert.equal(service.machine("heartbeat", auth, { timestamp: Date.now() - 600000 }).error.code, "FORBIDDEN");
+  assert.equal(
+    service.machine("heartbeat", { ...auth, siteId: "another" }).error.code,
+    "FORBIDDEN",
+  );
+  assert.equal(
+    service.machine("heartbeat", auth, { signature: "a".repeat(64) }).error.code,
+    "FORBIDDEN",
+  );
+  assert.equal(
+    service.machine("heartbeat", auth, { timestamp: Date.now() - 600000 }).error.code,
+    "FORBIDDEN",
+  );
   assert.equal(service.machine("cleanup", auth).error.code, "CONFLICT");
   const lease = JSON.parse(service.properties.get("ARTWORK_LEASE"));
   service.properties.set("ARTWORK_LEASE", JSON.stringify({ ...lease, until: 1 }));
@@ -123,12 +186,22 @@ test("領取及結束租約的回應遺失後，同一簽章請求可取回結�
   assert.equal(JSON.parse(service.properties.get("ARTWORK_LEASE")).leaseId, next.leaseId);
   assert.equal(service.machine("cleanup", auth, { nonce }).error.code, "CONFLICT");
   const sha = service.commit(next.job);
-  service.machine("stored", { operationId: job.operationId, leaseId: next.leaseId, commitSha: sha });
+  service.machine("stored", {
+    operationId: job.operationId,
+    leaseId: next.leaseId,
+    commitSha: sha,
+  });
   service.remote.production = sha;
   const promotedNonce = randomUUID();
   const promoted = { operationId: job.operationId, leaseId: next.leaseId };
-  assert.equal(service.machine("promoted", promoted, { nonce: promotedNonce }).data.state, "promoted");
-  assert.equal(service.machine("promoted", promoted, { nonce: promotedNonce }).data.state, "promoted");
+  assert.equal(
+    service.machine("promoted", promoted, { nonce: promotedNonce }).data.state,
+    "promoted",
+  );
+  assert.equal(
+    service.machine("promoted", promoted, { nonce: promotedNonce }).data.state,
+    "promoted",
+  );
 });
 test("Drive 刪除回報中斷、清理後發布失敗均可重試，且不要求重傳", () => {
   const service = artworkBackend();
@@ -145,7 +218,10 @@ test("Drive 刪除回報中斷、清理後發布失敗均可重試，且不要�
   assert.equal(next.job.commitSha, sha);
   assert.equal(next.job.cleanup, "cleaned");
   service.remote.production = sha;
-  assert.equal(service.machine("promoted", { operationId: job.operationId, leaseId: next.leaseId }).data.state, "promoted");
+  assert.equal(
+    service.machine("promoted", { operationId: job.operationId, leaseId: next.leaseId }).data.state,
+    "promoted",
+  );
   assert.equal(service.machine("deployed", { commitSha: sha }).data.published, true);
   assert.equal(service.admin("list").data.jobs[0].state, "published");
 });
@@ -158,21 +234,39 @@ test("放棄草稿只清理自己的檔案，偽造為委託附件 ID 仍被阻�
   const id = stored.file.id;
   stored.file.id = "fixture-folder";
   service.jobRows[1][1] = JSON.stringify(stored);
-  assert.equal(service.admin("cancel", { operationId: input.operationId, confirmed: true }).error.code, "FORBIDDEN");
+  assert.equal(
+    service.admin("cancel", { operationId: input.operationId, confirmed: true }).error.code,
+    "FORBIDDEN",
+  );
   assert.ok(service.files.has("fixture-folder"));
   stored.file.id = id;
   service.jobRows[1][1] = JSON.stringify(stored);
-  assert.equal(service.admin("cancel", { operationId: input.operationId, confirmed: true }).data.cleanup, "cleaned");
+  assert.equal(
+    service.admin("cancel", { operationId: input.operationId, confirmed: true }).data.cleanup,
+    "cleaned",
+  );
 });
 test("文字修改及下架不重傳媒體；覆寫清單保留舊來源與排序，拒絕過期工作及非法路徑", () => {
-  const base = [{ id: "chibi-01", category: "chibi", title: "舊作品", src: "assets/videos/chibi-01.mp4" }];
-  const job = { operationId: randomUUID(), expectedRevision: 0, action: "upsert", work: { id: "chibi-01", category: "chibi", title: "新名稱", alt: "", description: "" } };
+  const base = [
+    { id: "chibi-01", category: "chibi", title: "舊作品", src: "assets/videos/chibi-01.mp4" },
+  ];
+  const job = {
+    operationId: randomUUID(),
+    expectedRevision: 0,
+    action: "upsert",
+    work: { id: "chibi-01", category: "chibi", title: "新名稱", alt: "", description: "" },
+  };
   const next = applyArtworkJob({ version: 1, items: [] }, base, job);
   assert.equal(mergeArtworks(base, next)[0].src, base[0].src);
   assert.equal(mergeArtworks(base, next)[0].title, "新名稱");
   assert.deepEqual(applyArtworkJob(next, base, job), next);
   assert.throws(() => applyArtworkJob(next, base, { ...job, operationId: randomUUID() }));
-  const removed = applyArtworkJob(next, base, { ...job, operationId: randomUUID(), expectedRevision: 1, action: "delete" });
+  const removed = applyArtworkJob(next, base, {
+    ...job,
+    operationId: randomUUID(),
+    expectedRevision: 1,
+    action: "delete",
+  });
   assert.equal(mergeArtworks(base, removed).length, 0);
   assert.equal(base[0].title, "舊作品");
   assert.throws(() => managedPath("assets/artworks/../../private/file.png"));
@@ -184,15 +278,25 @@ test("放棄後清理失敗保留待清理紀錄，重試只刪原草稿；文�
   assert.equal(service.admin("save", input).data.cleanup, "not_needed");
   const file = artworkPayload().file;
   assert.equal(service.admin("save", { ...input, revision: 1, file }).data.cleanup, "pending");
-  assert.equal(service.admin("upload", { operationId: input.operationId, data: artworkPng.toString("base64") }).ok, true);
+  assert.equal(
+    service.admin("upload", { operationId: input.operationId, data: artworkPng.toString("base64") })
+      .ok,
+    true,
+  );
   service.faults.artworkDelete = true;
-  assert.equal(service.admin("cancel", { operationId: input.operationId, confirmed: true }).ok, false);
+  assert.equal(
+    service.admin("cancel", { operationId: input.operationId, confirmed: true }).ok,
+    false,
+  );
   const job = service.admin("list").data.jobs[0];
   assert.equal(job.state, "cancelled");
   assert.equal(job.cleanup, "pending");
   assert.equal(service.machine("claim", { owner: "123:1" }).data.job, null);
   service.faults.artworkDelete = false;
-  assert.equal(service.admin("cancel", { operationId: input.operationId, confirmed: true }).data.cleanup, "cleaned");
+  assert.equal(
+    service.admin("cancel", { operationId: input.operationId, confirmed: true }).data.cleanup,
+    "cleaned",
+  );
   assert.equal(service.files.size, 2);
 });
 
@@ -201,11 +305,17 @@ test("版本衝突的失敗工作可放棄，未回報但已成為 main 現行�
   const { job, auth } = prepared(service, artworkPayload({ id: "chibi-01", file: null }));
   service.commit(job);
   service.machine("failed", auth);
-  assert.equal(service.admin("cancel", { operationId: job.operationId, confirmed: true }).error.code, "CONFLICT");
+  assert.equal(
+    service.admin("cancel", { operationId: job.operationId, confirmed: true }).error.code,
+    "CONFLICT",
+  );
   // 模擬另一份工作已取代這一版，放棄只影響失敗紀錄及私人暫存。
   const replacement = { ...job, operationId: randomUUID(), expectedRevision: 1 };
   service.commit(replacement);
   const manifest = JSON.stringify(service.remote.manifest);
-  assert.equal(service.admin("cancel", { operationId: job.operationId, confirmed: true }).data.state, "cancelled");
+  assert.equal(
+    service.admin("cancel", { operationId: job.operationId, confirmed: true }).data.state,
+    "cancelled",
+  );
   assert.equal(JSON.stringify(service.remote.manifest), manifest);
 });
