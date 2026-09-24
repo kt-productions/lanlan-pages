@@ -338,17 +338,23 @@ function updateOrder_(payload, actor) {
     const current = findOrder_(sheet, payload.orderId);
     const update = Core_.validateUpdate(payload, current, COMMISSION_CONFIG_);
     const now = new Date().toISOString();
-    // 新交稿自動記錄台灣日期；離開已交稿清掉舊日期，重新交稿不能誤用上次日期。
-    const wasDelivered = Core_.orderWorkflow(current).status === "delivered";
-    if (update.status === "delivered" && !wasDelivered) {
+    // 拖曳由伺服器按台灣日期補值；編輯器明確填入的日期優先，金額不由狀態猜測。
+    const dates = Core_.workflowDateDefaults(
+      Object.assign({}, current, { details: update.details }),
+      update.status,
+      now,
+    );
+    if (Object.keys(dates).length) {
       update.details.revenue = Object.assign(
-        { depositAmount: 0, depositReceivedOn: null, expectedDeliveryOn: null },
+        { depositAmount: 0, depositReceivedOn: null, expectedDeliveryOn: null, deliveredOn: null },
         update.details.revenue || {},
-        {
-          deliveredOn: update.details.revenue?.deliveredOn || Core_.taipeiDate(now),
-        },
       );
-    } else if (update.status !== "delivered" && update.details.revenue) {
+      Object.keys(dates).forEach(function (key) {
+        update.details.revenue[key] =
+          dates[key] === null ? null : payload.revenue?.[key] || dates[key];
+      });
+    }
+    if (update.status !== "delivered" && update.details.revenue) {
       update.details.revenue.deliveredOn = null;
     }
     const history = JSON.parse(current.historyJson);

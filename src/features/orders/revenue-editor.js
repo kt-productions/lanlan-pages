@@ -1,19 +1,35 @@
 import { deliveredDate } from "./revenue.js";
-import { taipeiDate } from "./contract.js";
+import { workflowDateDefaults } from "./workflow-dates.js";
 
 export function setupRevenueEditor(form) {
   const fields = form.elements;
+  let currentOrder;
+  let previousStatus;
   function sync() {
     fields.deliveredOn.disabled = fields.status.value !== "delivered";
   }
   fields.status.addEventListener("change", () => {
-    // 僅在使用者切換階段時填入今天，開啟歷史已交稿訂單不能改寫原日期。
-    fields.deliveredOn.value =
-      fields.status.value === "delivered" ? taipeiDate(new Date().toISOString()) : "";
+    if (!currentOrder) return;
+    const details = { ...currentOrder.details };
+    if (!currentOrder.source && currentOrder.service === "stickers" && fields.stickerIds)
+      details.stickerIds = fields.stickerIds.value
+        .split(/[,，、\s]+/)
+        .filter(Boolean)
+        .map(Number);
+    const dates = workflowDateDefaults(
+      { ...currentOrder, details, status: previousStatus },
+      fields.status.value,
+    );
+    // 載入歷史資料只顯示原值；使用者切換階段才預填，仍可在儲存前手動調整。
+    for (const [key, value] of Object.entries(dates)) fields[key].value = value || "";
+    if (fields.status.value !== "delivered") fields.deliveredOn.value = "";
+    previousStatus = fields.status.value;
     sync();
   });
   return {
     fill(order) {
+      currentOrder = order;
+      previousStatus = fields.status.value;
       const revenue = order.details.revenue || {};
       fields.depositAmount.value = revenue.depositAmount ?? 0;
       fields.depositReceivedOn.value = revenue.depositReceivedOn || "";
@@ -30,6 +46,8 @@ export function setupRevenueEditor(form) {
       };
     },
     clear() {
+      currentOrder = null;
+      previousStatus = null;
       for (const key of ["depositAmount", "depositReceivedOn", "expectedDeliveryOn", "deliveredOn"])
         fields[key].value = "";
     },

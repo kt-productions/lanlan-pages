@@ -199,9 +199,10 @@ test("日期、金額與年度邊界拒絕錯誤；允許未確認日期及有�
     });
   }
   assert.throws(() => validateRevenue(revenue({ depositAmount: 1 }), null), { code: "VALIDATION" });
-  assert.throws(() => validateRevenue(revenue({ depositReceivedOn: "2026-01-01" }), null), {
-    code: "VALIDATION",
-  });
+  assert.equal(
+    validateRevenue(revenue({ depositReceivedOn: "2026-01-01" }), null).depositReceivedOn,
+    "2026-01-01",
+  );
   assert.equal(
     validateRevenue(revenue({ depositAmount: 1000 }), { amount: 1000 }).depositReceivedOn,
     null,

@@ -328,7 +328,7 @@ export function validateRevenue(input, quote) {
     "請先設定訂單金額，且訂金不可超過訂單金額。",
   );
   const depositReceivedOn = revenueDate(input.depositReceivedOn, "訂金收款日");
-  requireValue(deposit > 0 || !depositReceivedOn, "請先填寫已收訂金，或清除訂金收款日。");
+  // 指定階段轉換可先記錄收款日期；未填金額時不推定訂金，也不計入金額收益。
   return {
     depositAmount: deposit / 100,
     depositReceivedOn,
