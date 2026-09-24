@@ -20,6 +20,16 @@
       "revision": 2,
       "operationId": "4caf739f-9c92-4bb3-86ed-5ce469c4ef84",
       "deleted": true
+    },
+    {
+      "id": "chibi-29",
+      "category": "chibi",
+      "title": "小動圖 58",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "c1559ab3-fd1c-488e-97d4-c7f425c75c12",
+      "deleted": false
     }
   ]
 }
