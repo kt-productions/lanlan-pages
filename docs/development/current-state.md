@@ -11,7 +11,7 @@
 | 登入保存 | 固定 72 小時，不續期；localStorage 僅保存 token、版本及期限，OAuth 綁定與固定回程目的地暫放 sessionStorage。見[登入契約](../reference/order-api.md#登入與錯誤)。 |
 | 委託與進度 | 草稿第 4 版；六階段、公開暱稱／核可來源名稱、封存排除、已交稿按需載入；Orders 為 32 欄。見[API](../reference/order-api.md)。 |
 | 附件與通知 | 最多五檔、每檔 10 MiB、合計 45 MiB；私人 Drive、完整填單文字及圖片／文件通知，重試保留回執。見[附件維護](reference-attachments.md)。 |
-| 金額與收益 | TWD、共用整數分計算；系統預估、管理報價與收益分類分開。報表讀完整快照，不是歷史現金流水帳。見[收益規格](../reference/revenue-report.md)。 |
+| 金額與收益 | TWD、共用整數分計算；已交稿有正式金額即納入累計真實收益，日期只供年度／月份分類，無日期另列已認列明細。報表讀完整快照，不是歷史現金流水帳。見[收益規格](../reference/revenue-report.md)。 |
 | 作品管理 | 私人草稿、PNG／JPG／GIF／MP4、main 保存核對、production 發布；「儲存並發布」不要求勾選，保留 API 相容旗標及清理條件。見[作品服務](artwork-service.md)。 |
 | 發布 | main 驗證、production 部署；GAS 獨立更新，前端與後端變更須安排相容順序。見[開發指南](setup.md#github-pages-發布)。 |
 

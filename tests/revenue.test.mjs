@@ -118,6 +118,51 @@ test("封存與擱置保留金額，各委託類型都計入；只有舊取消�
   assert.equal(report.excludedCancelled, 1);
 });
 
+test("已交稿無日期仍認列累計真實收益，切換年度不遺漏或重複，也不偽造月份", () => {
+  const orders = [
+    fixture("無日期", 1300, "delivered", { depositAmount: 300 }),
+    fixture("舊狀態零元", 0, "completed"),
+    fixture("去年", 1400.25, "delivered", { deliveredOn: "2025-12-31" }),
+    fixture("今年", 2500, "delivered", { deliveredOn: "2026-01-01" }),
+    fixture("未報價", null, "delivered"),
+    fixture("未完成", 9999, "queued"),
+    fixture("取消", 8888, "cancelled"),
+  ];
+  orders[0].isArchived = true;
+  const before = structuredClone(orders);
+  for (const year of [2025, 2026, 2027]) {
+    const report = buildRevenueReport(orders, year);
+    assert.equal(report.realized.cents, 520025);
+    assert.equal(report.realized.entries.length, 4);
+    assert.equal(report.realized.entries.find((entry) => entry.orderId === "無日期").date, null);
+    assert.equal(report.undated.realized, 130000);
+    assert.equal(report.undated.entries.filter((entry) => entry.kind === "realized").length, 2);
+    assert.equal(report.undated.temporary, 0);
+    assert.equal(report.annual.realized, year === 2025 ? 140025 : year === 2026 ? 250000 : 0);
+    assert.equal(
+      report.months.reduce((sum, month) => sum + month.realized, 0),
+      report.annual.realized,
+    );
+    assert.equal(report.missingQuotes.length, 1);
+  }
+  assert.deepEqual(orders, before);
+});
+
+test("補填交稿日只改月份歸屬，退回未交稿才移出累計真實收益", () => {
+  const order = fixture("歷史單", 1000, "delivered", { depositAmount: 300 });
+  assert.equal(buildRevenueReport([order], 2026).realized.cents, 100000);
+  order.details.revenue.deliveredOn = "2026-03-01";
+  const dated = buildRevenueReport([order], 2026);
+  assert.equal(dated.realized.cents, 100000);
+  assert.equal(dated.undated.realized, 0);
+  assert.equal(dated.months[2].realized, 100000);
+  order.status = "finalizing";
+  const reopened = buildRevenueReport([order], 2026);
+  assert.equal(reopened.realized.cents, 0);
+  assert.equal(reopened.undated.temporary, 30000);
+  assert.equal(reopened.undated.unfinished, 70000);
+});
+
 test("舊交稿日期只取最後一次進入交稿的歷史事件，台灣月底與跨年正確", () => {
   const order = fixture("A", 100, "delivered");
   order.history = [
@@ -310,6 +355,8 @@ test("報表一次涵蓋超過看板一頁的完整資料，不受已交稿載�
   const report = app.invoke("admin.revenue", { year: 2026 }, token).data;
   assert.equal(report.orderCount, 31);
   assert.equal(report.annual.realized, 3100);
+  assert.equal(report.realized.cents, 3100);
+  assert.equal(report.realized.entries.length, 31);
   assert.equal(app.invoke("admin.list", { delivery: "active" }, token).data.orders.length, 0);
   assert.equal(app.writes.length, writes);
 });

@@ -41,6 +41,11 @@
         </div>
         <p id="revenue-status" role="status"></p>
         <div id="revenue-content" hidden>
+          <dl id="revenue-lifetime" class="revenue-summary revenue-lifetime"></dl>
+          <p class="field-hint">
+            已交稿的訂單全額計入累計真實收益，包含未填交稿日的訂單。日期只用於下方年度與月份分類。
+          </p>
+          <h3 id="revenue-year-heading"></h3>
           <dl id="revenue-summary" class="revenue-summary"></dl>
           <p class="field-hint">
             總計包含真實收益、暫收訂金與未完成餘額，不代表全部已收款。所有金額為新台幣。
@@ -48,13 +53,13 @@
           <details class="revenue-rules">
             <summary>計算方式與日期</summary>
             <p>
-              已交稿的訂單全額按實際交稿日列為真實收益；未交稿的已收訂金按收款日列為暫時收益，其餘金額按預計交稿日列為未完成收益。交稿後，訂金與餘額會轉入交稿月份的全額，不重複計入。
+              已交稿的訂單全額列為真實收益，不要求交稿日期；有日期時再歸入對應月份。未交稿的已收訂金按收款日列為暫時收益，其餘金額按預計交稿日列為未完成收益。交稿後只計全額，不再重複計入訂金與餘額。
             </p>
             <p>
               這是依目前訂單狀態重算的報表，過去月份可能隨交稿或金額修改而調整，並非歷史收款流水帳。包含所有委託類型及封存訂單，不受看板篩選影響；舊取消單排除。只使用已設定的訂單金額，系統預估不列入收益。
             </p>
             <p>
-              日期採台灣時間。舊資料無法確認日期時列在待補資料，不以建立日或最後修改日代替；缺少日期的金額不列入月份及年度合計。
+              日期採台灣時間。已交稿但無法確認日期的金額列為「未分月份的真實收益」，已包含在累計真實收益中；不以建立日或最後修改日代替，也不任意歸入某個年度。未交稿的訂金與餘額缺少日期時仍列待補資料。
             </p>
           </details>
           <div
@@ -83,7 +88,9 @@
             <label
               >查看範圍
               <select id="revenue-month" aria-label="收益明細範圍">
+                <option value="realized">真實收益（所有年度）</option>
                 <option value="all">全年明細</option>
+                <option value="undated">未分月份的真實收益（已認列）</option>
                 <option value="missing">待補資料（所有年度）</option>
               </select>
             </label>
@@ -212,7 +219,7 @@
               </div>
               <p class="field-hint">
                 沒有收訂金請填 0；不從工作階段或 Trello
-                標籤推定已付款。訂金不可超過訂單金額。改為已交稿時，未填實際日期會自動記錄當天；歷史訂單可補填正確日期。缺少日期的金額列為待補資料。
+                標籤推定已付款。訂金不可超過訂單金額。改為已交稿時，未填實際日期會自動記錄當天；歷史已交稿訂單即使沒有日期，仍計入累計真實收益，日期僅供月份分類。
               </p>
             </fieldset>
             <fieldset>

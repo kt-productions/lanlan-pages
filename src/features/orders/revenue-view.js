@@ -25,18 +25,29 @@ export function setupRevenueReport({ api, getToken, report, openOrder }) {
   function renderDetails() {
     if (!snapshot) return;
     const missing = scope.value === "missing";
-    const entries = missing
-      ? [
-          ...snapshot.undated.entries,
-          ...snapshot.missingQuotes.map((order) => ({ ...order, kind: "missingQuote" })),
-        ]
-      : snapshot.entries.filter(
-          (entry) =>
-            scope.value === "all" || Number(entry.date.slice(5, 7)) === Number(scope.value),
-        );
-    $("revenue-detail-heading").textContent = missing
-      ? "待補資料（所有年度）"
-      : `${snapshot.year} 年${scope.value === "all" ? "全年" : ` ${scope.value} 月`}訂單明細`;
+    const realized = scope.value === "realized";
+    const undated = scope.value === "undated";
+    let entries;
+    let label;
+    if (missing) {
+      entries = [
+        ...snapshot.undated.entries.filter((entry) => entry.kind !== "realized"),
+        ...snapshot.missingQuotes.map((order) => ({ ...order, kind: "missingQuote" })),
+      ];
+      label = "待補資料（所有年度）";
+    } else if (realized) {
+      entries = snapshot.realized.entries;
+      label = "真實收益明細（所有年度）";
+    } else if (undated) {
+      entries = snapshot.undated.entries.filter((entry) => entry.kind === "realized");
+      label = "未分月份的真實收益（已認列）";
+    } else {
+      entries = snapshot.entries.filter(
+        (entry) => scope.value === "all" || Number(entry.date.slice(5, 7)) === Number(scope.value),
+      );
+      label = `${snapshot.year} 年${scope.value === "all" ? "全年" : ` ${scope.value} 月`}訂單明細`;
+    }
+    $("revenue-detail-heading").textContent = label;
     $("revenue-details").replaceChildren(
       ...entries.map((entry) => {
         const row = element("div", "", "revenue-detail");
@@ -63,7 +74,7 @@ export function setupRevenueReport({ api, getToken, report, openOrder }) {
             "p",
             entry.kind === "missingQuote"
               ? "設定金額後才能計入報表"
-              : `${REVENUE_KINDS[entry.kind]} · ${entry.date || "待補日期"}`,
+              : `${REVENUE_KINDS[entry.kind]} · ${entry.date || (entry.kind === "realized" ? "未填交稿日，已認列" : "待補日期")}`,
           ),
         );
         row.append(info, value);
@@ -111,11 +122,32 @@ export function setupRevenueReport({ api, getToken, report, openOrder }) {
       }),
     );
     year.value = String(snapshot.year);
+    $("revenue-lifetime").replaceChildren(
+      ...[
+        ["realized", "累計真實收益（所有年度）", snapshot.realized.cents],
+        ["undated", "其中未填交稿日（已認列）", snapshot.undated.realized],
+      ].map(([value, label, cents]) => {
+        const item = element("div", "", "revenue-metric revenue-realized");
+        const term = element("dt");
+        const select = element("button", label, "revenue-order-link");
+        select.type = "button";
+        select.addEventListener("click", () => {
+          scope.value = value;
+          renderDetails();
+          scope.focus({ preventScroll: true });
+          $("revenue-detail-heading").scrollIntoView({ block: "nearest" });
+        });
+        term.append(select);
+        item.append(term, element("dd", money(cents)));
+        return item;
+      }),
+    );
+    $("revenue-year-heading").textContent = `${snapshot.year} 年按日期統計`;
     $("revenue-caption").textContent = `${snapshot.year} 年每月收益 · 點選月份查看訂單`;
     $("revenue-summary").replaceChildren(
       ...[
         ["total", `${snapshot.year} 年度總計（含未完成）`],
-        ["realized", "真實收益 · 已交稿"],
+        ["realized", "年度真實收益 · 已交稿"],
         ["temporary", "暫時收益 · 訂金"],
         ["unfinished", "未完成收益 · 餘額"],
       ].map(([key, label]) => {
@@ -129,7 +161,7 @@ export function setupRevenueReport({ api, getToken, report, openOrder }) {
     );
     $("revenue-total").replaceChildren(totalRow("全年合計", snapshot.annual));
     $("revenue-missing").textContent =
-      `所有年度待補：${snapshot.missingQuotes.length} 筆訂單未設定金額；${snapshot.undated.entries.length} 筆收益缺日期，共 ${money(snapshot.undated.total)}，均未列入本年度合計。`;
+      `所有年度待補：${snapshot.missingQuotes.length} 筆訂單未設定金額；${snapshot.undated.entries.filter((entry) => entry.kind !== "realized").length} 筆訂金或餘額缺日期，未列入年度合計。已交稿且已設定金額的訂單全部計入累計真實收益，未填交稿日也已認列。`;
     renderDetails();
     $("revenue-content").hidden = false;
   }
@@ -199,10 +231,21 @@ export function setupRevenueReport({ api, getToken, report, openOrder }) {
       year.disabled = $("revenue-refresh").disabled = false;
       selectedYear = Number(taipeiDate(new Date().toISOString()).slice(0, 4));
       year.replaceChildren();
-      scope.value = "all";
-      for (const id of ["revenue-summary", "revenue-months", "revenue-total", "revenue-details"])
+      scope.value = "realized";
+      for (const id of [
+        "revenue-lifetime",
+        "revenue-summary",
+        "revenue-months",
+        "revenue-total",
+        "revenue-details",
+      ])
         $(id).replaceChildren();
-      for (const id of ["revenue-status", "revenue-missing", "revenue-caption"])
+      for (const id of [
+        "revenue-status",
+        "revenue-missing",
+        "revenue-caption",
+        "revenue-year-heading",
+      ])
         $(id).textContent = "";
       $("revenue-detail-heading").textContent = "訂單明細";
       $("revenue-content").hidden = true;

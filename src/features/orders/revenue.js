@@ -77,9 +77,15 @@ export function buildRevenueReport(orders, year, now = new Date().toISOString())
   ].sort((a, b) => b - a);
   const months = Array.from({ length: 12 }, (_, index) => ({ month: index + 1, ...totals() }));
   const annual = totals();
+  // 已交稿即認列；日期只決定年度／月份，不能讓忘記記錄日期的收入消失。
+  const realized = { cents: 0, entries: [] };
   const undated = { ...totals(), entries: [] };
   const selected = [];
   for (const entry of entries) {
+    if (entry.kind === "realized") {
+      realized.cents += entry.cents;
+      realized.entries.push(entry);
+    }
     if (!entry.date) {
       undated[entry.kind] += entry.cents;
       undated.total += entry.cents;
@@ -101,6 +107,7 @@ export function buildRevenueReport(orders, year, now = new Date().toISOString())
     generatedAt: now,
     months,
     annual,
+    realized,
     entries: selected,
     undated,
     missingQuotes,

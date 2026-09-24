@@ -24,7 +24,7 @@
 | `auth.exchange` | 公開 | `ticket` 與原分頁 `browserKey`；只建立一次工作階段，在票證原期限內可重取同一 token、Telegram ID、到期時間。 |
 | `admin.list` | 管理員 | `offset`、選填 `delivery`；取得指定交稿範圍的完整訂單、通知狀態與歷史。 |
 | `admin.get` | 管理員 | `orderId`；取得單筆最新完整訂單，供收益報表開啟編輯。 |
-| `admin.revenue` | 管理員 | 選填整數 `year`；一次讀完整訂單，回傳每月及全年收益、明細與待補資料。金額單位為整數分，規則見[收益報表](revenue-report.md)。 |
+| `admin.revenue` | 管理員 | 選填整數 `year`；一次讀完整訂單，回傳所有年度累計真實收益 `realized`（已交稿不要求日期）、每月及全年收益、明細與待補資料。金額單位為整數分，規則見[收益報表](revenue-report.md)。 |
 | `admin.attachment` | 管理員 | `orderId`、`index`；只從伺服器訂單取得附件 ID，回傳 `name`、`type`、`size`、`base64`。不接受任意 Drive ID。 |
 | `admin.update` | 管理員 | `orderId`、`revision`、完整 `details`、`status`、boolean `isRush`、boolean `isOnHold`、選填 boolean `isArchived`（新版必傳，舊分頁省略時保留目前值）、`publicNote`、`adminNote`。歷史匯入可更新工作狀態、旗標、備註及獨立 `quote`／`revenue` 欄位；忽略客戶端 `details` 並保留既有來源內容。不再接受百分比或可見性作為更新欄位。 |
 | `admin.retryNotification` | 管理員 | `orderId`；重試收件通知。 |

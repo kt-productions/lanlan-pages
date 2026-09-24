@@ -32,6 +32,9 @@
   margin: 24px 0 12px;
   border-block: 1px solid var(--line);
 }
+.revenue-lifetime {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .revenue-metric {
   padding: 22px 16px;
   min-width: 0;
