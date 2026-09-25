@@ -194,6 +194,8 @@ export function publicOrder(order) {
     publicNote: order.publicVisible === false ? "" : order.publicNote,
     createdAt: source?.createdAt || order.createdAt,
     updatedAt: order.updatedAt,
+    // 排序時間獨立於本站修改紀錄；未公開來源名稱的匯入單也維持相同順序。
+    sortUpdatedAt: orderSortUpdatedAt(order),
     ...(!source
       ? { displayTitle: order.nickname || order.details?.nickname || order.orderId }
       : {}),
@@ -224,7 +226,23 @@ export function trelloCreatedAt(cardId) {
     : null;
 }
 
-/** 已交稿按最後更新由新到舊；未交稿維持原始建立時間由舊到新。 */
+/** 匯入本身不是委託更新；尚未在本站修改時沿用來源最後活動，不改寫原欄位。 */
+function orderSortUpdatedAt(order) {
+  const source = orderSource(order);
+  const imported = Date.parse(source?.importedAt || order.importedAt);
+  const updated = Date.parse(order.updatedAt);
+  const lastActivity = source?.lastActivity || order.trelloUpdatedAt;
+  if (
+    Number.isFinite(imported) &&
+    updated === imported &&
+    Number.isFinite(Date.parse(lastActivity))
+  ) {
+    return lastActivity;
+  }
+  return order.updatedAt;
+}
+
+/** 已交稿按實際更新由新到舊；未交稿維持原始建立時間由舊到新。 */
 export function compareBoardOrders(a, b) {
   const firstDelivered = orderWorkflow(a).status === "delivered";
   const secondDelivered = orderWorkflow(b).status === "delivered";
@@ -233,10 +251,10 @@ export function compareBoardOrders(a, b) {
   const timestamp = (order) => {
     const value = Date.parse(
       firstDelivered
-        ? order.updatedAt
+        ? order.sortUpdatedAt ?? orderSortUpdatedAt(order)
         : orderSource(order)?.createdAt || order.trelloCreatedAt || order.createdAt,
     );
-    // 無有效時間者放在所屬範圍最後，不把建立日或來源活動日當成最後更新。
+    // 無有效時間者放在所屬範圍最後，不把建立日當成最後更新。
     return Number.isFinite(value) ? (firstDelivered ? -value : value) : Infinity;
   };
   const first = timestamp(a);

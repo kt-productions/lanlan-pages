@@ -33,7 +33,9 @@
 
 `progress.list` 與 `admin.list` 均接受 `delivery: "active" | "delivered" | "all"`。`active` 排除已交稿，`delivered` 只回傳已交稿；省略時沿用 `all`，相容尚未重新整理的舊前端。舊 `completed` 狀態先對應為 `delivered`，交稿範圍由伺服器在分頁及計算件數前套用。
 
-分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的六階段件數）。公開與管理清單先對完整資料篩選及排序，再分頁：未交稿按原始建立時間由舊到新（Trello 採原卡片建立時間），已交稿按本站 `updatedAt` 由新到舊；混合範圍先列未交稿、再列已交稿。同時間按編號固定排序，缺少或無效時間者放在所屬範圍最後，不以其他日期替代。兩個看板篩選及補載後共用相同排序。封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 保留所選交稿範圍中的封存資料，管理畫面只有 `flag=archived` 篩選顯示封存項目。
+分頁回傳 `orders`、`nextOffset`、`total`（符合條件總筆數）；null 表示沒有更多。管理 API 固定每頁 30 筆，公開頁預設 30、可要求最多 200，另回傳 `stageCounts`（完整篩選結果的六階段件數）。公開與管理清單先對完整資料篩選及排序，再分頁：未交稿按原始建立時間由舊到新（Trello 採原卡片建立時間），已交稿按 `sortUpdatedAt` 由新到舊；混合範圍先列未交稿、再列已交稿。同時間按編號固定排序，缺少或無效時間者放在所屬範圍最後。兩個看板篩選及補載後共用相同排序。封存委託（含來源封存）由伺服器先排除，不納入公開件數、分頁或任何篩選。公開不支援封存篩選。管理 API 保留所選交稿範圍中的封存資料，管理畫面只有 `flag=archived` 篩選顯示封存項目。
+
+`sortUpdatedAt` 是讀取時計算的排序時間，通常等於 `updatedAt`；Trello 的 `updatedAt` 仍等於 `source.importedAt` 且 `source.lastActivity` 有效時，改採來源最後活動時間。匯入不視為委託更新；後續在本站修改則以本站時間排序。不改寫原始時間、Sheets 或歷史，也不以建立日取代無效時間。公開投影即使不含來源名稱，仍提供此單一時間供一致排序；前端也相容尚無 `sortUpdatedAt` 的舊回應，利用已提供的 `trelloUpdatedAt`／`importedAt` 計算。先部署 GAS，再發布前端。
 
 兩個看板初次開啟或重新載入時只要求 `delivery: "active"`，完整讀完此範圍所有分頁後才更新畫面。已交稿欄標示「未載入」，欄內提供「載入已交稿」按鈕；兩頁皆移除工作階段選單，由該按鈕補載。按下後只要求 `delivery: "delivered"`，完成所有分頁才合併到現有快照，按編號去重並使用最新回應。同一頁後續搜尋、類型／旗標篩選沿用已載入快照，不重抓已交稿；重新載入會恢復未交稿範圍。尚未補載時，搜尋提示明確排除已交稿，不將未載入件數顯示為零。管理員將未交稿改為已交稿時，若尚未補載，關閉編輯視窗並移出目前清單。
 
@@ -78,7 +80,7 @@ Script Properties 的 `REFERENCE_UPLOAD_<requestId>` 保存內容雜湊、聯絡
 | 通知 | `notificationStatus`、`notificationAttempts`、`notificationError`、`notificationAt`；同日多人通知更新另於第 30 欄加入 `notificationRecipientsJson`。 |
 | 可追溯性 | `lastEditor`、`historyJson` |
 
-新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 與 `isArchived` 為 false。新表單的公開回應包含 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`isArchived`、`publicNote`、`createdAt`、`updatedAt`，以及取自暱稱的 `displayTitle`；不含聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
+新工作初始 `queued`，`isRush` 取收件需求的 `details.rush === true`，`isOnHold` 與 `isArchived` 為 false。新表單的公開回應包含 `orderId`、`service`、`status`、`isRush`、`isOnHold`、`isArchived`、`publicNote`、`createdAt`、`updatedAt`、`sortUpdatedAt`，以及取自暱稱的 `displayTitle`；不含聯絡、素材、金額、歷史或內部備註。經使用者確認公開名稱的 Trello 匯入單另外有 `displayTitle`、`sourceArchived`、`trelloCreatedAt`、`trelloUpdatedAt`、`importedAt`；不輸出付款標籤、附件或完整來源。編號只作工作識別，不是查詢密碼；送件回執連到完整看板。
 
 | 工作階段 | 代碼 |
 | --- | --- |

@@ -112,6 +112,7 @@ test("公開投影不含聯絡資訊、參考素材、內部備註與通知資�
     "publicNote",
     "createdAt",
     "updatedAt",
+    "sortUpdatedAt",
     "displayTitle",
   ]);
   assert.ok(!JSON.stringify(projected).includes("private"));
@@ -662,6 +663,7 @@ test("公開所有工作的篩選先於分頁，包含舊隱藏工作與已交�
     "publicNote",
     "createdAt",
     "updatedAt",
+    "sortUpdatedAt",
     "displayTitle",
   ]);
   assert.equal(

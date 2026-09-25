@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { backend, submission } from "./helpers/apps-script.mjs";
 import { prepareTrelloImport } from "../scripts/lib/trello-import.mjs";
 import { filterBoard } from "../src/features/orders/board.js";
+import { loadBoardOrders } from "../src/features/orders/board-data.js";
 import { trelloCreatedAt } from "../src/features/orders/contract.js";
 
 function fixture(count = 2) {
@@ -62,6 +63,82 @@ test("Trello Card ID 換算秒級建立時間；讀取舊匯入補時間但不�
   assert.equal(publicOrder.trelloUpdatedAt, data.cards[0].source.lastActivity);
   assert.equal(publicOrder.importedAt, publicOrder.updatedAt);
   assert.equal(JSON.stringify(app.rows), before);
+});
+
+test("同批匯入的歷史已交稿按來源活動時間排序，公開與管理跨頁補載一致", async () => {
+  const app = backend();
+  const data = batch(35);
+  for (const [index, card] of data.cards.entries()) {
+    card.status = "delivered";
+    card.source.archived = false;
+    card.source.publishTitle = index !== 1;
+    card.source.lastActivity = new Date(Date.UTC(2026, 7, 35 - index)).toISOString();
+  }
+  app.context.importTrelloOrders_(data);
+  const column = (key) => app.rows[0].indexOf(key);
+  const rows = app.rows.slice(1);
+  assert.equal(new Set(rows.map((row) => row[column("updatedAt")])).size, 1);
+  // 虛構來源刻意依最後活動降冪匯入；不能改成相同匯入時間下的編號順序。
+  const expected = rows.map((row) => row[column("orderId")]);
+  const before = JSON.stringify(app.rows);
+  for (const admin of [false, true]) {
+    const token = admin ? app.session() : "";
+    const orders = await loadBoardOrders(
+      async (action, payload, credential) => {
+        const result = app.invoke(action, { ...payload, limit: 30 }, credential);
+        assert.equal(result.ok, true);
+        return result.data;
+      },
+      { admin, token, delivery: "delivered" },
+    );
+    assert.deepEqual(orders.map((order) => order.orderId), expected);
+    assert.deepEqual(
+      filterBoard([...orders].reverse(), {}).orders.map((order) => order.orderId),
+      expected,
+    );
+    orders.forEach((order, index) => {
+      assert.equal(order.updatedAt, rows[index][column("updatedAt")]);
+      assert.equal(order.sortUpdatedAt, data.cards[index].source.lastActivity);
+      if (!admin) assert.equal(order.source, undefined);
+    });
+    if (!admin) {
+      assert.equal(orders[1].trelloUpdatedAt, undefined);
+      assert.equal(orders[1].displayTitle, undefined);
+    }
+  }
+  assert.equal(JSON.stringify(app.rows), before);
+  const token = app.session();
+  const old = app
+    .invoke("admin.list", { delivery: "delivered", offset: 30 }, token)
+    .data.orders.at(-1);
+  const updated = app.invoke("admin.update", { ...old, publicNote: "虛構更新" }, token);
+  assert.equal(updated.ok, true);
+  assert.equal(updated.data.sortUpdatedAt, updated.data.updatedAt);
+  assert.equal(updated.data.source.lastActivity, old.source.lastActivity);
+  for (const action of ["progress.list", "admin.list"]) {
+    const orders = app.invoke(action, { delivery: "delivered", limit: 200 }, token).data.orders;
+    assert.equal(orders[0].orderId, old.orderId);
+    assert.equal(filterBoard([...orders].reverse(), {}).orders[0].orderId, old.orderId);
+  }
+});
+
+test("舊版公開投影可用來源時間補排，缺少有效來源時間則保留本站更新時間", () => {
+  const importedAt = "2026-09-23T00:00:00Z";
+  const orders = [
+    { orderId: "OLD", updatedAt: importedAt, importedAt, trelloUpdatedAt: "2026-08-01" },
+    { orderId: "RECENT", updatedAt: "2026-09-25", importedAt, trelloUpdatedAt: "2026-07-01" },
+    { orderId: "INVALID", updatedAt: importedAt, importedAt, trelloUpdatedAt: "invalid" },
+    {
+      orderId: "NEWER",
+      updatedAt: "2026-09-23T08:00:00+08:00",
+      importedAt,
+      trelloUpdatedAt: "2026-09-01",
+    },
+  ].map((order) => ({ ...order, status: "delivered" }));
+  assert.deepEqual(
+    filterBoard(orders, {}).orders.map((order) => order.orderId),
+    ["RECENT", "INVALID", "NEWER", "OLD"],
+  );
 });
 
 test("完整看板快照可立即篩選；空結果與雙旗標的欄位件數一致", () => {
