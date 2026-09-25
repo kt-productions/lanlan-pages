@@ -196,11 +196,13 @@ test("全資料件數、類型篩選及分頁排序；公開保留已核可名�
     ...page.orders,
     ...app.invoke("progress.list", { offset: 200, limit: 200 }).data.orders,
   ];
+  const active = all.filter((order) => order.status !== "delivered");
   assert.deepEqual(
-    all.map((order) => order.orderId),
-    all.map((order) => order.orderId).sort(),
-    "建立時間相同時以委託編號穩定排序，不再採用 Trello 欄位位置",
+    active.map((order) => order.orderId),
+    active.map((order) => order.orderId).sort(),
+    "未交稿建立時間相同時以委託編號穩定排序，不再採用 Trello 欄位位置",
   );
+  assert.equal(all.at(-1).status, "delivered", "混合清單的已交稿排在未交稿之後");
   assert.equal(all.find((order) => order.service === "animation").displayTitle, "=虛構同名委託");
   assert.equal(all.filter((order) => order.displayTitle === undefined).length, 1);
   assert.equal(page.orders[0].source, undefined);

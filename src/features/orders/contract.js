@@ -224,13 +224,20 @@ export function trelloCreatedAt(cardId) {
     : null;
 }
 
-/** 兩個看板共用建立時間排序；匯入日期與後續修改都不改變原委託先後。 */
-export function compareOrderAge(a, b) {
+/** 已交稿按最後更新由新到舊；未交稿維持原始建立時間由舊到新。 */
+export function compareBoardOrders(a, b) {
+  const firstDelivered = orderWorkflow(a).status === "delivered";
+  const secondDelivered = orderWorkflow(b).status === "delivered";
+  // 混合快照先分交稿範圍，避免兩種時間方向交錯造成不一致的比較結果。
+  if (firstDelivered !== secondDelivered) return firstDelivered ? 1 : -1;
   const timestamp = (order) => {
     const value = Date.parse(
-      orderSource(order)?.createdAt || order.trelloCreatedAt || order.createdAt,
+      firstDelivered
+        ? order.updatedAt
+        : orderSource(order)?.createdAt || order.trelloCreatedAt || order.createdAt,
     );
-    return Number.isFinite(value) ? value : Infinity;
+    // 無有效時間者放在所屬範圍最後，不把建立日或來源活動日當成最後更新。
+    return Number.isFinite(value) ? (firstDelivered ? -value : value) : Infinity;
   };
   const first = timestamp(a);
   const second = timestamp(b);

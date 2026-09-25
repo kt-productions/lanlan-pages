@@ -14,7 +14,7 @@ const contract = backendSource(await read("src/features/orders/contract.js"));
 const attachments = backendSource(await read("src/features/orders/attachment-contract.js"));
 const revenue = backendSource(await read("src/features/orders/revenue.js"));
 const workflowDates = backendSource(await read("src/features/orders/workflow-dates.js"));
-const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\n${revenue}\n${workflowDates}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareOrderAge, attachmentManifest, attachmentFileError, formatPriceRange, taipeiDate, buildRevenueReport, workflowDateDefaults, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
+const core = `var Core_ = (() => {\n${pricing}\n${attachments}\n${contract}\n${revenue}\n${workflowDates}\nreturn { ORDER_STATUSES, OrderError, requireValue, validateSubmission, validateUpdate, publicOrder, orderWorkflow, orderSource, compareBoardOrders, attachmentManifest, attachmentFileError, formatPriceRange, taipeiDate, buildRevenueReport, workflowDateDefaults, ATTACHMENT_MAX_BYTES, ATTACHMENT_MAX_FILES, ATTACHMENT_TYPES, API_MAX_REQUEST_CHARS };\n})();\n`;
 await writeFile(path.join(out, "Core.gs"), core);
 const artworks = backendSource(await read("src/features/artworks/contract.js"));
 await writeFile(

@@ -307,7 +307,7 @@ function pageOrders_(payload, admin) {
       stageCounts[Core_.orderWorkflow(order).status] += 1;
     });
   }
-  orders.sort(Core_.compareOrderAge);
+  orders.sort(Core_.compareBoardOrders);
   const page = orders.slice(offset, offset + limit);
   return {
     orders: page.map(admin ? adminOrder_ : Core_.publicOrder),

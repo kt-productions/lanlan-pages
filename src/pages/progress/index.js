@@ -33,7 +33,7 @@ function renderBoard(message = "尚未取得進度") {
   );
   if (!hasSnapshot) return;
   status.textContent = result.total
-    ? `共 ${result.total} 件${deliveredLoaded ? "" : "未交稿"}委託 · 依照委託順序排列`
+    ? `共 ${result.total} 件${deliveredLoaded ? "" : "未交稿"}委託 · 未交稿依委託順序排列${deliveredLoaded ? "；已交稿依最後更新由新到舊排列" : ""}`
     : "目前沒有符合條件的委託，可切換其他類型或附加狀態";
   if (!deliveredLoaded) status.textContent += "；已交稿尚未載入。";
 }

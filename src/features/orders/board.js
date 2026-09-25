@@ -1,4 +1,4 @@
-import { ORDER_STATUSES, orderWorkflow, compareOrderAge } from "./contract.js";
+import { ORDER_STATUSES, orderWorkflow, compareBoardOrders } from "./contract.js";
 
 /** 僅對已完整載入的快照使用；不把部分分頁誤當完整看板。 */
 export function filterBoard(snapshot, { service = "", status = "", flag = "", search = "" }) {
@@ -16,7 +16,7 @@ export function filterBoard(snapshot, { service = "", status = "", flag = "", se
             .toLowerCase()
             .includes(needle)),
     )
-    .sort(compareOrderAge);
+    .sort(compareBoardOrders);
   const stageCounts = Object.fromEntries(Object.keys(ORDER_STATUSES).map((key) => [key, 0]));
   for (const order of orders) stageCounts[order.status] += 1;
   return { orders, stageCounts, total: orders.length, nextOffset: null };
