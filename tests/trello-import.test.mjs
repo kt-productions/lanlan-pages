@@ -5,7 +5,7 @@ import { backend, submission } from "./helpers/apps-script.mjs";
 import { prepareTrelloImport } from "../scripts/lib/trello-import.mjs";
 import { filterBoard } from "../src/features/orders/board.js";
 import { loadBoardOrders } from "../src/features/orders/board-data.js";
-import { trelloCreatedAt } from "../src/features/orders/contract.js";
+import { publicOrder, trelloCreatedAt } from "../src/features/orders/contract.js";
 
 function fixture(count = 2) {
   const board = {
@@ -65,7 +65,7 @@ test("Trello Card ID 換算秒級建立時間；讀取舊匯入補時間但不�
   assert.equal(JSON.stringify(app.rows), before);
 });
 
-test("同批匯入的歷史已交稿按來源活動時間排序，公開與管理跨頁補載一致", async () => {
+test("同批匯入及補齊舊資料後，歷史已交稿的公開與管理跨頁排序一致", async () => {
   const app = backend();
   const data = batch(35);
   for (const [index, card] of data.cards.entries()) {
@@ -78,6 +78,27 @@ test("同批匯入的歷史已交稿按來源活動時間排序，公開與管�
   const column = (key) => app.rows[0].indexOf(key);
   const rows = app.rows.slice(1);
   assert.equal(new Set(rows.map((row) => row[column("updatedAt")])).size, 1);
+  for (const row of rows) {
+    const importedAt = "2026-09-23T00:00:00Z";
+    const source = JSON.parse(row[column("sourceJson")]);
+    row[column("sourceJson")] = JSON.stringify({ ...source, importedAt });
+    const history = [{ at: importedAt, action: "imported", revision: 1 }];
+    const state = Object.fromEntries(app.rows[0].map((key, index) => [key, row[index]]));
+    state.details = JSON.parse(state.detailsJson);
+    for (const [key, value, at] of [
+      ["quote", { currency: "TWD", amount: 1200, items: null }, "2026-09-24T01:00:00Z"],
+      ["revenue", { depositAmount: 0, depositReceivedOn: null,
+        expectedDeliveryOn: null, deliveredOn: "2026-08-01" }, "2026-09-24T02:00:00Z"],
+    ]) {
+      history.push({ at, action: "updated", revision: history.length + 1,
+        before: structuredClone(state) });
+      state.details[key] = value;
+    }
+    row[column("detailsJson")] = JSON.stringify(state.details);
+    row[column("historyJson")] = JSON.stringify(history);
+    row[column("updatedAt")] = history.at(-1).at;
+    row[column("revision")] = 3;
+  }
   // 虛構來源刻意依最後活動降冪匯入；不能改成相同匯入時間下的編號順序。
   const expected = rows.map((row) => row[column("orderId")]);
   const before = JSON.stringify(app.rows);
@@ -120,6 +141,46 @@ test("同批匯入的歷史已交稿按來源活動時間排序，公開與管�
     assert.equal(orders[0].orderId, old.orderId);
     assert.equal(filterBoard([...orders].reverse(), {}).orders[0].orderId, old.orderId);
   }
+});
+
+test("歷史帳務補齊不蓋過真正更新；混合編輯、原生訂單及不完整歷史保留更新時間", () => {
+  const importedAt = "2026-09-23T00:00:00Z";
+  const changedAt = "2026-09-24T01:00:00Z";
+  const backfilledAt = "2026-09-24T02:00:00Z";
+  const source = { kind: "trello", importedAt, lastActivity: "2026-09-01T00:00:00Z" };
+  const state = { status: "delivered", publicVisible: true, publicNote: "", adminNote: "",
+    isRush: false, isOnHold: false, isArchived: false, details: {} };
+  const imported = { at: importedAt, action: "imported" };
+  const edited = { at: changedAt, action: "updated", before: { ...state, status: "queued" } };
+  const backfilled = { at: backfilledAt, action: "updated",
+    before: state };
+  for (const [history, updatedAt, expected] of [
+    [[imported], importedAt, source.lastActivity],
+    [[imported, edited, backfilled], backfilledAt, changedAt],
+    [[imported, backfilled, { ...edited, at: "2026-09-25" }], "2026-09-25", "2026-09-25"],
+    [[imported, backfilled], backfilledAt, source.lastActivity],
+    [[imported, { ...backfilled, before: { ...state, publicNote: "舊說明" } }], backfilledAt, backfilledAt],
+    [[imported, { ...backfilled, before: { ...state, isRush: true } }], backfilledAt, backfilledAt],
+    [[imported, { ...backfilled, before: { ...state, details: { nickname: "舊內容" } } }], backfilledAt, backfilledAt],
+    [[imported, { ...backfilled, before: undefined }], backfilledAt, backfilledAt],
+    [[imported, backfilled], "2026-09-25", "2026-09-25"],
+    [[{ ...imported, at: "invalid" }, backfilled], backfilledAt, backfilledAt],
+    [[backfilled], backfilledAt, backfilledAt],
+    [[], backfilledAt, backfilledAt],
+  ]) {
+    for (const historyFields of [{ history }, { historyJson: JSON.stringify(history) }]) {
+      const order = { ...state, details: { quote: { amount: 1200 } }, source, updatedAt, ...historyFields };
+      const before = JSON.stringify(order);
+      const projected = publicOrder(order);
+      assert.equal(projected.sortUpdatedAt, expected);
+      assert.equal(projected.updatedAt, updatedAt);
+      assert.equal(projected.history, undefined);
+      assert.equal(projected.historyJson, undefined);
+      assert.equal(JSON.stringify(order), before);
+    }
+  }
+  assert.equal(publicOrder({ ...state, updatedAt: backfilledAt,
+    details: { quote: { amount: 1200 } }, history: [imported, backfilled] }).sortUpdatedAt, backfilledAt);
 });
 
 test("舊版公開投影可用來源時間補排，缺少有效來源時間則保留本站更新時間", () => {

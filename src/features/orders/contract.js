@@ -226,20 +226,57 @@ export function trelloCreatedAt(cardId) {
     : null;
 }
 
-/** 匯入本身不是委託更新；尚未在本站修改時沿用來源最後活動，不改寫原欄位。 */
+/** 舊委託補金額或收益日期不應移動卡片；進度、說明及其他內容的修改仍算更新。 */
+function isHistoricalAccountingUpdate(before, after) {
+  if (!before?.details || !after) return false;
+  const details = after.details || (after.detailsJson ? JSON.parse(after.detailsJson) : null);
+  if (!details) return false;
+  const previousWorkflow = orderWorkflow(before);
+  const nextWorkflow = orderWorkflow(after);
+  if (previousWorkflow.status !== "delivered" || nextWorkflow.status !== "delivered") return false;
+  if (Object.keys(previousWorkflow).some((key) => previousWorkflow[key] !== nextWorkflow[key])) {
+    return false;
+  }
+  if (["publicVisible", "publicNote", "adminNote"].some((key) => before[key] !== after[key])) {
+    return false;
+  }
+  const changed = [...new Set([...Object.keys(before.details), ...Object.keys(details)])].filter(
+    (key) => JSON.stringify(before.details[key]) !== JSON.stringify(details[key]),
+  );
+  return changed.length > 0 && changed.every((key) => key === "quote" || key === "revenue");
+}
+
+/** 匯入及歷史帳務補齊不代表委託更新；原始欄位與歷史仍完整保留。 */
 function orderSortUpdatedAt(order) {
   const source = orderSource(order);
   const imported = Date.parse(source?.importedAt || order.importedAt);
-  const updated = Date.parse(order.updatedAt);
+  let updatedAt = order.updatedAt;
+  const history = order.history || (order.historyJson ? JSON.parse(order.historyJson) : []);
+  let after = order;
+  for (let index = history.length - 1; index > 0; index -= 1) {
+    const event = history[index];
+    const previousAt = history[index - 1].at;
+    if (
+      event.action !== "updated" ||
+      !source ||
+      !isHistoricalAccountingUpdate(event.before, after) ||
+      Date.parse(event.at) !== Date.parse(updatedAt) ||
+      !Number.isFinite(Date.parse(previousAt))
+    ) {
+      break;
+    }
+    updatedAt = previousAt;
+    after = event.before;
+  }
   const lastActivity = source?.lastActivity || order.trelloUpdatedAt;
   if (
     Number.isFinite(imported) &&
-    updated === imported &&
+    Date.parse(updatedAt) === imported &&
     Number.isFinite(Date.parse(lastActivity))
   ) {
     return lastActivity;
   }
-  return order.updatedAt;
+  return updatedAt;
 }
 
 /** 已交稿按實際更新由新到舊；未交稿維持原始建立時間由舊到新。 */

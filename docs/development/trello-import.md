@@ -15,7 +15,7 @@
 - `details.recordType: "trello-import"` 表示歷史資料，與表單草稿分開。只保留類型、原名稱及未知的 `contact`／`referenceUrl`／`notes`／`estimatedPrice`（null）；不套用現行價格，不補造方案、授權或原始收件日期。
 - 2026-09-24 新增管理員手動金額，另存 `details.quote`，只提供新台幣總額、`items: null`；不從來源標籤推定金額，也不補造計價明細。原 `estimatedPrice` 仍為 null，編輯及清除均保留修改歷史。
 - `createdAt`、`updatedAt` 初值是匯入時間，來源最後活動另存 `source.lastActivity`，建立時間由 Card ID 換算為 `source.createdAt`；不把 Trello 活動時間冒充收件日期。
-- 已交稿排序不把匯入視為委託更新：`updatedAt` 與 `source.importedAt` 是同一時刻且來源活動時間有效時，讀取時計算 `sortUpdatedAt = source.lastActivity`；本站後續更新後則使用 `updatedAt`。不改寫 Sheets、原始時間或歷史，不持續同步 Trello。公開／管理回應都提供排序時間，未核可公開名稱者也不需輸出完整來源才能維持順序。
+- 已交稿排序不把匯入及純帳務補齊視為委託更新：讀取歷史往前略過只改金額／收益日期的已交稿編輯，保留真正的進度、旗標、說明及內容更新；回到匯入時間且來源活動有效時，`sortUpdatedAt = source.lastActivity`。歷史不完整時不猜測，詳見[排序契約](../reference/order-api.md)。不改寫 Sheets、原始時間或歷史，不持續同步 Trello。公開／管理回應都提供排序時間，未核可公開名稱者也不需輸出完整來源才能維持順序。
 
 ## 執行與核對
 
