@@ -1000,6 +1000,16 @@
       "revision": 1,
       "operationId": "f60e108f-8732-4ed1-962a-569ef625b281",
       "deleted": false
+    },
+    {
+      "id": "animation-24",
+      "category": "animation",
+      "title": "爍羽",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "d2404ed5-f7d2-4e43-812c-01754dc54caa",
+      "deleted": false
     }
   ]
 }
