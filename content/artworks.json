@@ -1040,6 +1040,16 @@
       "revision": 1,
       "operationId": "a0f0598a-803a-4244-a67d-00d5df393f92",
       "deleted": false
+    },
+    {
+      "id": "animation-20",
+      "category": "animation",
+      "title": "東雲 明",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "1ee5a292-9de2-415b-abfa-cbf4f06ec969",
+      "deleted": false
     }
   ]
 }
