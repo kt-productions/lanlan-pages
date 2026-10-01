@@ -842,6 +842,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "animation-38",
+      "category": "animation",
+      "title": "牛奶帕克",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "90e4e0eb-ed46-4917-a362-f64d166c413d",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 1920,
+        "height": 1080,
+        "duration": 3,
+        "src": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/original.mp4",
+        "poster": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/poster.png",
+        "playbackSrc": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/display.mp4",
+        "previewSrc": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/preview.mp4",
+        "source": {
+          "path": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/original.mp4",
+          "bytes": 3947599,
+          "sha256": "5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/original.mp4",
+            "bytes": 3947599,
+            "sha256": "5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad"
+          },
+          {
+            "path": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/poster.png",
+            "bytes": 375216,
+            "sha256": "ac129c5358977e542e388aaa9056aabd8b936950ee9a2ee7693048af0892bcde"
+          },
+          {
+            "path": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/preview.mp4",
+            "bytes": 274035,
+            "sha256": "3016ab4783073277df9057dc633f34e0d1643f7e3bcb7f68e1ae500e76df82f1"
+          },
+          {
+            "path": "assets/artworks/animation-38/5e8336f53c1902e336a8b448ec07e1260a07ac2b243c9d2a9fd0db63af734bad/display.mp4",
+            "bytes": 718781,
+            "sha256": "8c13f2102bcee89bd858c2a084a6ec311d22f9c6f7cbc7787c8b49570038cbe6"
+          }
+        ]
+      }
     }
   ]
 }
