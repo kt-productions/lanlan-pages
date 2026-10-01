@@ -950,6 +950,16 @@
       "revision": 1,
       "operationId": "ebbd3862-41d7-4886-a298-4927cac49683",
       "deleted": false
+    },
+    {
+      "id": "animation-30",
+      "category": "animation",
+      "title": "黑月影狼",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "81811e32-9fa5-43c8-a75b-4b177b667675",
+      "deleted": false
     }
   ]
 }
