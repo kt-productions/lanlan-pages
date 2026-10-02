@@ -92,6 +92,10 @@ Repository Variables：`ARTWORK_SITE_ID`、`ARTWORK_APP_ID`、`ARTWORK_INSTALLAT
 
 清理失敗不阻擋發布，後台保留待清理狀態。推送成功但回報失敗時，runner 由 Git commit 的 `Artwork-Operation` 找回 SHA。Drive 清理後再發生同步或部署失敗，從 Git 重試，不要求重新上傳。production 分歧時停止，不改寫歷史；處理差異後再重試。
 
+下載與轉檔的 Actions 日誌會分別標示區塊進度、原檔完整性、媒體資訊、影格解碼、縮圖及兩種影片轉檔。每塊核對版本、base64 格式及預期大小，下載完成再核對完整 SHA-256。錯誤摘要只輸出固定白名單說明與錯誤碼，例如 `API_RESULT`（Google 回應無法確認）、`DRIVE_DOWNLOAD`（Drive 區塊下載失敗）、`DOWNLOAD_CHUNK`（區塊格式／大小不符）、`DOWNLOAD_HASH`（完整雜湊不符）、`PROCESS_TIMEOUT`／`PROCESS_FAILED`（當前子程序逾時／失敗）；未知錯誤以 `UNKNOWN` 顯示，不公開後端原始例外、檔名、媒體 stderr 或結果票證。
+
+若舊紀錄只有「下載與轉檔未完成」，不能只靠這句判斷檔案損壞或轉檔失敗。更新 worker 到 main 後，從作品後台對原工作按重試，取得新版分階段日誌；重跑舊 Actions run 不保證使用新版 worker。此診斷調整不需要重新部署 GAS。
+
 ## 第一版限制與驗證
 
 - 每檔 10 MiB、每站待處理工作最多 30 件、暫存預留總量 200 MiB；同帳號其他 Drive 使用量仍可能影響上傳。草稿不自動到期刪除。

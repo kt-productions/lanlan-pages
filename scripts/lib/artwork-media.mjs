@@ -8,6 +8,7 @@ import {
   ARTWORK_TYPES,
 } from "../../src/features/artworks/contract.js";
 import { sha256 } from "./artworks.mjs";
+import { ArtworkWorkerError } from "./artwork-errors.mjs";
 
 export function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -16,7 +17,7 @@ export function run(command, args, options = {}) {
     let errors = "";
     const timer = setTimeout(() => {
       child.kill();
-      reject(new Error("處理逾時。"));
+      reject(new ArtworkWorkerError("PROCESS_TIMEOUT"));
     }, options.timeout || 300000);
     child.stdout?.on("data", (bytes) => {
       if (output.length < 2000000) output += bytes;
@@ -26,19 +27,22 @@ export function run(command, args, options = {}) {
     });
     child.once("error", (error) => {
       clearTimeout(timer);
-      reject(error);
+      reject(error.code === "ENOENT" ? new ArtworkWorkerError("PROCESS_MISSING") : error);
     });
     child.once("close", (code) => {
       clearTimeout(timer);
       code === 0
         ? resolve(output.trim())
-        : reject(new Error(`${command} 執行失敗（${code}）：${errors.slice(-2000)}`));
+        : reject(Object.assign(new ArtworkWorkerError("PROCESS_FAILED"), {
+            cause: new Error(`${command} 執行失敗（${code}）：${errors.slice(-2000)}`),
+          }));
     });
   });
 }
 
 /** 檢查實際解碼資訊後才轉檔，來源位元組永遠另存，不覆寫原檔。 */
-export async function processArtwork(bytes, file, id, directory) {
+export async function processArtwork(bytes, file, id, directory, progress = () => {}) {
+  progress("驗證媒體格式");
   artworkFile(file);
   artworkAssert(
     bytes.length === file.size && sha256(bytes) === file.sha256 && artworkMime(bytes) === file.type,
@@ -63,6 +67,7 @@ export async function processArtwork(bytes, file, id, directory) {
     "-of",
     "json",
   ];
+  progress("讀取媒體資訊");
   const probe = JSON.parse(
     await run(process.env.FFPROBE_PATH || "ffprobe", [...probeArgs, original], { timeout: 120000 }),
   );
@@ -77,6 +82,7 @@ export async function processArtwork(bytes, file, id, directory) {
     "圖片尺寸過大或無法解碼。",
   );
   const duration = Number(stream.duration || probe.format.duration || 0);
+  progress("解碼並核對影格數");
   const counted = JSON.parse(
     await run(process.env.FFPROBE_PATH || "ffprobe", [...probeArgs, "-count_frames", original], {
       timeout: 120000,
@@ -118,6 +124,7 @@ export async function processArtwork(bytes, file, id, directory) {
     ]);
   const scale = (size) =>
     `scale=w='min(${size},iw)':h='min(${size},ih)':force_original_aspect_ratio=decrease`;
+  progress("產生靜態縮圖");
   await ffmpeg([
     "-map",
     "0:v:0",
@@ -135,6 +142,7 @@ export async function processArtwork(bytes, file, id, directory) {
       ["preview.mp4", 640],
       ["display.mp4", 1280],
     ]) {
+      progress(size === 640 ? "轉檔 640px 預覽影片" : "轉檔 1280px 展示影片");
       await ffmpeg([
         "-map",
         "0:v:0",
@@ -160,6 +168,7 @@ export async function processArtwork(bytes, file, id, directory) {
       names.push(name);
     }
   } else if (!animated) {
+    progress("產生展示圖片");
     await ffmpeg([
       "-map",
       "0:v:0",
@@ -173,6 +182,7 @@ export async function processArtwork(bytes, file, id, directory) {
     ]);
     names.push("display.png");
   }
+  progress("核對原檔與衍生檔");
   const assets = await Promise.all(
     names.map(async (name) => {
       const data = await readFile(path.join(target, name));

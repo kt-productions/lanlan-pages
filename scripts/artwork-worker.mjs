@@ -3,10 +3,12 @@ import path from "node:path";
 import os from "node:os";
 import { root } from "./lib/paths.mjs";
 import { artworkAssert, artworkOperation } from "../src/features/artworks/contract.js";
-import { stickerWork, applyArtworkJob, sha256, managedPath } from "./lib/artworks.mjs";
+import { stickerWork, applyArtworkJob, managedPath } from "./lib/artworks.mjs";
 import { processArtwork, run } from "./lib/artwork-media.mjs";
 import { workerClient, installationToken } from "./lib/artwork-client.mjs";
 import { promoteArtwork } from "./lib/artwork-promotion.mjs";
+import { downloadArtwork } from "./lib/artwork-download.mjs";
+import { artworkFailureSummary } from "./lib/artwork-errors.mjs";
 
 const rpc = workerClient();
 artworkAssert(
@@ -39,6 +41,10 @@ async function processJob(job, leaseId) {
     rpc(action, { operationId: job.operationId, leaseId, ...payload });
   let leaseError;
   let phase = "核對 main";
+  const progress = (next) => {
+    phase = next;
+    console.log(`作品工作：${phase}`);
+  };
   const heartbeat = setInterval(() => {
     call("heartbeat").catch((error) => {
       leaseError = error;
@@ -72,19 +78,8 @@ async function processJob(job, leaseId) {
       applyArtworkJob(manifest, base, job, job.file ? {} : null);
       let media;
       if (job.file) {
-        phase = "下載與轉檔";
-        const chunks = [];
-        for (let offset = 0; offset < job.file.size; offset += 262144) {
-          const part = await call("download", { offset });
-          artworkAssert(
-            part.sha256 === job.file.sha256 && part.size === job.file.size,
-            "作品下載版本已變更。",
-          );
-          chunks.push(Buffer.from(part.data, "base64"));
-        }
-        const bytes = Buffer.concat(chunks);
-        artworkAssert(sha256(bytes) === job.file.sha256, "作品下載雜湊不符。");
-        media = await processArtwork(bytes, job.file, job.work.id, root);
+        const bytes = await downloadArtwork(job.file, call, progress);
+        media = await processArtwork(bytes, job.file, job.work.id, root, progress);
       }
       phase = "驗證作品與建置";
       const next = applyArtworkJob(manifest, base, job, media);
@@ -173,10 +168,12 @@ async function processJob(job, leaseId) {
       }).catch(() => {});
     }
     console.log("作品已保存並送往部署。");
-  } catch {
+  } catch (error) {
+    const summary = artworkFailureSummary(error);
+    console.error(`作品工作在「${phase}」階段失敗：${summary}`);
     await call("failed").catch(() => {});
     // 公開 workflow 日誌不包含私人草稿、原始請求或後端例外。
-    throw new Error(`作品工作在「${phase}」階段未完成，暫存與提交紀錄已保留，請從後台重試。`);
+    throw new Error(`作品工作在「${phase}」階段未完成：${summary} 暫存與提交紀錄已保留，請從後台重試。`);
   } finally {
     clearInterval(heartbeat);
   }

@@ -1,10 +1,46 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile, mkdir } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { processArtwork, run } from "../scripts/lib/artwork-media.mjs";
 import { readArtworkCatalog, sha256 } from "../scripts/lib/artworks.mjs";
+
+test("高解析度 60fps MP4 含音軌可完成各轉檔階段，原檔保持不變", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "lanlan-media-hd-test-"));
+  try {
+    const source = path.join(directory, "fixture.mp4");
+    await run(process.env.FFMPEG_PATH || "ffmpeg", [
+      "-hide_banner", "-loglevel", "error", "-y",
+      "-f", "lavfi", "-i", "color=c=blue:size=2560x2560:rate=60",
+      "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
+      "-t", "2", "-c:v", "libx264", "-profile:v", "main", "-pix_fmt", "yuv420p",
+      "-threads", "2", "-c:a", "aac", source,
+    ]);
+    const bytes = await readFile(source);
+    const phases = [];
+    const media = await processArtwork(bytes, {
+      name: "fixture.mp4", type: "video/mp4", size: bytes.length, sha256: sha256(bytes),
+    }, "chibi-999", directory, (phase) => phases.push(phase));
+    assert.deepEqual(await readFile(path.join(directory, "public", media.src)), bytes);
+    assert.deepEqual(phases, [
+      "驗證媒體格式", "讀取媒體資訊", "解碼並核對影格數", "產生靜態縮圖",
+      "轉檔 640px 預覽影片", "轉檔 1280px 展示影片", "核對原檔與衍生檔",
+    ]);
+    for (const [relative, size] of [[media.previewSrc, 640], [media.playbackSrc, 1280]]) {
+      const result = JSON.parse(await run(process.env.FFPROBE_PATH || "ffprobe", [
+        "-v", "error", "-count_frames", "-show_streams", "-of", "json",
+        path.join(directory, "public", relative),
+      ]));
+      assert.equal(result.streams.length, 1);
+      assert.equal(result.streams[0].width, size);
+      assert.equal(result.streams[0].height, size);
+      assert.equal(Number(result.streams[0].nb_read_frames), 120);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("實際轉檔 PNG、JPG、GIF、MP4，原檔位元組不變、衍生檔可解碼且清單可重建", async () => {
   const directory = await mkdtemp(path.join(os.tmpdir(), "lanlan-media-test-"));
