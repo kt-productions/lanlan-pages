@@ -1062,13 +1062,23 @@
       "deleted": false
     },
     {
+      "id": "chibi-65",
+      "category": "chibi",
+      "title": "歐藤",
+      "alt": "",
+      "description": "",
+      "revision": 2,
+      "operationId": "502af5df-0892-4e1e-9908-583c3676cf63",
+      "deleted": true
+    },
+    {
       "id": "chibi-64",
       "category": "chibi",
       "title": "歐藤",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "1d08f06a-5bf5-42f5-9c75-f494654208d8",
+      "revision": 2,
+      "operationId": "c29a8baa-407d-422a-a73e-55cc574e44b5",
       "deleted": false,
       "media": {
         "type": "video",
@@ -1108,16 +1118,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "chibi-65",
-      "category": "chibi",
-      "title": "歐藤",
-      "alt": "",
-      "description": "",
-      "revision": 2,
-      "operationId": "502af5df-0892-4e1e-9908-583c3676cf63",
-      "deleted": true
     }
   ]
 }
