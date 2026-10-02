@@ -96,6 +96,8 @@ Repository Variables：`ARTWORK_SITE_ID`、`ARTWORK_APP_ID`、`ARTWORK_INSTALLAT
 
 若舊紀錄只有「下載與轉檔未完成」，不能只靠這句判斷檔案損壞或轉檔失敗。更新 worker 到 main 後，從作品後台對原工作按重試，取得新版分階段日誌；重跑舊 Actions run 不保證使用新版 worker。此診斷調整不需要重新部署 GAS。
 
+`GIT_DIVERGED` 表示 production 不是待發布提交的祖先；即使檔案內容相同，直接在 production 合併 PR 產生的獨有 merge commit 仍會阻擋快轉。維護者須先檢查雙方提交及內容，把 production 歷史合併回 main，完成驗證後正常快轉 production；不要 force push。既有工作的 commit 若已早於修復合併，直接重試該舊 SHA 仍無法涵蓋 production 歷史，必須先發布已驗證的合併版本。部署回報會將已包含且仍為現行作品的工作標為已上線。
+
 ## 第一版限制與驗證
 
 - 每檔 10 MiB、每站待處理工作最多 30 件、暫存預留總量 200 MiB；同帳號其他 Drive 使用量仍可能影響上傳。草稿不自動到期刪除。

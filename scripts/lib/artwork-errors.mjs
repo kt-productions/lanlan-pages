@@ -10,6 +10,7 @@ const descriptions = {
   DRIVE_FULL_SIZE: "作品完整下載大小不符。",
   DRIVE_SCOPE: "作品暫存範圍或內容不符。",
   LEASE_EXPIRED: "工作租約已失效，請由新的工作接續。",
+  GIT_DIVERGED: "production 與作品提交歷史分歧，請先合併分支並驗證後再發布。",
   MEDIA_INTEGRITY: "作品檔案完整性或格式不符。",
   MEDIA_DIMENSIONS: "圖片尺寸過大或無法解碼。",
   MEDIA_FRAMES: "作品影格數超出限制。",

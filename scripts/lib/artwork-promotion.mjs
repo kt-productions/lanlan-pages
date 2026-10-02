@@ -22,7 +22,11 @@ export async function promoteArtwork(git, sha, token, retryDeployment) {
       await retryDeployment();
       return { state: "included", sha: current };
     }
-    await git(["merge-base", "--is-ancestor", current, sha]);
+    const base = await git(["merge-base", current, sha]);
+    artworkAssert(
+      base === current,
+      "production 與作品提交歷史分歧，請先合併分支並驗證後再發布。",
+    );
   }
   await git(["push", "origin", `${sha}:refs/heads/production`], token);
   return { state: "promoted", sha };

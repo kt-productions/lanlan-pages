@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { run } from "../scripts/lib/artwork-media.mjs";
 import { promoteArtwork } from "../scripts/lib/artwork-promotion.mjs";
+import { artworkFailureSummary } from "../scripts/lib/artwork-errors.mjs";
 
 test("以實際 Git 驗證首次發布、快轉、同 SHA 與已包含版本重試、分歧保護", async () => {
   const temp = await mkdtemp(path.join(os.tmpdir(), "artwork-git-test-"));
@@ -43,6 +44,9 @@ test("以實際 Git 驗證首次發布、快轉、同 SHA 與已包含版本重�
   await git(["push", "origin", "production"]);
   await git(["checkout", "main"]);
   const third = await commit("main 的獨立修改");
-  await assert.rejects(promoteArtwork(git, third, "", retry));
+  await assert.rejects(promoteArtwork(git, third, "", retry), (error) => {
+    assert.match(artworkFailureSummary(error), /GIT_DIVERGED/);
+    return true;
+  });
   assert.ok((await git(["ls-remote", "origin", "refs/heads/production"])).startsWith(divergent));
 });
