@@ -1115,47 +1115,9 @@
       "title": "歐藤",
       "alt": "",
       "description": "",
-      "revision": 1,
-      "operationId": "1a015f02-15bf-481e-9b2f-5b553374a5d6",
-      "deleted": false,
-      "media": {
-        "type": "video",
-        "animated": false,
-        "width": 2560,
-        "height": 2560,
-        "duration": 2,
-        "src": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/original.mp4",
-        "poster": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/poster.png",
-        "playbackSrc": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/display.mp4",
-        "previewSrc": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/preview.mp4",
-        "source": {
-          "path": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/original.mp4",
-          "bytes": 2594035,
-          "sha256": "c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36"
-        },
-        "assets": [
-          {
-            "path": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/original.mp4",
-            "bytes": 2594035,
-            "sha256": "c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36"
-          },
-          {
-            "path": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/poster.png",
-            "bytes": 163555,
-            "sha256": "cb2696620ff2d96347ae4edc325a93d373557a6fa68f2970b916c330f35690fd"
-          },
-          {
-            "path": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/preview.mp4",
-            "bytes": 97285,
-            "sha256": "4b5bdb7c7181ba0496d6d5c279b4f0df199506be57cbc9357eda1f776582d9aa"
-          },
-          {
-            "path": "assets/artworks/chibi-65/c254d34244674f167df37cb06d73b3af873e2af80820e83ab9237c16edb31d36/display.mp4",
-            "bytes": 265823,
-            "sha256": "fcc5cf790894648aa80b73cbcb5c2f35e3dbb11ce7ff69c5dd004bdeb7405853"
-          }
-        ]
-      }
+      "revision": 2,
+      "operationId": "502af5df-0892-4e1e-9908-583c3676cf63",
+      "deleted": true
     }
   ]
 }
