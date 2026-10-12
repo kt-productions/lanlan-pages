@@ -1128,6 +1128,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-67",
+      "category": "chibi",
+      "title": "Ryko",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "7f356e4c-36a4-4027-8706-563c49fadc47",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/original.mp4",
+        "poster": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/poster.png",
+        "playbackSrc": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/display.mp4",
+        "previewSrc": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/original.mp4",
+          "bytes": 2838776,
+          "sha256": "9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/original.mp4",
+            "bytes": 2838776,
+            "sha256": "9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74"
+          },
+          {
+            "path": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/poster.png",
+            "bytes": 257718,
+            "sha256": "22c5dc2e19be5359c8f959c765f55da181c3e2444d97b1649b1b3539c691dbe0"
+          },
+          {
+            "path": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/preview.mp4",
+            "bytes": 147313,
+            "sha256": "088b3fd2a2ae644b3046df03f42f169a63770d0b155dde3fc75cdc08f9d32a6a"
+          },
+          {
+            "path": "assets/artworks/chibi-67/9073b54f87ea3b2661f35a33f74794a64e30ffb3e392ccc37f60d8e25e52ea74/display.mp4",
+            "bytes": 401690,
+            "sha256": "8126d123fa5ed989c223db8b922b11059657d67f0e1302b0823a09d4352c6b0b"
+          }
+        ]
+      }
     }
   ]
 }
