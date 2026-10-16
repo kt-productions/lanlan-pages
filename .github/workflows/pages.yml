@@ -2,7 +2,7 @@ name: 部署 GitHub Pages
 
 on:
   push:
-    branches: [production]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/production'
+    if: github.ref == 'refs/heads/main'
     name: 建置與驗證
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -74,6 +74,7 @@ jobs:
         run: node scripts/artwork-deployment.mjs check
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          DEPLOY_BRANCH: main
       - name: 部署 GitHub Pages
         if: steps.version.outputs.current == 'true'
         id: deployment
@@ -88,3 +89,4 @@ jobs:
           ARTWORK_API_URL: ${{ secrets.ARTWORK_API_URL }}
           ARTWORK_SITE_ID: ${{ vars.ARTWORK_SITE_ID }}
           ARTWORK_WORKER_SECRET: ${{ secrets.ARTWORK_WORKER_SECRET }}
+          DEPLOY_BRANCH: main

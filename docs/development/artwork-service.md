@@ -27,7 +27,7 @@
 | `ArtworkGitHub.gs` | App JWT／短效 token、dispatch、固定 commit 讀取及原檔核對。 |
 | `ArtworkWorker.gs` | 簽章驗證、持久租約、領取工作、回報保存／發布／失敗。 |
 | `scripts/artwork-worker.mjs` | 下載、轉檔、測試、建置、提交 main、請求清理、快轉 production。 |
-| `scripts/artwork-deployment.mjs` | 核對 production 事件版本、網站 release.json 及回報上線。 |
+| `scripts/artwork-deployment.mjs` | 核對部署事件分支版本、網站 release.json 及回報上線。 |
 
 管理 API 均使用既有管理 token：`admin.artworks.list`、`save`、`upload`、`publish`、`preview`、`cancel`、`cleanup`。草稿使用固定 UUID 與 revision，發布後不可修改該工作；下一次編輯建立新工作並提供作品 expectedRevision。文字欄位只取白名單，ID 由伺服器配發，表單不能指定 repo、分支或 Drive 路徑。
 
@@ -75,14 +75,14 @@ Repository Secrets：`ARTWORK_API_URL`（既有 GAS `/exec`）、`ARTWORK_WORKER
 Repository Variables：`ARTWORK_SITE_ID`、`ARTWORK_APP_ID`、`ARTWORK_INSTALLATION_ID`、`ARTWORK_SITE_URL`（含結尾 `/` 的正式網站網址）、`ARTWORKS_ENABLED`（初期 `false`）。名稱與 GAS 的對應略有不同，依上列分別設定。
 
 1. 先完成來源審閱、離線驗證、App／Secrets／Variables 與 GAS 新版本，保持作品功能未啟用。
-2. 把已驗證程式提交到 main。此版本開始，`validate.yml` 驗證 main，`pages.yml` 只發布 production；正式網站維持前次部署內容，直到第一次 production 發布成功。
-3. GitHub Pages 發布來源維持 **GitHub Actions**；確認 `github-pages` environment 允許 production，檢查 main／production 分支規則允許預期機器人動作。若規則要求 PR，先配合規則完成工作流，不能繞過保護。
-4. 由維護者將 production 建立或快轉至該筆已驗證的 main SHA；不要單獨在 production 修改檔案，也不用 force push。這次以維護者或 App 憑證推送，觸發 Pages；確認正式五頁、收益檢視與 `release.json`。
+2. 把已驗證程式提交到 main。`validate.yml` 驗證 main，`pages.yml` 由 main push 自動發布；正式網站由 main 的最新成功建置更新。
+3. GitHub Pages 發布來源維持 **GitHub Actions**；確認 `github-pages` environment 允許 main，檢查 main／production 分支規則允許預期機器人動作。若規則要求 PR，先配合規則完成工作流，不能繞過保護。
+4. main 推送成功會觸發 Pages；production 仍由作品流程依需要同步，不作為網站部署必要條件。確認正式五頁、收益檢視與 `release.json`。
 5. 完成作品儲存初始化後，啟用 GAS 與 repo 的 `ARTWORKS_ENABLED=true`。在核可的測試環境使用虛構作品驗證完整發布、原檔保存及暫存清理，再使用正式作品。
 
-`artworks.yml` 支援 GAS 的 workflow_dispatch；每十五分鐘的排程接續未完成的排隊工作，每次最多五件。main 必須是預設分支，workflow 檔也須存在於 main。一般 main 人工提交不自動發布，要更新正式程式時，驗證指定 SHA 後同樣快轉 production。
+`artworks.yml` 支援 GAS 的 workflow_dispatch；每十五分鐘的排程接續未完成的排隊工作，每次最多五件。main 必須是預設分支，workflow 檔也須存在於 main。一般 main 人工提交會自動發布 Pages；作品流程仍可依需要同步 production。
 
-處理工作用內建 GITHUB_TOKEN 推送 main，因此必要測試與建置在該工作內執行；production 使用 App token 推送，以啟動部署 workflow。部署固定 checkout 事件 SHA，過期發布在 deploy 前略過。相同 SHA 重推不會產生新 push，所以重試時明確 dispatch `pages.yml`；若 production 已包含較新版本，重試該現行版本，不退回舊工作 SHA。
+處理工作用內建 GITHUB_TOKEN 推送 main，因此必要測試與建置在該工作內執行；production 使用 App token 推送以保存作品流程狀態，不再負責觸發 Pages。部署固定 checkout 事件 SHA，過期發布在 deploy 前略過。相同 SHA 重推不會產生新 push，所以重試時明確 dispatch `pages.yml`；若 main 已包含較新版本，重試該現行版本，不退回舊工作 SHA。
 
 ## 清理與失敗處理
 

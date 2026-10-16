@@ -36,7 +36,7 @@
 | `src/templates/` | 五頁共用的 `head.html`、`icons.html`、`header.html`、`footer.html` |
 | `scripts/` | `build.mjs`、`check.mjs`、`serve.mjs` 及 `build-backend.mjs` 命令入口 |
 | `scripts/lib/` | `paths.mjs` 專案根目錄與路徑界線、`content.mjs` JSON／款式解析、`templates.mjs` 跳脫與模板替換、`backend-source.mjs` 將共用具名模組宣告轉為 GAS 程式；媒體、作品及發布工具亦在此 |
-| `.github/workflows/` | main 驗證、作品工作及 production Pages 發布；見[開發指南](setup.md) |
+| `.github/workflows/` | main 驗證、main Pages 發布及作品工作；見[開發指南](setup.md) |
 | `tests/` | Node.js 內建測試：計價、草稿、欄位、建置工具、API、Apps Script 模擬與真實 RSA 簽章測試 |
 | `.editorconfig` | UTF-8、LF、兩格縮排、檔尾換行及移除行尾空白 |
 | `docs/` | 分類文件；入口見[文件導覽](../README.md) |

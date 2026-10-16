@@ -3,14 +3,16 @@ import { setTimeout } from "node:timers/promises";
 import { workerClient } from "./lib/artwork-client.mjs";
 import { artworkAssert } from "../src/features/artworks/contract.js";
 
+const deploymentBranch = process.env.DEPLOY_BRANCH || "production";
+artworkAssert(["main", "production"].includes(deploymentBranch), "部署分支設定不正確。");
 artworkAssert(
-  process.env.GITHUB_REF === "refs/heads/production" &&
+  process.env.GITHUB_REF === `refs/heads/${deploymentBranch}` &&
     /^[a-f0-9]{40}$/.test(process.env.GITHUB_SHA || ""),
-  "只允許 production 的指定版本部署。",
+  `只允許 ${deploymentBranch} 的指定版本部署。`,
 );
 async function current() {
   const response = await fetch(
-    `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/git/ref/heads/production`,
+    `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/git/ref/heads/${deploymentBranch}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,

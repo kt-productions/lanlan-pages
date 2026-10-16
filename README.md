@@ -43,7 +43,7 @@ npm run check
 - 頁面及模組位置見[程式碼架構](docs/development/architecture.md)；介面以[文字規格](docs/design/interface.md)維護。
 - 費率與草稿以[委託規格](docs/reference/commission.md)、[草稿契約](docs/reference/draft-schema.md)及內容 JSON 為準；原始來源與現行規則分開保存。
 - 後端設定見[委託服務](docs/development/order-service.md)、[參考附件](docs/development/reference-attachments.md)及[作品服務](docs/development/artwork-service.md)。
-- `main` 執行驗證，`production` 觸發 GitHub Pages 發布。更新後端契約時先部署 GAS，再將已驗證的版本快轉至 production；只推 main 不代表網站已更新。
+- `main` 執行驗證並自動觸發 GitHub Pages 發布；`production` 保留作品流程使用的發布分支。更新後端契約時先部署 GAS，再推送已驗證的 main；Pages 會由 main 的提交自動建置與部署。
 - 作品原檔與衍生檔保留來源及雜湊；訂單、憑證、私人維運清單與驗收暫存放在公開專案外，規則見[資料保存界線](docs/development/publication.md)。
 
 歷史部署版本、個別修正與驗收結果集中於[歷史紀錄](docs/records/README.md)，不作為即時服務狀態。協作、資料保留與外部操作授權均以 [AGENTS.md](AGENTS.md) 及使用者後續明確決策為準。

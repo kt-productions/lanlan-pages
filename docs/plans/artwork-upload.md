@@ -12,7 +12,7 @@
 4. GAS 驗證身分及版本，保存工作後觸發「作品更新」Actions。工作帶有站點、操作及版本識別，不靠掃描 Drive 目錄猜測要處理哪些檔案。
 5. Actions 下載該工作的檔案、核對內容、產生縮圖及展示版本，更新作品資料；驗證通過後，在該站 repo 建立 commit 並推送至 `main`。
 6. 從遠端核對該 commit、原檔位元組、雜湊與完整清單，持久保存工作及 commit SHA 的對應；符合來源保存條件後，清理這次工作的 Drive 暫存。
-7. 使用 GitHub App installation token，把 `production` 快轉至這筆已驗證的 `main` commit；由 `push: production` 觸發部署 Actions。
+7. 使用 GitHub App installation token 保存作品流程需要的 `production` 狀態；已驗證的 `main` commit 由 `push: main` 自動觸發部署 Actions。
 8. 部署 Actions 建置、檢查並發布事件指定的版本；核對正式網站版本及資產後，才顯示「已上線」。
 
 | 資源 | 保存位置 | 保存方式 |
@@ -60,7 +60,7 @@ flowchart LR
   F --> G[從遠端核對完整來源並記錄 SHA]
   G --> H[清理這次工作的 Drive 暫存]
   H --> I[以 GitHub App 快轉 production 至指定 SHA]
-  I --> J[production push 觸發部署 Actions]
+  I --> J[main push 觸發部署 Actions]
   J --> K[建置、檢查並發布指定版本]
   K --> L[核對正式網站並回報已上線]
 ```
@@ -70,7 +70,7 @@ flowchart LR
 | 分支／紀錄 | 用途 | 更新規則 |
 | --- | --- | --- |
 | `main` | 程式碼、公開作品資料、原檔及衍生檔的正式來源 | 作品工作提交在此；每個發布候選版本須完成驗證。 |
-| `production` | 選定要部署的完整來源版本 | 只快轉至已驗證的 `main` commit，不單獨編輯、不放 `dist/`。 |
+| `production` | 作品流程使用的同步分支 | 依作品流程保存狀態，不作為 Pages 部署必要條件，不單獨編輯、不放 `dist/`。 |
 | `lastDeployedSha` | 最後核對成功的線上版本紀錄 | 只有部署及網站核對成功才更新；不能直接拿 `production` HEAD 當作上線證明。 |
 
 ### 作品更新流程
