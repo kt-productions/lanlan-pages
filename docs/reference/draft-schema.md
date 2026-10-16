@@ -40,6 +40,8 @@
 | `priceConfirmed` | boolean，固定 `false`。 |
 | `estimatedPrice` | object，結構如下表。 |
 
+參考檔案與 `referenceUrl` 均不接受透過 AI 產生的設定圖或參考素材；這是填單內容限制，不會因為檔案中繼資料或連結格式正確而改變。
+
 | `estimatedPrice` 子欄位 | 型別與用途 |
 | --- | --- |
 | `min`、`max` | number：以元為單位的預估上下限，可有小數；不是以分為單位的輸出。 |
