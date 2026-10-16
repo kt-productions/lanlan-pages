@@ -50,7 +50,13 @@ if (process.argv[2] === "check") {
       await setTimeout(3000);
     }
     artworkAssert(verified, "Pages 尚未回傳指定版本，請稍後重試部署回報。");
-    if (process.env.ARTWORKS_ENABLED === "true" && (await current())) {
+    // Pages 現在由 main 自動部署；作品工作仍以 production 的提交狀態為準，
+    // 因此 main 部署只核對網站版本，不把尚未同步至 production 的版本回報給作品服務。
+    if (
+      deploymentBranch === "production" &&
+      process.env.ARTWORKS_ENABLED === "true" &&
+      (await current())
+    ) {
       try {
         await workerClient()("deployed", { commitSha: process.env.GITHUB_SHA });
       } catch (error) {
