@@ -72,6 +72,17 @@ test("下載服務失敗保留區塊階段，公開摘要不洩漏後端訊息�
   assert.equal(artworkFailureSummary(known), "[PROCESS_FAILED] 子程序執行失敗。");
 });
 
+test("作品服務結果暫時無法確認時，重試同一下載區塊", async () => {
+  let calls = 0;
+  const result = await downloadArtwork(file, async (_, { offset }) => {
+    calls++;
+    if (calls < 3) throw new ArtworkWorkerError("API_RESULT");
+    return partAt(offset);
+  });
+  assert.deepEqual(result, bytes);
+  assert.equal(calls, 5);
+});
+
 test("子程序錯誤及逾時可分類，公開摘要不輸出 stderr", async () => {
   await assert.rejects(run(process.execPath, ["-e", "console.error('private-media-path'); process.exit(2)"]), (error) => {
     assert.equal(artworkFailureSummary(error), "[PROCESS_FAILED] 子程序執行失敗。");

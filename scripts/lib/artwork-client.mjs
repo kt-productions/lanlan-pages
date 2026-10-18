@@ -1,6 +1,7 @@
 import { createHmac, randomUUID, sign } from "node:crypto";
 import { setTimeout } from "node:timers/promises";
 import { artworkAssert } from "../../src/features/artworks/contract.js";
+import { ArtworkWorkerError } from "./artwork-errors.mjs";
 
 export function workerClient(env = process.env, fetcher = fetch, wait = setTimeout) {
   artworkAssert(
@@ -87,7 +88,7 @@ export function workerClient(env = process.env, fetcher = fetch, wait = setTimeo
     }
     artworkAssert(
       typeof result?.ok === "boolean",
-      "作品服務未回傳可確認的結果，請稍後從後台重試。",
+      new ArtworkWorkerError("API_RESULT").message,
     );
     artworkAssert(result.ok === true, result.error?.message || "作品服務操作失敗。");
     return result.data;

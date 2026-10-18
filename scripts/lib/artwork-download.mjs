@@ -1,6 +1,7 @@
 import { artworkFile } from "../../src/features/artworks/contract.js";
 import { sha256 } from "./artworks.mjs";
 import { ArtworkWorkerError } from "./artwork-errors.mjs";
+import { setTimeout } from "node:timers/promises";
 
 const chunkSize = 262144;
 
@@ -10,7 +11,16 @@ export async function downloadArtwork(file, call, progress = () => {}) {
   const total = Math.ceil(file.size / chunkSize);
   for (let offset = 0; offset < file.size; offset += chunkSize) {
     progress(`下載原檔區塊 ${offset / chunkSize + 1}/${total}`);
-    const part = await call("download", { offset });
+    let part;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        part = await call("download", { offset });
+        break;
+      } catch (error) {
+        if (error?.code !== "API_RESULT" || attempt === 2) throw error;
+        await setTimeout(2000 * (attempt + 1));
+      }
+    }
     if (part?.sha256 !== file.sha256 || part?.size !== file.size) {
       throw new ArtworkWorkerError("DOWNLOAD_VERSION");
     }
