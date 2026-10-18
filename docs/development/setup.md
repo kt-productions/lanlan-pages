@@ -48,12 +48,12 @@ Pages 不會部署 GAS 或修改 Script Properties。前後端契約有變更時
 | --- | --- |
 | `validate.yml` | main push／指向 main 的 PR；測試、建置及產物檢查。 |
 | `artworks.yml` | 手動或排程；僅 main 且作品服務啟用時執行。處理已授權作品工作、核對保存並推進 production。 |
-| `pages.yml` | main push，或在 main 手動執行；測試、建置、部署及發布版本核對。 |
+| `pages.yml` | main／production push，或在對應分支手動執行；測試、建置、部署及發布版本核對。 |
 
-main 是開發、來源保存與 GitHub Pages 發布分支，production 保留為作品流程使用的同步分支。推送 main 前仍須完成必要檢查；Pages 會由 main 提交自動觸發，作品工作推進 production 時也須確認相容的程式已同步回 main。分支分歧時停止釐清，不 force push，也不直接修改發布產物。
+main 是開發與來源保存分支，production 是作品流程核准後的同步分支；兩者推送都會觸發 Pages。一般程式碼推送 main 後直接發布，作品更新則由 worker 先保存 main，再快轉 production，由 production 的部署回報作品已上線。推送前仍須完成必要檢查；分支分歧時停止釐清，不 force push，也不直接修改發布產物。
 
-Pages 來源設定為 GitHub Actions，environment 限 main。workflow 固定 checkout 事件 SHA，以 `actions/configure-pages` 提供的網址建置；只有 dist 上傳為網站產物，後端、文件及私人設定不在其中。部署前排除已被較新的 main 提交取代的版本，完成後核對 `release.json`。
+Pages 來源設定為 GitHub Actions，`github-pages` environment 允許 main 與 production。workflow 固定 checkout 事件 SHA，以 `actions/configure-pages` 提供的網址建置；只有 dist 上傳為網站產物，後端、文件及私人設定不在其中。部署前排除已被同一分支較新的提交取代的版本，完成後核對 `release.json`；只有 production 部署會回報作品狀態。
 
-作品工作使用 GitHub App token 更新 production；網站部署由 main push 觸發，相同 SHA 的重試可由現有工具明確 dispatch Pages。設定及故障復原見[作品服務](artwork-service.md)。需回復程式時建立可追蹤的還原提交，保留作品來源與資料歷史，不手改 dist 或清空雲端資料。
+作品工作使用 GitHub App token 更新 production；一般程式碼由 main push 觸發網站部署，作品同步至 production 後再觸發網站部署並回報 GAS。相同 SHA 的重試可由現有工具明確 dispatch Pages。設定及故障復原見[作品服務](artwork-service.md)。需回復程式時建立可追蹤的還原提交，保留作品來源與資料歷史，不手改 dist 或清空雲端資料。
 
 以上描述目前工作樹設定；過去正式驗收及未確認項目見[現況對照](current-state.md)，不因文件列出步驟就構成部署或真實資料操作的授權。

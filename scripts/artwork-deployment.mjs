@@ -22,7 +22,7 @@ async function current() {
       signal: AbortSignal.timeout(30000),
     },
   );
-  artworkAssert(response.ok, "無法核對 production 版本。");
+  artworkAssert(response.ok, `無法核對 ${deploymentBranch} 版本。`);
   return (await response.json()).object.sha === process.env.GITHUB_SHA;
 }
 if (process.argv[2] === "check") {

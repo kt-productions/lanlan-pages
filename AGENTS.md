@@ -136,6 +136,7 @@
 ## 附錄：已確立的技術決策
 
 - **2026-10-16 Pages 改由 main 自動部署**：依使用者更新，GitHub Pages workflow 改為 `main` push 自動觸發；`github-pages` environment 與部署版本核對同步改用 main。`production` 保留作品流程使用，不再是網站部署必要條件。前端與後端仍分開部署，正式結果以 Pages workflow 與 `release.json` 核對為準。
+- **2026-10-19 Pages 雙分支部署修正**：依使用者要求，`pages.yml` 同時監聽 `main` 與 `production`；一般程式碼推送 main 後直接部署，作品 worker 保存 main 後快轉 production，由 production 再部署並回報 GAS 作品狀態。`github-pages` environment 同時允許兩個分支；部署版本核對依事件分支切換，main 部署不回報作品狀態，避免作品在 production 尚未同步前被誤標為已上線。
 
 - **2026-09-26 歷史已交稿排序補正**：依使用者提供的舊系統對照，修正同批 Trello 匯入的 `updatedAt` 相同而按編號打亂歷史順序的問題。`contract.js` 由歷史略過舊單純金額／收益日期補齊，保留真正的進度與內容更新；回溯至匯入時間時採 `source.lastActivity`；API 新增唯讀 `sortUpdatedAt`，公開／管理分頁與前端共用，不公開完整來源、不改寫時間或歷史。原始 47 筆已交稿小動圖已於專案外與來源卡片位置逐筆比對一致；測試只用虛構資料。此決策補正下方 2026-09-25 的排序規則。
 
