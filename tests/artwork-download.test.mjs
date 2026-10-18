@@ -78,7 +78,7 @@ test("作品服務結果暫時無法確認時，重試同一下載區塊", async
     calls++;
     if (calls < 3) throw new ArtworkWorkerError("API_RESULT");
     return partAt(offset);
-  });
+  }, undefined, async () => {});
   assert.deepEqual(result, bytes);
   assert.equal(calls, 5);
 });

@@ -86,10 +86,7 @@ export function workerClient(env = process.env, fetcher = fetch, wait = setTimeo
       }
       if (typeof result?.ok === "boolean") break;
     }
-    artworkAssert(
-      typeof result?.ok === "boolean",
-      new ArtworkWorkerError("API_RESULT").message,
-    );
+    if (typeof result?.ok !== "boolean") throw new ArtworkWorkerError("API_RESULT");
     artworkAssert(result.ok === true, result.error?.message || "作品服務操作失敗。");
     return result.data;
   };

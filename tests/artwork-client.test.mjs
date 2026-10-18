@@ -61,6 +61,7 @@ test("拒絕非 Google 結果網址，服務錯誤不洩漏 HTML 或結果票證
     )("claim"),
     (error) => {
       assert.match(error.message, /未回傳可確認的結果/);
+      assert.equal(error.code, "API_RESULT");
       assert.doesNotMatch(error.message, /private-response|user_content_key/);
       return true;
     },

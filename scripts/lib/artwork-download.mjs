@@ -5,7 +5,7 @@ import { setTimeout } from "node:timers/promises";
 
 const chunkSize = 262144;
 
-export async function downloadArtwork(file, call, progress = () => {}) {
+export async function downloadArtwork(file, call, progress = () => {}, wait = setTimeout) {
   artworkFile(file);
   const chunks = [];
   const total = Math.ceil(file.size / chunkSize);
@@ -18,7 +18,7 @@ export async function downloadArtwork(file, call, progress = () => {}) {
         break;
       } catch (error) {
         if (error?.code !== "API_RESULT" || attempt === 2) throw error;
-        await setTimeout(2000 * (attempt + 1));
+        await wait(2000 * (attempt + 1));
       }
     }
     if (part?.sha256 !== file.sha256 || part?.size !== file.size) {
