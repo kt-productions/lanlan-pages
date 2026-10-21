@@ -1320,6 +1320,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-71",
+      "category": "chibi",
+      "title": "魚湯",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "6681fac3-b4b9-4fcc-af7f-8f48bab179a4",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/original.mp4",
+        "poster": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/poster.png",
+        "playbackSrc": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/display.mp4",
+        "previewSrc": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/original.mp4",
+          "bytes": 2818368,
+          "sha256": "988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/original.mp4",
+            "bytes": 2818368,
+            "sha256": "988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d"
+          },
+          {
+            "path": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/poster.png",
+            "bytes": 244927,
+            "sha256": "5119580c51cfc881bb553794282be709003ebd6b06141827f4a299f32edad183"
+          },
+          {
+            "path": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/preview.mp4",
+            "bytes": 157544,
+            "sha256": "83dbb7322885f7937c4af444d11a936c453916aad2529bc679a9072018b89820"
+          },
+          {
+            "path": "assets/artworks/chibi-71/988f852809ef58d19d1b37c4838103c0a8d522c33ed129f1b059a7f66383dc0d/display.mp4",
+            "bytes": 423807,
+            "sha256": "c57f756a24dd220287dfa70d32ba582219a04a18df412011152b7ee6a5846cf0"
+          }
+        ]
+      }
     }
   ]
 }
