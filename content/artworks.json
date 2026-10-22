@@ -1368,6 +1368,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-72",
+      "category": "chibi",
+      "title": "蒼米",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "2bfefb61-efd5-47a3-95bb-3eb97571c012",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/original.mp4",
+        "poster": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/poster.png",
+        "playbackSrc": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/display.mp4",
+        "previewSrc": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/original.mp4",
+          "bytes": 2745210,
+          "sha256": "fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/original.mp4",
+            "bytes": 2745210,
+            "sha256": "fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1"
+          },
+          {
+            "path": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/poster.png",
+            "bytes": 271791,
+            "sha256": "6262e30b19a2ca5056e1d5c8e7644bcedfbcfb1a388663085ba1786e3152eee6"
+          },
+          {
+            "path": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/preview.mp4",
+            "bytes": 177230,
+            "sha256": "696d456534585a64f43e63ad8f6ecdbb3d9ffaefb9ce84a75bae691818393455"
+          },
+          {
+            "path": "assets/artworks/chibi-72/fb2533fe5ee697f930618768e34c9dfd81e9379e1e8f675d91f4bddb13223ac1/display.mp4",
+            "bytes": 462167,
+            "sha256": "462f110099f1776ea9f777b606b1963902fcd412fad052eb958177f3276aab70"
+          }
+        ]
+      }
     }
   ]
 }
