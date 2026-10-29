@@ -1656,6 +1656,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-78",
+      "category": "chibi",
+      "title": "lDraxo",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "0479f329-4113-4291-8602-110584fc54c0",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/original.mp4",
+        "poster": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/poster.png",
+        "playbackSrc": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/display.mp4",
+        "previewSrc": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/original.mp4",
+          "bytes": 2399516,
+          "sha256": "51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/original.mp4",
+            "bytes": 2399516,
+            "sha256": "51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93"
+          },
+          {
+            "path": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/poster.png",
+            "bytes": 165027,
+            "sha256": "c67362ed87bd345da441449703a920a3f6c75db667b5789d55f2737f84344537"
+          },
+          {
+            "path": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/preview.mp4",
+            "bytes": 105399,
+            "sha256": "2a5d156d707d1fcf66cf9e7bb29b774155bc58cef3e8ba1b9cdb14d9c5caeb6c"
+          },
+          {
+            "path": "assets/artworks/chibi-78/51d14cb9568ac3495bea2ac5b7aa0ddc0f41b518120efaf6dfe1a96a49adad93/display.mp4",
+            "bytes": 278605,
+            "sha256": "0ad254c061f6c333d7e8ecad89fc99d2009e3a4597c274b09040cdb1dd816001"
+          }
+        ]
+      }
     }
   ]
 }
