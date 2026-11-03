@@ -1800,6 +1800,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-81",
+      "category": "chibi",
+      "title": "Jump",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "1b0616cd-e01d-4406-abb1-734773d74360",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/original.mp4",
+        "poster": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/poster.png",
+        "playbackSrc": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/display.mp4",
+        "previewSrc": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/original.mp4",
+          "bytes": 2645631,
+          "sha256": "1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/original.mp4",
+            "bytes": 2645631,
+            "sha256": "1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7"
+          },
+          {
+            "path": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/poster.png",
+            "bytes": 202862,
+            "sha256": "0c4d7406dc7e3a396353eee233fdc31e7ee4e8aa29f40f608a58a4b140179ad1"
+          },
+          {
+            "path": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/preview.mp4",
+            "bytes": 142975,
+            "sha256": "f276e196bd47310f5fe3e57222c0b33edc526e9a5ee45e8daaae9a79ed13f75d"
+          },
+          {
+            "path": "assets/artworks/chibi-81/1625f9eebb8cd866e9fa7dba68c914f1f1a7b2b3d0e57262824e13a883b264d7/display.mp4",
+            "bytes": 362433,
+            "sha256": "b9b85ad724b47922dee56b5aa08198d6adb892fc1cf7e581e421dad7a9230d19"
+          }
+        ]
+      }
     }
   ]
 }
