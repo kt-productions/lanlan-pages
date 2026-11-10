@@ -2088,6 +2088,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-87",
+      "category": "chibi",
+      "title": "妲雷卡",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "57a18098-e2f1-488a-a697-c7071fb32beb",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/original.mp4",
+        "poster": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/poster.png",
+        "playbackSrc": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/display.mp4",
+        "previewSrc": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/original.mp4",
+          "bytes": 2646647,
+          "sha256": "25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/original.mp4",
+            "bytes": 2646647,
+            "sha256": "25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43"
+          },
+          {
+            "path": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/poster.png",
+            "bytes": 175771,
+            "sha256": "4732d4219abfa3cfb6c4771a73af2ff8b471418e7ba26331cd3052de87546d6c"
+          },
+          {
+            "path": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/preview.mp4",
+            "bytes": 117860,
+            "sha256": "e28c68d779ab3f9e64ce3a554d09f7f05dda3f8f43be59ec76b5f53174176543"
+          },
+          {
+            "path": "assets/artworks/chibi-87/25447ecbb205876e11b551c43151cd6984dabc043b7491c9dca737d7d78ebe43/display.mp4",
+            "bytes": 308626,
+            "sha256": "edfdc07849cf739597c09dfeb2537d2559404b1bc30e78ddb63562d19c37d0d7"
+          }
+        ]
+      }
     }
   ]
 }
