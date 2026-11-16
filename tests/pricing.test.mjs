@@ -28,21 +28,21 @@ test("動畫加價、折抵與付款切換使用同一組合計", () => {
 });
 
 test("小動圖方案、每角色複雜費及固定急件費連動", () => {
-  assert.deepEqual(amounts(quote("chibi")), [600, 1400]);
+  assert.deepEqual(amounts(quote("chibi")), [600, 1600]);
   assert.deepEqual(
     amounts(quote("chibi", { chibiPlan: "illustration", payment: "paypal" })),
-    [630, 840],
+    [630, 1050],
   );
   assert.deepEqual(
     amounts(quote("chibi", { chibiPlan: "animated", payment: "paypal" })),
-    [1260, 1470],
+    [1260, 1680],
   );
   const rush = quote("chibi", {
     chibiPlan: "animated",
     rush: "yes",
     payment: "paypal",
   });
-  assert.deepEqual(amounts(rush), [1890, 2100]);
+  assert.deepEqual(amounts(rush), [1890, 2310]);
   assert.deepEqual(
     rush.items.find((item) => item.label === "加急插隊"),
     { label: "加急插隊", min: 600, max: 600 },
@@ -82,14 +82,14 @@ test("雙人動畫與轉場累加，每位角色分別計算複雜費", () => {
 
 test("小動圖雙人只對方案原價加 50%，不放大急件與複雜費", () => {
   const double = { characterCount: "2" };
-  assert.deepEqual(amounts(quote("chibi", double)), [900, 2200]);
-  assert.deepEqual(amounts(quote("chibi", { ...double, chibiPlan: "illustration" })), [900, 1300]);
+  assert.deepEqual(amounts(quote("chibi", double)), [900, 2600]);
+  assert.deepEqual(amounts(quote("chibi", { ...double, chibiPlan: "illustration" })), [900, 1700]);
   const animated = quote("chibi", {
     ...double,
     chibiPlan: "animated",
     rush: "yes",
   });
-  assert.deepEqual(amounts(animated), [2400, 2800]);
+  assert.deepEqual(amounts(animated), [2400, 3200]);
   assert.equal(animated.items.filter((item) => /角色 \d 複雜費/.test(item.label)).length, 2);
   assert.deepEqual(
     animated.items.find((item) => item.label.includes("方案原價")),
@@ -104,7 +104,7 @@ test("小動圖雙人只對方案原價加 50%，不放大急件與複雜費", (
         payment: "paypal",
       }),
     ),
-    [2520, 2940],
+    [2520, 3360],
   );
 });
 
@@ -117,11 +117,11 @@ test("貼圖原價、商用倍數、PayPal 小數與取消選擇", () => {
         payment: "paypal",
       }),
     ),
-    [735, 735],
+    [735, 1176],
   );
   assert.deepEqual(
     amounts(quote("stickers", { stickerIds: [28], payment: "paypal" })),
-    [52.5, 52.5],
+    [52.5, 84],
   );
   const empty = quote("stickers", {
     stickerIds: [],
@@ -136,8 +136,8 @@ test("三類 PayPal 統一按加減價後小計的 5% 計算，轉帳不收取",
   const allStickers = config.stickerOptions.map((item) => item.number);
   for (const [service, selection, fee, total] of [
     ["animation", {}, [225, 325], [4725, 6825]],
-    ["chibi", { chibiPlan: "animated" }, [60, 70], [1260, 1470]],
-    ["stickers", { stickerIds: allStickers }, [330, 330], [6930, 6930]],
+    ["chibi", { chibiPlan: "animated" }, [60, 80], [1260, 1680]],
+    ["stickers", { stickerIds: allStickers }, [330, 528], [6930, 11088]],
   ]) {
     const result = quote(service, { ...selection, payment: "paypal" });
     const line = result.items.find((item) => item.label.startsWith("PayPal"));
@@ -178,24 +178,24 @@ test("數量折扣只套用達標的最高級距", () => {
       payment: "bank",
       stickerIds: selected.map((item) => item.number),
     });
-    assert.deepEqual(amounts(result), [subtotal - discount, subtotal - discount], `${count} 款`);
+    assert.deepEqual(amounts(result), [subtotal - discount, (subtotal - discount) * 1.6], `${count} 款`);
   }
 });
 
 test("33–35 第二／第三款半價，商用按折扣後金額乘 2", () => {
-  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33] })), [200, 200]);
-  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33, 34] })), [300, 300]);
-  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33, 34, 35] })), [400, 400]);
+  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33] })), [200, 320]);
+  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33, 34] })), [300, 480]);
+  assert.deepEqual(amounts(quote("stickers", { stickerIds: [33, 34, 35] })), [400, 640]);
   assert.deepEqual(
     amounts(quote("stickers", { stickerIds: [33, 34, 35], commercial: "yes" })),
-    [800, 800],
+    [800, 1280],
   );
 });
 
 test("48 款的數量與款式折扣固定併用，分別列出 600 與 200", () => {
   const ids = config.stickerOptions.map((item) => item.number);
   const ordinary = quote("stickers", { stickerIds: ids });
-  assert.deepEqual(amounts(ordinary), [6600, 6600]);
+  assert.deepEqual(amounts(ordinary), [6600, 10560]);
   assert.deepEqual(
     ordinary.items.filter((item) => item.min < 0),
     [
@@ -205,7 +205,7 @@ test("48 款的數量與款式折扣固定併用，分別列出 600 與 200", ()
   );
   assert.ok(!ordinary.notes.some((note) => note.includes("計算順序待確認")));
   const commercial = quote("stickers", { stickerIds: ids, commercial: "yes" });
-  assert.deepEqual(amounts(commercial), [13200, 13200]);
+  assert.deepEqual(amounts(commercial), [13200, 21120]);
   assert.deepEqual(
     commercial.items.find((item) => item.label.startsWith("商用")),
     { label: "商用加價（折扣後總價 ×2）", min: 6600, max: 6600 },
@@ -218,7 +218,7 @@ test("48 款的數量與款式折扣固定併用，分別列出 600 與 200", ()
         payment: "paypal",
       }),
     ),
-    [13860, 13860],
+    [13860, 22176],
   );
   assert.ok(!commercial.notes.some((note) => note.includes("計算順序待確認")));
 });
@@ -241,16 +241,16 @@ test("各數量門檻皆與款式折扣併用，取消款式會重算兩種折�
     });
     assert.deepEqual(amounts(result), [
       subtotal - quantityDiscount - 200,
-      subtotal - quantityDiscount - 200,
+      (subtotal - quantityDiscount - 200) * 1.6,
     ]);
   }
   const allExcept35 = config.stickerOptions
     .filter((item) => item.number !== 35)
     .map((item) => item.number);
-  assert.deepEqual(amounts(quote("stickers", { stickerIds: allExcept35 })), [6700, 6700]);
+  assert.deepEqual(amounts(quote("stickers", { stickerIds: allExcept35 })), [6700, 10720]);
   assert.deepEqual(
     amounts(quote("stickers", { stickerIds: allExcept35, payment: "paypal" })),
-    [7035, 7035],
+    [7035, 11256],
   );
 });
 
@@ -265,7 +265,7 @@ test("跨類型不計入不適用選項；排除重複及未開放的貼圖", ()
         stickerIds: [1],
       }),
     ),
-    [600, 800],
+    [600, 1000],
   );
   assert.deepEqual(
     amounts(quote("animation", { chibiPlan: "animated", stickerIds: [1, 2] })),
@@ -281,7 +281,7 @@ test("跨類型不計入不適用選項；排除重複及未開放的貼圖", ()
         background: "no",
       }),
     ),
-    [200, 200],
+    [200, 320],
   );
 });
 
@@ -315,6 +315,21 @@ test("各項明細可加總回預估上下限，且不代表正式報價", () =>
 test("未知類型明確拒絕，未知方案維持待選範圍且不產生無效金額", () => {
   assert.throws(() => quote("unknown"), /不支援的委託類型/);
   for (const chibiPlan of ["unknown", "constructor", "__proto__"]) {
-    assert.deepEqual(amounts(quote("chibi", { chibiPlan })), [600, 1400]);
+    assert.deepEqual(amounts(quote("chibi", { chibiPlan })), [600, 1600]);
   }
+});
+
+test("貼圖複雜費按折扣及商用後小計計算，空選擇不加收", () => {
+  const result = quote("stickers", {
+    stickerIds: config.stickerOptions.map((item) => item.number),
+    commercial: "yes",
+    payment: "paypal",
+  });
+  assert.deepEqual(result.items.find((item) => item.label.startsWith("角色複雜費")), {
+    label: "角色複雜費（0% ~ 60%）", min: 0, max: 7920,
+  });
+  assert.ok(!result.notes.some((note) => note.includes("未含角色複雜費")));
+  const empty = quote("stickers", { stickerIds: [49], payment: "paypal" });
+  assert.deepEqual(amounts(empty), [0, 0]);
+  assert.ok(!empty.items.some((item) => /複雜費|PayPal/.test(item.label)));
 });

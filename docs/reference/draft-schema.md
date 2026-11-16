@@ -59,6 +59,8 @@
 
 ## 計價來源與契約變更
 
+2026-11-16 更新複雜費：貼圖的 `estimatedPrice.items` 新增 0% ~ 60% 複雜費明細，小動圖改為每位 0 ~ 400 元，角色動畫維持每位 0 ~ 2,000 元。既有欄位名稱、型別及適用條件不變，維持 `schemaVersion: 4`；舊草稿不回寫。前端與後端共用計價來源，正式生效須同步部署 GAS 與網站。
+
 `estimatedPrice` 由 `src/features/commission/pricing.js` 的 `estimateCommission()` 產生，與預估欄、手機金額列及確認頁共用結果。完整費率、欄位適用條件與前端驗證限制以[表單與計價規格](commission.md)為準。
 
 不適用欄位不參與當次計價，草稿依上表輸出 `null` 或空陣列。修改名稱、型別或空值語意時，須同步檢視 `version`、`schemaVersion`、確認頁、下載內容與本文件；後端仍須依[服務契約](order-api.md)重新驗證。

@@ -95,12 +95,13 @@ test("跨類型殘留選項不進入草稿；貼圖去重並排除未開放款�
   for (const key of ["chibiPlan", "characterCount", "transition", "background", "rush"])
     assert.equal(stickers[key], null, key);
   assert.equal(stickers.allowLivestream, false);
+  assert.deepEqual([stickers.estimatedPrice.min, stickers.estimatedPrice.max], [420, 672]);
   const chibi = createDraft(config, "chibi", input(), [reference], true);
   assert.deepEqual(chibi.stickerIds, []);
   for (const key of ["transition", "commercial", "background", "allowLivestream", "notes"])
     assert.equal(chibi[key], null, key);
   assert.equal(chibi.allowPortfolio, true);
-  assert.deepEqual([chibi.estimatedPrice.min, chibi.estimatedPrice.max], [2520, 2940]);
+  assert.deepEqual([chibi.estimatedPrice.min, chibi.estimatedPrice.max], [2520, 3360]);
 });
 
 test("返回修改後的新草稿更新內容，原確認快照保持獨立", () => {

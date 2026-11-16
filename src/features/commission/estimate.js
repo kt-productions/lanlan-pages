@@ -16,6 +16,7 @@ export function renderEstimate(config, service, selection, estimate) {
   );
   populateList("#estimate-notes", estimate.notes);
   const complexity = config.services[service].pricing.complexityPerCharacter;
+  const complexityPercent = config.services[service].pricing.complexityPercent;
   const characterCount = Number(selection.characterCount) === 2 ? 2 : 1;
   populateList(
     "#complexity-fees",
@@ -25,6 +26,8 @@ export function renderEstimate(config, service, selection, estimate) {
           (_, index) =>
             `角色 ${index + 1}：+${formatPriceRange(complexity.min, complexity.max, estimate.currency)}`,
         )
-      : [],
+      : complexityPercent
+        ? [`角色複雜費：+${complexityPercent.min}% ~ ${complexityPercent.max}%（折扣與商用加價後小計）`]
+        : [],
   );
 }

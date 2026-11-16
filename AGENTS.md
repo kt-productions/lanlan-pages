@@ -135,6 +135,8 @@
 
 ## 附錄：已確立的技術決策
 
+- **2026-11-16 角色複雜費更新**：依使用者要求，`content/commission.json`、共用 `pricing.js` 及表單提示新增貼圖包 0% ~ 60% 複雜費，按折扣與商用後小計計算、PayPal 最後加收；小動圖每位改為 0 ~ 400 元，角色動畫每位維持 0 ~ 2,000 元。此決策更新下方歷史費率與貼圖總額；草稿結構維持第 4 版，正式生效須同步部署前端及 GAS。
+
 - **2026-10-16 Pages 改由 main 自動部署**：依使用者更新，GitHub Pages workflow 改為 `main` push 自動觸發；`github-pages` environment 與部署版本核對同步改用 main。`production` 保留作品流程使用，不再是網站部署必要條件。前端與後端仍分開部署，正式結果以 Pages workflow 與 `release.json` 核對為準。
 - **2026-10-19 Pages 雙分支部署修正**：依使用者要求，`pages.yml` 同時監聽 `main` 與 `production`；一般程式碼推送 main 後直接部署，作品 worker 保存 main 後快轉 production，由 production 再部署並回報 GAS 作品狀態。`github-pages` environment 同時允許兩個分支；部署版本核對依事件分支切換，main 部署不回報作品狀態，避免作品在 production 尚未同步前被誤標為已上線。
 

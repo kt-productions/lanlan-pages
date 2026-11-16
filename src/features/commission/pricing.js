@@ -49,6 +49,16 @@ export function estimateCommission(config, selection) {
     if (multiplier > 1) {
       add(`商用加價（折扣後總價 ×${multiplier}）`, (subtotal - discounts) * (multiplier - 1));
     }
+    if (!empty) {
+      // 貼圖按折扣及商用後的小計估算複雜費，PayPal 再包含這筆加價。
+      const rate = pricing.complexityPercent;
+      add(
+        `角色複雜費（${rate.min}% ~ ${rate.max}%）`,
+        money(Math.round((minCents * rate.min) / 100)),
+        money(Math.round((maxCents * rate.max) / 100)),
+      );
+      notes.push("角色複雜費按折扣與商用加價後小計計算，已列入預估範圍；確切費用由繪師依設定確認。");
+    }
   } else if (service === "animation") {
     add("單人角色動畫", pricing.base);
     if (characterCount === 2) add("雙人動畫（第二角色）", pricing.secondCharacter);
@@ -109,11 +119,7 @@ export function estimateCommission(config, selection) {
         : ["commercial", "payment"];
   if (required.some((key) => !selection[key]))
     notes.push("尚未選擇的加減價選項未計入，請完成選擇以更新預估。");
-  notes.push(
-    service === "stickers"
-      ? "未含角色複雜費及其他客製需求；實際報價以繪師回覆為準。"
-      : "其他客製需求另行報價；實際報價以繪師回覆為準。",
-  );
+  notes.push("其他客製需求另行報價；實際報價以繪師回覆為準。");
   return {
     min: money(minCents),
     max: money(maxCents),
