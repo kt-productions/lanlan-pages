@@ -2376,6 +2376,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-93",
+      "category": "chibi",
+      "title": "墨利斯",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "b09889d5-7bfb-4e6a-8900-7cde56e3bfb4",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/original.mp4",
+        "poster": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/poster.png",
+        "playbackSrc": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/display.mp4",
+        "previewSrc": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/original.mp4",
+          "bytes": 2636859,
+          "sha256": "29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/original.mp4",
+            "bytes": 2636859,
+            "sha256": "29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd"
+          },
+          {
+            "path": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/poster.png",
+            "bytes": 208681,
+            "sha256": "f0c02407f46d8c8291284286f088fc2e381b1da4c7e3574f2976f5cab382d8e9"
+          },
+          {
+            "path": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/preview.mp4",
+            "bytes": 148877,
+            "sha256": "65a62cf2f30a3e5db3de1f85fdfae1a0eec13a69d712000201ce365f551ea23a"
+          },
+          {
+            "path": "assets/artworks/chibi-93/29469097ca3dbae56fae64959628a54993be4b569f2ff77be7064508777fb9dd/display.mp4",
+            "bytes": 379617,
+            "sha256": "402b7ce6f015ee2389a5927f8db29ec1b1a2ad4e33d92b4c4d1a830fde52206b"
+          }
+        ]
+      }
     }
   ]
 }
