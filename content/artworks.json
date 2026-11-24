@@ -2424,6 +2424,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "animation-39",
+      "category": "animation",
+      "title": "湯圓",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "15056a16-c8ba-4318-b00d-f121305dcf37",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 1920,
+        "height": 1080,
+        "duration": 6,
+        "src": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/original.mp4",
+        "poster": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/poster.png",
+        "playbackSrc": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/display.mp4",
+        "previewSrc": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/preview.mp4",
+        "source": {
+          "path": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/original.mp4",
+          "bytes": 7950691,
+          "sha256": "98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/original.mp4",
+            "bytes": 7950691,
+            "sha256": "98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f"
+          },
+          {
+            "path": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/poster.png",
+            "bytes": 383118,
+            "sha256": "53aea4e13aa1400440c2f4d482ce40ca435e3c771fb944b1245024975b53ab17"
+          },
+          {
+            "path": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/preview.mp4",
+            "bytes": 869531,
+            "sha256": "5b5b6e8a78e6df2693c0cfa7bdc9b977640a2661bf0a6a2e0e66e625024b852e"
+          },
+          {
+            "path": "assets/artworks/animation-39/98b2a2d5baabd3845e188ad2dfc06078d4721972f4c84df5b873393470e6c47f/display.mp4",
+            "bytes": 2101716,
+            "sha256": "5f3b5643b405915808c7f1edf3cf9f4b0b8958a5d961018f6941927298d5c08e"
+          }
+        ]
+      }
     }
   ]
 }
