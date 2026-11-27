@@ -2568,6 +2568,54 @@
           }
         ]
       }
+    },
+    {
+      "id": "chibi-96",
+      "category": "chibi",
+      "title": "諾恩2",
+      "alt": "",
+      "description": "",
+      "revision": 1,
+      "operationId": "8d90fca5-511e-4db3-93ab-fc3a33dad140",
+      "deleted": false,
+      "media": {
+        "type": "video",
+        "animated": false,
+        "width": 2560,
+        "height": 2560,
+        "duration": 2,
+        "src": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/original.mp4",
+        "poster": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/poster.png",
+        "playbackSrc": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/display.mp4",
+        "previewSrc": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/preview.mp4",
+        "source": {
+          "path": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/original.mp4",
+          "bytes": 2695396,
+          "sha256": "cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801"
+        },
+        "assets": [
+          {
+            "path": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/original.mp4",
+            "bytes": 2695396,
+            "sha256": "cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801"
+          },
+          {
+            "path": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/poster.png",
+            "bytes": 227427,
+            "sha256": "92ce269e7acb8ca4174c83f00c9b30cf2283e3f5ed3c6d8ea89150f2582a4859"
+          },
+          {
+            "path": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/preview.mp4",
+            "bytes": 142674,
+            "sha256": "f2992592122682929c3544ce5d0acdea84d7a3cd5dda4d17e2e7f014f4ac9985"
+          },
+          {
+            "path": "assets/artworks/chibi-96/cdc4b63b9cc4bb5bccc38c6f3d8b23b33963e934ec6e3f28001be82e45d19801/display.mp4",
+            "bytes": 369043,
+            "sha256": "13945e06f3d22bca23ef3184f3c70cad13e6977339fc46c07768d8fa3e50444a"
+          }
+        ]
+      }
     }
   ]
 }
